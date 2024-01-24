@@ -1,6 +1,6 @@
-import { type Config } from "../../decoder.types";
+import { type Configs } from "../../decoder.types";
 
-const configs: Config[] = [
+const configs: Configs = [
     {
         protocol_name: "uniswap-v2",
         // ? only for testing

@@ -1,6 +1,6 @@
-import { type Config } from "../../decoder.types";
+import { type Configs } from "../../decoder.types";
 
-const configs: Config[] = [
+const configs: Configs = [
     {
         protocol_name: "covalent-network",
         address: "0x4f2e285227d43d9eb52799d0a28299540452446e",

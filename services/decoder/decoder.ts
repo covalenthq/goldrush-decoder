@@ -6,7 +6,7 @@ import {
     type LogEvent,
 } from "@covalenthq/client-sdk";
 import {
-    type Config,
+    type Configs,
     type DecodingFunction,
     type Decoders,
     type EventType,
@@ -14,7 +14,7 @@ import {
 import { encodeEventTopics, type Abi } from "viem";
 
 export class Decoder {
-    private static configs: Config[] = [];
+    private static configs: Configs = [];
     private static decoders: Decoders = {};
 
     public static initDecoder = () => {
@@ -37,7 +37,7 @@ export class Decoder {
             });
             if (configFile && decodersFile) {
                 const configs = require(join(protocolPath, configFile))
-                    .default as Config[];
+                    .default as Configs;
                 configs.forEach((config) => {
                     this.configs.push(config);
                 });
