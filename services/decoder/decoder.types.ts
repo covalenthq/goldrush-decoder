@@ -61,10 +61,23 @@ export type DecodingFunction = (
     covalent_client: CovalentClient
 ) => Promise<EventType>;
 
-export type Decoders = {
-    [network: string]: {
-        [address: string]: {
-            [topic0_hash: string]: DecodingFunction;
-        };
-    };
-};
+export type DecoderConfig =
+    | {
+          [network in Chain]: {
+              [protocol_name: string]: {
+                  is_factory: boolean;
+                  address: string;
+              };
+          };
+      }
+    | Record<string, never>;
+
+export type Decoders =
+    | {
+          [network in Chain]: {
+              [address: string]: {
+                  [topic0_hash: string]: DecodingFunction;
+              };
+          };
+      }
+    | Record<string, never>;

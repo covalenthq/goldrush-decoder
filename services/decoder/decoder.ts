@@ -10,11 +10,12 @@ import {
     type DecodingFunction,
     type Decoders,
     type EventType,
+    type DecoderConfig,
 } from "./decoder.types";
 import { encodeEventTopics, type Abi } from "viem";
 
 export class Decoder {
-    private static configs: Configs = [];
+    private static configs: DecoderConfig = {};
     private static decoders: Decoders = {};
 
     public static initDecoder = () => {
@@ -38,12 +39,25 @@ export class Decoder {
             if (configFile && decodersFile) {
                 const configs = require(join(protocolPath, configFile))
                     .default as Configs;
-                configs.forEach((config) => {
-                    this.configs.push(config);
-                });
+                configs.forEach(
+                    ({ address, is_factory, network, protocol_name }) => {
+                        this.configs[network] ??= {};
+                        this.configs[network][protocol_name] = {
+                            address: address,
+                            is_factory: is_factory,
+                        };
+                    }
+                );
                 require(join(protocolPath, decodersFile));
             }
         }
+
+        const configsCount = Object.values(this.configs).reduce(
+            (acc, network) => {
+                return acc + Object.keys(network).length;
+            },
+            0
+        );
 
         const decodersCount = Object.values(this.decoders).reduce(
             (networkCount, network) => {
@@ -57,7 +71,7 @@ export class Decoder {
             0
         );
 
-        console.info(`Created ${this.configs.length} configs successfully!`);
+        console.info(`Created ${configsCount} configs successfully!`);
         console.info(`Created ${decodersCount} decoders successfully!`);
     };
 
@@ -72,17 +86,22 @@ export class Decoder {
             abi: abi,
             eventName: event_name,
         });
-        const config = this.configs.find(
-            ({ network, protocol_name }) =>
-                networks.includes(network) && protocol_name === protocol
-        );
-        if (!config) {
-            throw Error(`config for ${protocol} does not exist`);
-        }
-        this.decoders[config.network] ??= {};
-        this.decoders[config.network][config.address] ??= {};
-        this.decoders[config.network][config.address][topic0] =
-            decoding_function;
+        networks.forEach((network) => {
+            const configExists = this.configs[network]?.[protocol]
+                ? true
+                : false;
+            if (!configExists) {
+                throw Error(
+                    `config for ${protocol} does not exist on the network ${network}`
+                );
+            }
+            this.decoders[network] ??= {};
+            this.decoders[network][this.configs[network][protocol].address] ??=
+                {};
+            this.decoders[network][this.configs[network][protocol].address][
+                topic0
+            ] = decoding_function;
+        });
     };
 
     public static decode = async (
