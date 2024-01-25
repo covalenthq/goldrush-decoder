@@ -14,7 +14,7 @@ import { calculatePrettyBalance } from "@covalenthq/client-sdk";
 
 Decoder.on(
     "paraswap-v5:SwappedV3",
-    ["eth-mainnet"],
+    ["eth-mainnet", "matic-mainnet"],
     SimpleSwapABI as Abi,
     async (log, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log;
@@ -39,8 +39,6 @@ Decoder.on(
                 expectedAmount: bigint;
             };
         };
-
-        console.log(decoded);
 
         const [{ data: srcToken }, { data: destToken }] = await Promise.all(
             [decoded.srcToken, decoded.destToken].map((address) => {
