@@ -9,17 +9,21 @@ import {
     type Configs,
     type DecodingFunction,
     type Decoders,
+    type DecodingFunctions,
     type EventType,
+    type DecoderConfig,
 } from "./decoder.types";
 import { encodeEventTopics, type Abi } from "viem";
 
 export class Decoder {
-    private static configs: Configs = [];
+    private static configs: DecoderConfig = {};
     private static decoders: Decoders = {};
+    private static decoding_functions: DecodingFunctions = [];
 
     public static initDecoder = () => {
         const directoryPath: string = join(__dirname, "/protocols");
         const protocols = readdirSync(directoryPath);
+        let protocolsCount: number = 0;
         for (const protocol of protocols) {
             const protocolPath = join(directoryPath, protocol);
             const files = readdirSync(protocolPath);
@@ -36,29 +40,39 @@ export class Decoder {
                 }
             });
             if (configFile && decodersFile) {
+                protocolsCount++;
                 const configs = require(join(protocolPath, configFile))
                     .default as Configs;
-                configs.forEach((config) => {
-                    this.configs.push(config);
-                });
+                configs.forEach(
+                    ({ address, is_factory, network, protocol_name }) => {
+                        this.configs[network] ??= {};
+                        this.configs[network][protocol_name] ??= {};
+                        this.configs[network][protocol_name][address] = {
+                            is_factory: is_factory,
+                        };
+                    }
+                );
                 require(join(protocolPath, decodersFile));
             }
         }
 
-        const decodersCount = Object.values(this.decoders).reduce(
+        const configsCount = Object.values(this.configs).reduce(
             (networkCount, network) => {
                 return (
                     networkCount +
-                    Object.values(network).reduce((addressCount, address) => {
-                        return addressCount + Object.values(address).length;
+                    Object.values(network).reduce((addressCount, protocol) => {
+                        return addressCount + Object.keys(protocol).length;
                     }, 0)
                 );
             },
             0
         );
 
-        console.info(`Created ${this.configs.length} configs successfully!`);
-        console.info(`Created ${decodersCount} decoders successfully!`);
+        const decodersCount = Object.keys(this.decoding_functions).length;
+
+        console.info(
+            `Created ${configsCount} configs and ${decodersCount} decoders for ${protocolsCount} protocols!`
+        );
     };
 
     public static on = (
@@ -72,17 +86,25 @@ export class Decoder {
             abi: abi,
             eventName: event_name,
         });
-        const config = this.configs.find(
-            ({ network, protocol_name }) =>
-                networks.includes(network) && protocol_name === protocol
-        );
-        if (!config) {
-            throw Error(`config for ${protocol} does not exist`);
-        }
-        this.decoders[config.network] ??= {};
-        this.decoders[config.network][config.address] ??= {};
-        this.decoders[config.network][config.address][topic0] =
-            decoding_function;
+        this.decoding_functions.push(decoding_function);
+        const decoding_function_index: number =
+            this.decoding_functions.length - 1;
+        networks.forEach((network) => {
+            const configExists = this.configs[network]?.[protocol]
+                ? true
+                : false;
+            if (!configExists) {
+                throw Error(
+                    `config for ${protocol} does not exist on the network ${network}`
+                );
+            }
+            Object.keys(this.configs[network][protocol]).forEach((address) => {
+                this.decoders[network] ??= {};
+                this.decoders[network][address] ??= {};
+                this.decoders[network][address][topic0] =
+                    decoding_function_index;
+            });
+        });
     };
 
     public static decode = async (
@@ -100,12 +122,12 @@ export class Decoder {
                     // !ERROR: add factory_contract_address in the log_event(s)
                     // factory_contract_address,
                 } = log;
-                const decoding_function =
+                const function_index =
                     // !ERROR: add factory_contract_address in the log_event(s)
                     // factory_contract_address ||
                     this.decoders[network][contract_address]?.[topic0_hash];
-                if (decoding_function) {
-                    const event = await decoding_function(
+                if (function_index !== undefined) {
+                    const event = await this.decoding_functions[function_index](
                         log,
                         network,
                         covalentClient

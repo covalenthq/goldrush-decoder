@@ -62,11 +62,7 @@ app.use(
             const port: number = +(process.env.PORT || 8080);
             app.listen(port, () => {
                 console.info(
-                    "Server listening on Port",
-                    port,
-                    "in the",
-                    env,
-                    "environment"
+                    `Server listening on Port ${port} in the ${env} environment`
                 );
             });
         }
