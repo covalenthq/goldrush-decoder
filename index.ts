@@ -57,14 +57,15 @@ app.use(
 (async () => {
     try {
         await Promise.all([Decoder.initDecoder()]);
-        if (process.env.NODE_ENV !== "test") {
+        const env: string = process.env.NODE_ENV || "development";
+        if (env !== "test") {
             const port: number = +(process.env.PORT || 8080);
             app.listen(port, () => {
                 console.info(
                     "Server listening on Port",
                     port,
-                    "in",
-                    process.env.NODE_ENV,
+                    "in the",
+                    env,
                     "environment"
                 );
             });

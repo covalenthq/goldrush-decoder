@@ -7,18 +7,18 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
 1.  **Config**: A `config` is a mapping of a contract address, network, and protocol name to create a unique configuration for every protocol on all the networks across all the chains for all the contracts. A protocol can have a collection of configs in an array. It looks like
 
     ```ts
-    export type Config = {
+    export type Configs = {
         protocol_name: string;
         network: Chain;
         address: string;
         is_factory: boolean;
-    };
+    }[];
     ```
 
-2.  **Decoder**: A `class` that has different methods that enable the decoding logic to run. The various methods are
+2.  **Decoder**: The `Decoder` class has different methods that enable the decoding logic to run. The various methods are
 
     1.  `initDecoder`: Scans the `./services/decoder/protocols` directory for all the protocols, extracts the `configs` from them and creates a mapping to the respective decoding function. It is run when the server starts.
-    2.  `on`: Creates a decoding function for the specified protocol name and event name on the specified networks. Its declaration is:
+    2.  `on`: Creates a decoding function for the specified protocol name on the specified networks. Its declaration is:
 
         ```ts
         Decoder.on(
@@ -33,14 +33,14 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
 
         The method has 3 arguments:
 
-        1. **Event Id**: A case-sensitive string concatenation of the `protocol name` with the `event name` by a `-`.
+        1. **Event Id**: A case-sensitive string concatenation of the `protocol name` with the `event name` by a `:`.
         2. **Networks**: An array of all the networks the defined decoding function will run for
-        3. **Decoding Function**: The actual decoding function, it has 3 arguments:
+        3. **Decoding Function**: The actual decoding function, it has 3 arguments passed to it:
             1. `log`: The raw log event that is being decoded.
             2. `chain_name`: Network to which the log belongs to.
             3. `covalent_client`: The covalent client created with your covalent API key.
 
-    3.  `decode`: The function that chooses which decoding function needs to be called for which log event and collects the returns and sends it. It is run when the API server receives a request.
+    3.  `decode`: The function that chooses which decoding function needs to be called for which log event. It collects all the decoded events for a transaction and returns them in an array of structured data. It is run when the API server receives a request.
 
 ## 1. Running the Development Server
 
@@ -52,7 +52,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
     yarn install
     ```
 
-2. Setup the environmental variables. Refer to [.env.example](https://github.com/gane5h/goldrush-decoder/blob/main/.env.example) for the list of environmental variables and store them in `.env` at the root level of the repository.
+2. Setup the environmental variables. Refer to [.env.example](.env.example) for the list of environmental variables and store them in `.env` at the root level of the repository.
 
 3. Start the server
 
@@ -64,7 +64,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
 
 ## 2. API Endpoints
 
-1.  `/api/v1`: The default endpoint for the v1 of the server. A header of the key `x-covalent-api-key` with the [Covalent API key](https://www.covalenthq.com/platform/apikey/) is **mandatory** for the Decoder to work.
+1.  `/api/v1`: The default endpoint for the v1 of the server. A header of the key `x-covalent-api-key` with the value as the [Covalent API key](https://www.covalenthq.com/platform/apikey/) is **mandatory** for the Decoder to work.
 
     1.  `/tx/decode`: Decodes a transaction of a network.
 
@@ -92,18 +92,15 @@ Follow the following steps to add a Decoding logic for an event from a contract 
     yarn add-config
     ```
 2.  Add a Protocol Name for which you want to add an config. If the protocol does not exist, a new protocol will be created. However, if it does exist, another config will be added for that protocol.
-    ```bash
-    covalent-network
-    ```
 3.  Input data as per the prompts. The data required after the `protocol_name` is
 
     -   `address`: This is the contract address. It can either be a standalone contract or a factory contract.
     -   `is_factory`: If the input address is a factory contract or not.
     -   `network`: The network or chain the added config is for.
 
-    This will modify the configs added to the [Protocols](services/protocols) folder. A config will be added to the `${protocol_name}.configs.ts` and a sample decoder with a dummy event name (`<EVENT NAME>`) will be added to `${protocol_name}.decoders.ts`. Along with this, a test file `${protocol_name}.test.ts` will also be created which needs to be fixed so that the test passes.
+    This will modify the configs added to the [Protocols](services/protocols) folder. A config will be added to `${protocol_name}.configs.ts`. A sample decoder with a dummy event name (`<EVENT NAME>`) will be added to `${protocol_name}.decoders.ts`. Along with this, a test file `${protocol_name}.test.ts` will also be created which needs to be fixed so that the test passes.
 
-4.  In `${protocol_name}.decoders.ts`, a `Decoder.on(...) {...}` will be exposed wherein the decoding logic needs to be implemented. The return type of the decoding function expects:
+4.  In `${protocol_name}.decoders.ts`, a decoding logic declaration (`Decoder.on(...) {...}`) will be exposed wherein the decoding logic needs to be implemented. The return type of the decoding function expects:
 
     ```ts
     export interface EventType {

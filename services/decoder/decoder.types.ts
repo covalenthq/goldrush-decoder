@@ -8,12 +8,12 @@ import {
     type DECODED_EVENT_CATEGORY,
 } from "./decoder.constants";
 
-export type Config = {
+export type Configs = {
     protocol_name: string;
     network: Chain;
     address: string;
     is_factory: boolean;
-};
+}[];
 
 export interface EventType {
     category: DECODED_EVENT_CATEGORY;
