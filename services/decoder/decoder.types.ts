@@ -77,8 +77,10 @@ export type Decoders =
     | {
           [network in Chain]: {
               [address: string]: {
-                  [topic0_hash: string]: DecodingFunction;
+                  [topic0_hash: string]: number;
               };
           };
       }
     | Record<string, never>;
+
+export type DecodingFunctions = DecodingFunction[];

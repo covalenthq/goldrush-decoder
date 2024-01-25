@@ -9,6 +9,7 @@ import {
     type Configs,
     type DecodingFunction,
     type Decoders,
+    type DecodingFunctions,
     type EventType,
     type DecoderConfig,
 } from "./decoder.types";
@@ -17,6 +18,7 @@ import { encodeEventTopics, type Abi } from "viem";
 export class Decoder {
     private static configs: DecoderConfig = {};
     private static decoders: Decoders = {};
+    private static decoding_functions: DecodingFunctions = [];
 
     public static initDecoder = () => {
         const directoryPath: string = join(__dirname, "/protocols");
@@ -64,17 +66,7 @@ export class Decoder {
             0
         );
 
-        const decodersCount = Object.values(this.decoders).reduce(
-            (networkCount, network) => {
-                return (
-                    networkCount +
-                    Object.values(network).reduce((addressCount, address) => {
-                        return addressCount + Object.values(address).length;
-                    }, 0)
-                );
-            },
-            0
-        );
+        const decodersCount = Object.keys(this.decoding_functions).length;
 
         console.info(`Created ${configsCount} configs successfully!`);
         console.info(`Created ${decodersCount} decoders successfully!`);
@@ -91,6 +83,9 @@ export class Decoder {
             abi: abi,
             eventName: event_name,
         });
+        this.decoding_functions.push(decoding_function);
+        const decoding_function_index: number =
+            this.decoding_functions.length - 1;
         networks.forEach((network) => {
             const configExists = this.configs[network]?.[protocol]
                 ? true
@@ -103,7 +98,8 @@ export class Decoder {
             Object.keys(this.configs[network][protocol]).forEach((address) => {
                 this.decoders[network] ??= {};
                 this.decoders[network][address] ??= {};
-                this.decoders[network][address][topic0] = decoding_function;
+                this.decoders[network][address][topic0] =
+                    decoding_function_index;
             });
         });
     };
@@ -123,12 +119,12 @@ export class Decoder {
                     // !ERROR: add factory_contract_address in the log_event(s)
                     // factory_contract_address,
                 } = log;
-                const decoding_function =
+                const function_index =
                     // !ERROR: add factory_contract_address in the log_event(s)
                     // factory_contract_address ||
                     this.decoders[network][contract_address]?.[topic0_hash];
-                if (decoding_function) {
-                    const event = await decoding_function(
+                if (function_index !== undefined) {
+                    const event = await this.decoding_functions[function_index](
                         log,
                         network,
                         covalentClient
