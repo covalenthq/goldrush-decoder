@@ -65,8 +65,9 @@ export type DecoderConfig =
     | {
           [network in Chain]: {
               [protocol_name: string]: {
-                  is_factory: boolean;
-                  address: string;
+                  [address: string]: {
+                      is_factory: boolean;
+                  };
               };
           };
       }

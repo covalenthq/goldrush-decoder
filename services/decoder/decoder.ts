@@ -42,8 +42,8 @@ export class Decoder {
                 configs.forEach(
                     ({ address, is_factory, network, protocol_name }) => {
                         this.configs[network] ??= {};
-                        this.configs[network][protocol_name] = {
-                            address: address,
+                        this.configs[network][protocol_name] ??= {};
+                        this.configs[network][protocol_name][address] = {
                             is_factory: is_factory,
                         };
                     }
@@ -53,8 +53,13 @@ export class Decoder {
         }
 
         const configsCount = Object.values(this.configs).reduce(
-            (acc, network) => {
-                return acc + Object.keys(network).length;
+            (networkCount, network) => {
+                return (
+                    networkCount +
+                    Object.values(network).reduce((addressCount, protocol) => {
+                        return addressCount + Object.keys(protocol).length;
+                    }, 0)
+                );
             },
             0
         );
@@ -95,12 +100,11 @@ export class Decoder {
                     `config for ${protocol} does not exist on the network ${network}`
                 );
             }
-            this.decoders[network] ??= {};
-            this.decoders[network][this.configs[network][protocol].address] ??=
-                {};
-            this.decoders[network][this.configs[network][protocol].address][
-                topic0
-            ] = decoding_function;
+            Object.keys(this.configs[network][protocol]).forEach((address) => {
+                this.decoders[network] ??= {};
+                this.decoders[network][address] ??= {};
+                this.decoders[network][address][topic0] = decoding_function;
+            });
         });
     };
 
