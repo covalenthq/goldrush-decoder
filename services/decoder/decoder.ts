@@ -23,6 +23,7 @@ export class Decoder {
     public static initDecoder = () => {
         const directoryPath: string = join(__dirname, "/protocols");
         const protocols = readdirSync(directoryPath);
+        let protocolsCount: number = 0;
         for (const protocol of protocols) {
             const protocolPath = join(directoryPath, protocol);
             const files = readdirSync(protocolPath);
@@ -39,6 +40,7 @@ export class Decoder {
                 }
             });
             if (configFile && decodersFile) {
+                protocolsCount++;
                 const configs = require(join(protocolPath, configFile))
                     .default as Configs;
                 configs.forEach(
@@ -68,8 +70,9 @@ export class Decoder {
 
         const decodersCount = Object.keys(this.decoding_functions).length;
 
-        console.info(`Created ${configsCount} configs successfully!`);
-        console.info(`Created ${decodersCount} decoders successfully!`);
+        console.info(
+            `Created ${configsCount} configs and ${decodersCount} decoders for ${protocolsCount} protocols!`
+        );
     };
 
     public static on = (
