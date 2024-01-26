@@ -131,7 +131,7 @@ Decoder.on(
         };
 
         for (const { itemType, token, identifier, amount } of decoded.offer) {
-            await parseItem(itemType, token, identifier, amount);
+            await parseItem(itemType, token, identifier, amount, decoded.recipient);
         }
         for (const {
             itemType,
