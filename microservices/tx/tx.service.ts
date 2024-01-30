@@ -5,7 +5,7 @@ import {
     type LogEvent,
 } from "@covalenthq/client-sdk";
 
-export const fetchLogsFromTx = async (
+export const fetchDataFromTx = async (
     network: Chain,
     tx_hash: string,
     covalentApiKey: string
@@ -14,10 +14,29 @@ export const fetchLogsFromTx = async (
     const { data, error_code, error_message } =
         await covalentClient.TransactionService.getTransaction(
             network,
-            tx_hash
+            tx_hash,
+            {
+                noLogs: false,
+                quoteCurrency: "USD",
+                withDex: false,
+                withLending: false,
+                withNftSales: false,
+                withSafe: false,
+            }
         );
     if (data) {
-        return data.items[0];
+        const {
+            log_events,
+            dex_details,
+            nft_sale_details,
+            lending_details,
+            safe_details,
+            ...metadata
+        } = data.items[0];
+        return {
+            log_events: log_events,
+            metadata: metadata,
+        };
     } else {
         throw {
             errorCode: error_code,
