@@ -1,5 +1,10 @@
 import { Decoder } from "../../decoder";
-import { type EventType } from "../../decoder.types";
+import {
+    type EventDetails,
+    type EventNFTs,
+    type EventTokens,
+    type EventType,
+} from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
@@ -52,8 +57,22 @@ Decoder.on(
             };
         };
 
-        const tokens: EventType["tokens"] = [];
-        const nfts: EventType["nfts"] = [];
+        const tokens: EventTokens = [];
+        const nfts: EventNFTs = [];
+        const details: EventDetails = [
+            {
+                title: "Offerer",
+                value: decoded.offerer,
+            },
+            {
+                title: "Recipient",
+                value: decoded.recipient,
+            },
+            {
+                title: "Order Hash",
+                value: decoded.orderHash,
+            },
+        ];
 
         const parseItem = async (
             itemType: ITEM_TYPE,
@@ -77,7 +96,9 @@ Decoder.on(
                             }
                         );
                     tokens.push({
-                        heading: recipient ? `Sent to ${recipient}` : "Offered",
+                        heading: recipient
+                            ? `Sent to ${recipient}`
+                            : `Offered to ${decoded.recipient}`,
                         value: amount.toString(),
                         decimals:
                             data?.[0]?.items?.[0]?.contract_metadata
@@ -102,7 +123,9 @@ Decoder.on(
                             }
                         );
                     nfts.push({
-                        heading: recipient ? `Sent to ${recipient}` : "Offered",
+                        heading: recipient
+                            ? `Sent to ${recipient}`
+                            : `Offered to ${decoded.recipient}`,
                         collection_address: data?.items?.[0]?.contract_address,
                         collection_name:
                             data?.items?.[0]?.nft_data?.external_data?.name ||
@@ -131,7 +154,7 @@ Decoder.on(
         };
 
         for (const { itemType, token, identifier, amount } of decoded.offer) {
-            await parseItem(itemType, token, identifier, amount, decoded.recipient);
+            await parseItem(itemType, token, identifier, amount);
         }
         for (const {
             itemType,
@@ -151,6 +174,7 @@ Decoder.on(
                 logo: log.sender_logo_url as string,
                 name: log.sender_name as string,
             },
+            details: details,
             nfts: nfts,
             tokens: tokens,
         };
