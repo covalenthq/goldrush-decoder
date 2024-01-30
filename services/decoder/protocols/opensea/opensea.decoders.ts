@@ -96,7 +96,9 @@ Decoder.on(
                             }
                         );
                     tokens.push({
-                        heading: recipient ? `Sent to ${recipient}` : "Offered",
+                        heading: recipient
+                            ? `Sent to ${recipient}`
+                            : `Offered to ${decoded.recipient}`,
                         value: amount.toString(),
                         decimals:
                             data?.[0]?.items?.[0]?.contract_metadata
@@ -121,7 +123,9 @@ Decoder.on(
                             }
                         );
                     nfts.push({
-                        heading: recipient ? `Sent to ${recipient}` : "Offered",
+                        heading: recipient
+                            ? `Sent to ${recipient}`
+                            : `Offered to ${decoded.recipient}`,
                         collection_address: data?.items?.[0]?.contract_address,
                         collection_name:
                             data?.items?.[0]?.nft_data?.external_data?.name ||
@@ -160,6 +164,7 @@ Decoder.on(
             recipient,
         } of decoded.consideration) {
             await parseItem(itemType, token, identifier, amount, recipient);
+            console.log(amount);
         }
 
         return {
