@@ -164,7 +164,6 @@ Decoder.on(
             recipient,
         } of decoded.consideration) {
             await parseItem(itemType, token, identifier, amount, recipient);
-            console.log(amount);
         }
 
         return {
