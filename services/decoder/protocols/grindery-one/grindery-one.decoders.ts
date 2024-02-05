@@ -40,10 +40,12 @@ Decoder.on(
                 {
                     title: "From",
                     value: decoded.from,
+                    type: "address",
                 },
                 {
                     title: "To",
                     value: decoded.to,
+                    type: "address",
                 },
                 {
                     title: "Value",
@@ -51,6 +53,7 @@ Decoder.on(
                         decoded.value /
                         BigInt(Math.pow(10, sender_contract_decimals))
                     ).toString(),
+                    type: "text",
                 },
             ],
         };

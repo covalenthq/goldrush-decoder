@@ -18,6 +18,7 @@ export type Configs = {
 export type EventDetails = {
     title: string;
     value: string;
+    type: "address" | "text";
 }[];
 
 export type EventNFTs = {
@@ -39,7 +40,7 @@ export type EventTokens = {
     decimals: number;
     ticker_symbol: string | null;
     ticker_logo: string | null;
-    pretty: string;
+    pretty_quote: string;
 }[];
 
 export interface EventType {

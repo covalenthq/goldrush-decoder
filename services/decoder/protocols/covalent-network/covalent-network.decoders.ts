@@ -43,16 +43,19 @@ Decoder.on(
                 {
                     title: "Specimen Hash",
                     value: decoded.specimenHash,
+                    type: "text",
                 },
                 {
                     title: "Storage URL",
                     value: decoded.storageURL,
+                    type: "text",
                 },
                 {
                     title: "Submitted Stake",
                     value: (
                         decoded.submittedStake / BigInt(Math.pow(10, 18))
                     ).toString(),
+                    type: "text",
                 },
             ],
         };
