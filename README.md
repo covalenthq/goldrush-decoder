@@ -137,5 +137,3 @@ Follow the following steps to add a Decoding logic for an event from a contract 
         }[];
     }
     ```
-
-
