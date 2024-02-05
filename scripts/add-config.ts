@@ -1,4 +1,4 @@
-import { type Chain } from "@covalenthq/client-sdk";
+import { Chains, type Chain } from "@covalenthq/client-sdk";
 import { prompt } from "enquirer";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
@@ -39,7 +39,10 @@ const customLog = (message: string, type: "success" | "info") => {
 const nameSchema = yup.string().trim().required("name is required");
 const addressSchema = yup.string().trim().required("address is required");
 const isFactorySchema = yup.boolean().required("is_factory is required");
-const networkSchema = yup.string().trim().required("network is required");
+const networkSchema = yup
+    .mixed()
+    .oneOf(Object.values(Chains))
+    .required("network is required");
 (async () => {
     const { protocol_name } = (await prompt({
         type: "input",
