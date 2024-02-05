@@ -6,9 +6,9 @@ import express, {
 } from "express";
 import cors from "cors";
 import { config as dotenvConfig } from "dotenv";
-import { Decoder } from "./services";
-import { txRouter } from "./microservices/tx/tx.routes";
-import { TimestampParser } from "./utils/functions";
+import { Decoder } from "../services";
+import { txRouter } from "../microservices/tx/tx.routes";
+import { TimestampParser } from "../utils/functions";
 
 dotenvConfig();
 
@@ -21,7 +21,7 @@ app.get("/api/v1/healthcheck", (_req: Request, res: Response) => {
     res.json({
         success: true,
         timestamp: now.toISOString(),
-        time: TimestampParser(now, "descriptive"),
+        // time: TimestampParser(now, "descriptive"),
         uptime: process.uptime(),
     });
 });
