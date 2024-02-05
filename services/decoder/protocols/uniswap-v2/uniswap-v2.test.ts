@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../../../..";
+import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
 
 describe("source-zorb", () => {
