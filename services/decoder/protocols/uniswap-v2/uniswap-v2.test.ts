@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
 
-describe("source-zorb", () => {
+describe("uniswap-v2", () => {
     test("eth-mainnet:Swap", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")

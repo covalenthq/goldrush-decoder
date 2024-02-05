@@ -27,5 +27,6 @@ describe("opensea", () => {
         if (event.tokens) {
             expect(event.tokens?.length).toBeGreaterThan(0);
         }
+        expect(event.details?.length).toEqual(3);
     });
 });
