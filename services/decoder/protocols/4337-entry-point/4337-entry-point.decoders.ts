@@ -47,6 +47,7 @@ Decoder.on(
                         decoded.actualGasCost /
                         BigInt(Math.pow(10, sender_contract_decimals))
                     ).toString(),
+                    type: "text",
                 },
                 {
                     title: "Gas Used",
@@ -54,18 +55,22 @@ Decoder.on(
                         decoded.actualGasUsed /
                         BigInt(Math.pow(10, sender_contract_decimals))
                     ).toString(),
+                    type: "text",
                 },
                 {
                     title: "Paymaster",
                     value: decoded.paymaster,
+                    type: "address",
                 },
                 {
                     title: "Sender",
                     value: decoded.sender,
+                    type: "address",
                 },
                 {
                     title: "User Operation Hash",
                     value: decoded.userOpHash,
+                    type: "text",
                 },
             ],
         };

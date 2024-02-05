@@ -7,6 +7,12 @@ const configs: Configs = [
         is_factory: false,
         network: "eth-mainnet",
     },
+    {
+        protocol_name: "opensea",
+        address: "0x00000000006c3852cbef3e08e8df289169ede581",
+        is_factory: false,
+        network: "matic-mainnet",
+    },
 ];
 
 export default configs;

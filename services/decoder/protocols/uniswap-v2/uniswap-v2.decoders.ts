@@ -1,4 +1,4 @@
-import { calculatePrettyBalance, type Token } from "@covalenthq/client-sdk";
+import { prettifyCurrency, type Token } from "@covalenthq/client-sdk";
 import { type Abi, decodeEventLog } from "viem";
 import { Decoder } from "../../decoder";
 import { TimestampParser } from "../../../../utils/functions";
@@ -113,7 +113,12 @@ Decoder.on(
                     ticker_symbol: inputToken?.contract_ticker_symbol ?? null,
                     value: inputValue.toString(),
                     decimals: inputDecimals,
-                    pretty: calculatePrettyBalance(inputValue, inputDecimals),
+                    pretty_quote: prettifyCurrency(
+                        inputToken?.quote_rate ??
+                            0 *
+                                (Number(inputValue) /
+                                    Math.pow(10, inputDecimals))
+                    ),
                     heading: "Input",
                 },
                 {
@@ -121,7 +126,12 @@ Decoder.on(
                     ticker_symbol: outputToken?.contract_ticker_symbol ?? null,
                     value: outputValue.toString(),
                     decimals: outputDecimals,
-                    pretty: calculatePrettyBalance(outputValue, outputDecimals),
+                    pretty_quote: prettifyCurrency(
+                        outputToken?.quote_rate ??
+                            0 *
+                                (Number(outputValue) /
+                                    Math.pow(10, outputDecimals))
+                    ),
                     heading: "Output",
                 },
             ],
@@ -188,9 +198,14 @@ Decoder.on(
                     ticker_symbol: token0?.contract_ticker_symbol ?? null,
                     value: value0.toString(),
                     decimals: +(token0?.contract_decimals ?? 18),
-                    pretty: calculatePrettyBalance(
-                        value0,
-                        +(token0?.contract_decimals ?? 18)
+                    pretty_quote: prettifyCurrency(
+                        token0?.quote_rate ??
+                            0 *
+                                (Number(value0) /
+                                    Math.pow(
+                                        10,
+                                        +(token0?.contract_decimals ?? 18)
+                                    ))
                     ),
                     heading: "Input",
                 },
@@ -199,9 +214,14 @@ Decoder.on(
                     ticker_symbol: token1?.contract_ticker_symbol ?? null,
                     value: value1.toString(),
                     decimals: +(token1?.contract_decimals ?? 18),
-                    pretty: calculatePrettyBalance(
-                        value1,
-                        +(token1?.contract_decimals ?? 18)
+                    pretty_quote: prettifyCurrency(
+                        token1?.quote_rate ??
+                            0 *
+                                (Number(value1) /
+                                    Math.pow(
+                                        10,
+                                        +(token1?.contract_decimals ?? 18)
+                                    ))
                     ),
                     heading: "Output",
                 },

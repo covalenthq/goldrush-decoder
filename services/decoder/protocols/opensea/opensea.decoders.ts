@@ -12,10 +12,11 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import Seaport from "./abis/seaport-1.1.abi.json";
 import { TimestampParser } from "../../../../utils/functions";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 Decoder.on(
     "opensea:OrderFulfilled",
-    ["eth-mainnet"],
+    ["eth-mainnet", "matic-mainnet"],
     Seaport as Abi,
     async (log, chain_name, covalent_client): Promise<EventType> => {
         const { block_signed_at, raw_log_data, raw_log_topics } = log;
@@ -63,14 +64,17 @@ Decoder.on(
             {
                 title: "Offerer",
                 value: decoded.offerer,
+                type: "address",
             },
             {
                 title: "Recipient",
                 value: decoded.recipient,
+                type: "address",
             },
             {
                 title: "Order Hash",
                 value: decoded.orderHash,
+                type: "address",
             },
         ];
 
@@ -103,7 +107,15 @@ Decoder.on(
                         decimals:
                             data?.[0]?.items?.[0]?.contract_metadata
                                 ?.contract_decimals ?? 18,
-                        pretty: data?.[0]?.items?.[0]?.pretty_price,
+                        pretty_quote: prettifyCurrency(
+                            data?.[0]?.items?.[0]?.price *
+                                (Number(amount) /
+                                    Math.pow(
+                                        10,
+                                        data?.[0]?.items?.[0]?.contract_metadata
+                                            ?.contract_decimals ?? 18
+                                    ))
+                        ),
                         ticker_symbol:
                             data?.[0]?.items?.[0]?.contract_metadata
                                 ?.contract_ticker_symbol,
@@ -172,7 +184,7 @@ Decoder.on(
             name: "Basic Order Fulfilled",
             protocol: {
                 logo: log.sender_logo_url as string,
-                name: log.sender_name as string,
+                name: "Opensea",
             },
             details: details,
             nfts: nfts,
