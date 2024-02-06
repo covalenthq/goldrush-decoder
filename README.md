@@ -1,7 +1,5 @@
 <div align="center">
-  <a href="https://www.covalenthq.com/products/goldrush/" target="_blank">
     <img alt="GoldRush Kit Logo" src="assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
-  </a>
 </div>
 
 <p align="center">
