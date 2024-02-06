@@ -15,7 +15,7 @@ import {
 } from "./decoder.types";
 import { encodeEventTopics, type Abi } from "viem";
 
-export class Decoder {
+export class GoldRushDecoder {
     private static configs: DecoderConfig = {};
     private static decoders: Decoders = {};
     private static decoding_functions: DecodingFunctions = [];

@@ -6,7 +6,7 @@ import express, {
 } from "express";
 import cors from "cors";
 import { config as dotenvConfig } from "dotenv";
-import { Decoder } from "../services";
+import { GoldRushDecoder } from "../services";
 import { txRouter } from "../microservices/tx/tx.routes";
 import { TimestampParser } from "../utils/functions";
 
@@ -56,7 +56,7 @@ app.use(
 
 (async () => {
     try {
-        await Promise.all([Decoder.initDecoder()]);
+        await Promise.all([GoldRushDecoder.initDecoder()]);
         const env: string = process.env.NODE_ENV || "development";
         if (env !== "test") {
             const port: number = +(process.env.PORT || 8080);

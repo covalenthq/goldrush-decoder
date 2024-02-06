@@ -1,4 +1,4 @@
-import { Decoder } from "../../services";
+import { GoldRushDecoder } from "../../services";
 import {
     CovalentClient,
     type Chain,
@@ -50,7 +50,7 @@ export const fetchEventsFromLogs = async (
     logs: LogEvent[],
     covalentApiKey: string
 ) => {
-    const events = await Decoder.decode(
+    const events = await GoldRushDecoder.decode(
         network,
         logs.reverse(),
         covalentApiKey

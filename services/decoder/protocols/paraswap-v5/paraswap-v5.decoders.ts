@@ -1,4 +1,4 @@
-import { Decoder } from "../../decoder";
+import { GoldRushDecoder } from "../../decoder";
 import {
     type EventTokens,
     type EventDetails,
@@ -15,7 +15,7 @@ import {
     prettifyCurrency,
 } from "@covalenthq/client-sdk";
 
-Decoder.on(
+GoldRushDecoder.on(
     "paraswap-v5:SwappedV3",
     ["eth-mainnet", "matic-mainnet"],
     SimpleSwapABI as Abi,

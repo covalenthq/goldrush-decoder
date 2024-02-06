@@ -1,4 +1,4 @@
-import { Decoder } from "../../decoder";
+import { GoldRushDecoder } from "../../decoder";
 import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
@@ -7,7 +7,7 @@ import {
 import SourceZorbABI from "./abis/source-zorb.abi.json";
 import { type Abi, decodeEventLog } from "viem";
 
-Decoder.on(
+GoldRushDecoder.on(
     "source-zorb:Transfer",
     ["zora-mainnet"],
     SourceZorbABI as Abi,

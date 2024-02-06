@@ -1,4 +1,4 @@
-import { Decoder } from "../../decoder";
+import { GoldRushDecoder } from "../../decoder";
 import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
@@ -7,7 +7,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/grindery-one.abi.json";
 
-Decoder.on(
+GoldRushDecoder.on(
     "grindery-one:Transfer",
     ["matic-mainnet"],
     ABI as Abi,
