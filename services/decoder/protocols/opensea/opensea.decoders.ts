@@ -1,4 +1,4 @@
-import { Decoder } from "../../decoder";
+import { GoldRushDecoder } from "../../decoder";
 import {
     type EventDetails,
     type EventNFTs,
@@ -14,7 +14,7 @@ import Seaport from "./abis/seaport-1.1.abi.json";
 import { TimestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
-Decoder.on(
+GoldRushDecoder.on(
     "opensea:OrderFulfilled",
     ["eth-mainnet", "matic-mainnet"],
     Seaport as Abi,

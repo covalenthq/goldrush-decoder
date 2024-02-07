@@ -1,4 +1,4 @@
-import { Decoder } from "../../decoder";
+import { GoldRushDecoder } from "../../decoder";
 import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
@@ -7,7 +7,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import TransparentUpgradeableProxyABI from "./abis/transparent-upgradeable-proxy.abi.json";
 
-Decoder.on(
+GoldRushDecoder.on(
     "covalent-network:BlockSpecimenProductionProofSubmitted",
     ["moonbeam-mainnet"],
     TransparentUpgradeableProxyABI as Abi,

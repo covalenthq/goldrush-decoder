@@ -1,4 +1,20 @@
-# Goldrush Decoder
+<div align="center">
+    <img alt="GoldRush Kit Logo" src="assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
+</div>
+
+<p align="center">
+  <img src="https://img.shields.io/github/license/covalenthq/goldrush-decoder" alt="MIT">
+</p>
+
+<h1 align="center">
+Decode unstructured, raw event logs into structured data with a simple API.
+</h1>
+
+<div align="center">
+Open-source. Public Good. 200+ Chains.
+</div>
+
+<br>
 
 This repository contains the logic for decoding a `raw_log_event` of a transaction to meaningful, human-readable, structured data.
 
@@ -15,13 +31,13 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
     }[];
     ```
 
-2.  **Decoder**: The `Decoder` class has different methods that enable the decoding logic to run. The various methods are
+2.  **GoldRushDecoder**: The `GoldRushDecoder` class has different methods that enable the decoding logic to run. The various methods are
 
     1.  `initDecoder`: Scans the `./services/decoder/protocols` directory for all the protocols, extracts the `configs` from them and creates a mapping to the respective decoding function. It is run when the server starts.
     2.  `on`: Creates a decoding function for the specified protocol name on the specified networks. Its declaration is:
 
         ```ts
-        Decoder.on(
+        GoldRushDecoder.on(
             "<protocol-name>:<EventName>",
             ["<network_1>", "<network_2>"],
             ABI as Abi,
@@ -42,7 +58,7 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
 
     3.  `decode`: The function that chooses which decoding function needs to be called for which log event. It collects all the decoded events for a transaction and returns them in an array of structured data. It is run when the API server receives a request.
 
-## 1. Running the Development Server
+### 1. Running the Development Server
 
 Follow the following steps to start the development server of the **GoldRush Decoder**.
 
@@ -62,7 +78,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
 
     The development server will start on the URL - `http://localhost:8080` (port number may change based on the `.env`, 8080 is default).
 
-## 2. API Endpoints
+### 2. API Endpoints
 
 1.  `/api/v1`: The default endpoint for the v1 of the server. A header of the key `x-covalent-api-key` with the value as the [Covalent API key](https://www.covalenthq.com/platform/apikey/) is **mandatory** for the Decoder to work.
 
@@ -83,7 +99,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
         }'
         ```
 
-## 3. Adding a Decoder
+### 3. Adding a Decoder
 
 Follow the following steps to add a Decoding logic for an event from a contract of a chain.
 
@@ -138,4 +154,15 @@ Follow the following steps to add a Decoding logic for an event from a contract 
     }
     ```
 
+## Contributing
 
+Contributions, issues and feature requests are welcome!
+Feel free to check [issues](https://github.com/covalenthq/goldrush-decoder/issues) page.
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## License
+
+This project is [MIT](LICENSE) licensed.

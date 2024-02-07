@@ -1,1 +1,1 @@
-export { Decoder } from "./decoder/decoder";
+export { GoldRushDecoder } from "./decoder/decoder";

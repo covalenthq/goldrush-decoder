@@ -1,6 +1,6 @@
 import { prettifyCurrency, type Token } from "@covalenthq/client-sdk";
 import { type Abi, decodeEventLog } from "viem";
-import { Decoder } from "../../decoder";
+import { GoldRushDecoder } from "../../decoder";
 import { TimestampParser } from "../../../../utils/functions";
 import { type EventType } from "../../decoder.types";
 import PairABI from "./abis/uniswap-v2.pair.abi.json";
@@ -9,7 +9,7 @@ import {
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
 
-Decoder.on(
+GoldRushDecoder.on(
     "uniswap-v2:Swap",
     ["eth-mainnet"],
     PairABI as Abi,
@@ -139,7 +139,7 @@ Decoder.on(
     }
 );
 
-Decoder.on(
+GoldRushDecoder.on(
     "uniswap-v2:Mint",
     ["eth-mainnet"],
     PairABI as Abi,
