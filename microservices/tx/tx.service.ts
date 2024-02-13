@@ -6,7 +6,7 @@ import {
 } from "@covalenthq/client-sdk";
 import { type TransactionMetadata } from "../../services/decoder/decoder.types";
 
-export const fetchTxDataFromHash = async (
+export const fetchDataFromTx = async (
     network: Chain,
     tx_hash: string,
     covalentApiKey: string
