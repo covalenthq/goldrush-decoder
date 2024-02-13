@@ -3,7 +3,7 @@ import { join } from "path";
 import {
     CovalentClient,
     type Chain,
-    type LogEvent,
+    type Transaction,
 } from "@covalenthq/client-sdk";
 import {
     type Configs,
@@ -12,7 +12,6 @@ import {
     type DecodingFunctions,
     type EventType,
     type DecoderConfig,
-    type TransactionMetadata,
 } from "./decoder.types";
 import { encodeEventTopics, type Abi } from "viem";
 
@@ -110,13 +109,13 @@ export class GoldRushDecoder {
 
     public static decode = async (
         network: Chain,
-        logs: LogEvent[],
-        metadata: TransactionMetadata,
+        tx: Transaction,
         covalent_api_key: string
     ) => {
         try {
             const covalent_client = new CovalentClient(covalent_api_key);
             const events: EventType[] = [];
+            const logs = tx.log_events.reverse();
             for (const log of logs) {
                 const {
                     raw_log_topics: [topic0_hash],
@@ -131,9 +130,9 @@ export class GoldRushDecoder {
                 if (function_index !== undefined) {
                     const event = await this.decoding_functions[function_index](
                         log,
+                        tx,
                         network,
-                        covalent_client,
-                        metadata
+                        covalent_client
                     );
                     events.push(event);
                 }

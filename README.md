@@ -41,7 +41,7 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
             "<protocol-name>:<EventName>",
             ["<network_1>", "<network_2>"],
             ABI as Abi,
-            async (log, chain_name, covalent_client, tx_metadata): Promise<EventType> => {
+            async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
                 <!-- decoding logic -->
             }
         );
@@ -52,10 +52,10 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
         1. **Event Id**: A case-sensitive string concatenation of the `protocol name` with the `event name` by a `:`.
         2. **Networks**: An array of all the networks the defined decoding function will run for
         3. **Decoding Function**: The actual decoding function, it has 3 arguments passed to it:
-            1. `log`: The raw log event that is being decoded.
-            2. `chain_name`: Network to which the log belongs to.
-            3. `covalent_client`: The covalent client created with your covalent API key.
-            4. `tx_metadata`: The transaction object that generated this log.
+            1. `log_event`: The raw log event that is being decoded.
+            2. `tx`: The transaction object that generated this log.
+            3. `chain_name`: Network to which the log belongs to.
+            4. `covalent_client`: The covalent client created with your covalent API key.
 
     3.  `decode`: The function that chooses which decoding function needs to be called for which log event. It collects all the decoded events for a transaction and returns them in an array of structured data. It is run when the API server receives a request.
 

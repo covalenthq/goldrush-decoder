@@ -57,20 +57,11 @@ export interface EventType {
     details?: EventDetails;
 }
 
-export type TransactionMetadata = Omit<
-    Transaction,
-    | "log_events"
-    | "dex_details"
-    | "nft_sale_details"
-    | "lending_details"
-    | "safe_details"
->;
-
 export type DecodingFunction = (
-    log: LogEvent,
+    log_event: LogEvent,
+    tx: Transaction,
     chain_name: Chain,
-    covalent_client: CovalentClient,
-    tx: TransactionMetadata
+    covalent_client: CovalentClient
 ) => Promise<EventType>;
 
 export type DecoderConfig =

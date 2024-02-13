@@ -3,17 +3,14 @@ import {
     CovalentClient,
     type Chain,
     type LogEvent,
+    type Transaction,
 } from "@covalenthq/client-sdk";
-import { type TransactionMetadata } from "../../services/decoder/decoder.types";
 
-export const fetchDataFromTx = async (
+export const fetchTxFromHash = async (
     network: Chain,
     tx_hash: string,
     covalentApiKey: string
-): Promise<{
-    log_events: LogEvent[];
-    metadata: TransactionMetadata;
-}> => {
+): Promise<Transaction> => {
     const covalentClient = new CovalentClient(covalentApiKey);
     const { data, error_code, error_message } =
         await covalentClient.TransactionService.getTransaction(
@@ -30,18 +27,7 @@ export const fetchDataFromTx = async (
         );
     const tx = data?.items?.[0];
     if (tx) {
-        const {
-            log_events,
-            dex_details,
-            nft_sale_details,
-            lending_details,
-            safe_details,
-            ...metadata
-        } = tx;
-        return {
-            log_events: log_events,
-            metadata: metadata,
-        };
+        return tx;
     } else {
         throw {
             errorCode: error_code,
@@ -52,15 +38,9 @@ export const fetchDataFromTx = async (
 
 export const fetchEventsFromLogs = async (
     network: Chain,
-    logs: LogEvent[],
-    metadata: TransactionMetadata,
+    tx: Transaction,
     covalentApiKey: string
 ) => {
-    const events = await GoldRushDecoder.decode(
-        network,
-        logs.reverse(),
-        metadata,
-        covalentApiKey
-    );
+    const events = await GoldRushDecoder.decode(network, tx, covalentApiKey);
     return events;
 };
