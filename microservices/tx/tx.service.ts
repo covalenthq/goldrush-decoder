@@ -36,7 +36,7 @@ export const fetchTxFromHash = async (
     }
 };
 
-export const fetchEventsFromLogs = async (
+export const decodeLogsfromTx = async (
     network: Chain,
     tx: Transaction,
     covalentApiKey: string
