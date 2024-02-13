@@ -2,10 +2,10 @@ import { GoldRushDecoder } from "../../services";
 import {
     CovalentClient,
     type Chain,
-    type LogEvent,
+    type Transaction,
 } from "@covalenthq/client-sdk";
 
-export const fetchDataFromTx = async (
+export const fetchTxDataFromHash = async (
     network: Chain,
     tx_hash: string,
     covalentApiKey: string
@@ -24,19 +24,9 @@ export const fetchDataFromTx = async (
                 withSafe: false,
             }
         );
-    if (data) {
-        const {
-            log_events,
-            dex_details,
-            nft_sale_details,
-            lending_details,
-            safe_details,
-            ...metadata
-        } = data.items[0];
-        return {
-            log_events: log_events,
-            metadata: metadata,
-        };
+    const tx = data?.items?.[0];
+    if (tx) {
+        return tx;
     } else {
         throw {
             errorCode: error_code,
@@ -45,15 +35,11 @@ export const fetchDataFromTx = async (
     }
 };
 
-export const fetchEventsFromLogs = async (
+export const fetchEventsFromTx = async (
     network: Chain,
-    logs: LogEvent[],
+    tx: Transaction,
     covalentApiKey: string
 ) => {
-    const events = await GoldRushDecoder.decode(
-        network,
-        logs.reverse(),
-        covalentApiKey
-    );
+    const events = await GoldRushDecoder.decode(network, tx, covalentApiKey);
     return events;
 };

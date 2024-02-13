@@ -11,7 +11,7 @@ GoldRushDecoder.on(
     "covalent-network:BlockSpecimenProductionProofSubmitted",
     ["moonbeam-mainnet"],
     TransparentUpgradeableProxyABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
+    async (log, chain_name, covalent_client, tx): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log;
 
         const { args: decoded } = decodeEventLog({

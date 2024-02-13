@@ -11,7 +11,7 @@ GoldRushDecoder.on(
     "4337-entry-point:UserOperationEvent",
     ["matic-mainnet"],
     ABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
+    async (log, chain_name, covalent_client, tx): Promise<EventType> => {
         const { raw_log_data, raw_log_topics, sender_contract_decimals } = log;
 
         const { args: decoded } = decodeEventLog({

@@ -13,7 +13,7 @@ GoldRushDecoder.on(
     "uniswap-v2:Swap",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
+    async (log, chain_name, covalent_client, tx): Promise<EventType> => {
         const {
             sender_address: exchange_contract,
             block_signed_at,
@@ -143,7 +143,7 @@ GoldRushDecoder.on(
     "uniswap-v2:Mint",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
+    async (log, chain_name, covalent_client, tx): Promise<EventType> => {
         const {
             sender_address: exchange_contract,
             raw_log_data,
