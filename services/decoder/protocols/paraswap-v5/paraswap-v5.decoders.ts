@@ -19,7 +19,12 @@ GoldRushDecoder.on(
     "paraswap-v5:SwappedV3",
     ["eth-mainnet", "matic-mainnet"],
     SimpleSwapABI as Abi,
-    async (log, chain_name, covalent_client, tx): Promise<EventType> => {
+    async (
+        log,
+        chain_name,
+        covalent_client,
+        tx_metadata
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log;
 
         const { args: decoded } = decodeEventLog({

@@ -2,8 +2,9 @@ import { GoldRushDecoder } from "../../services";
 import {
     CovalentClient,
     type Chain,
-    type Transaction,
+    type LogEvent,
 } from "@covalenthq/client-sdk";
+import { type TransactionMetadata } from "../../services/decoder/decoder.types";
 
 export const fetchTxDataFromHash = async (
     network: Chain,
@@ -35,11 +36,17 @@ export const fetchTxDataFromHash = async (
     }
 };
 
-export const fetchEventsFromTx = async (
+export const fetchEventsFromLogs = async (
     network: Chain,
-    tx: Transaction,
+    logs: LogEvent[],
+    metadata: TransactionMetadata,
     covalentApiKey: string
 ) => {
-    const events = await GoldRushDecoder.decode(network, tx, covalentApiKey);
+    const events = await GoldRushDecoder.decode(
+        network,
+        logs.reverse(),
+        metadata,
+        covalentApiKey
+    );
     return events;
 };

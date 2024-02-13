@@ -18,7 +18,12 @@ GoldRushDecoder.on(
     "opensea:OrderFulfilled",
     ["eth-mainnet", "matic-mainnet"],
     Seaport as Abi,
-    async (log, chain_name, covalent_client, tx): Promise<EventType> => {
+    async (
+        log,
+        chain_name,
+        covalent_client,
+        tx_metadata
+    ): Promise<EventType> => {
         const { block_signed_at, raw_log_data, raw_log_topics } = log;
 
         enum ITEM_TYPE {

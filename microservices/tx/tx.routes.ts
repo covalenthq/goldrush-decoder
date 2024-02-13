@@ -11,7 +11,7 @@ import {
     decodeTXHeadersSchema,
     type DecodeTXHeaders,
 } from "./tx.schema";
-import { fetchEventsFromTx, fetchTxDataFromHash } from "./tx.service";
+import { fetchEventsFromLogs, fetchTxDataFromHash } from "./tx.service";
 import { type Chain } from "@covalenthq/client-sdk";
 
 export const txRouter = Router();
@@ -31,19 +31,20 @@ const handleDecode = async (
             tx_hash,
             covalentApiKey
         );
-        const events = await fetchEventsFromTx(
-            network as Chain,
-            tx,
-            covalentApiKey
-        );
         const {
-            log_events,
             dex_details,
             nft_sale_details,
             lending_details,
             safe_details,
+            log_events,
             ...metadata
         } = tx;
+        const events = await fetchEventsFromLogs(
+            network as Chain,
+            log_events,
+            metadata,
+            covalentApiKey
+        );
         const parsedMetadata = JSON.parse(
             JSON.stringify(metadata, (_key, value) => {
                 return typeof value === "bigint" ? value.toString() : value;
