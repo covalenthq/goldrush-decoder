@@ -18,8 +18,8 @@ GoldRushDecoder.on(
     "opensea:OrderFulfilled",
     ["eth-mainnet", "matic-mainnet"],
     Seaport as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
-        const { block_signed_at, raw_log_data, raw_log_topics } = log;
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
         enum ITEM_TYPE {
             "NATIVE" = 0,
@@ -183,7 +183,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Basic Order Fulfilled",
             protocol: {
-                logo: log.sender_logo_url as string,
+                logo: log_event.sender_logo_url as string,
                 name: "Opensea",
             },
             details: details,

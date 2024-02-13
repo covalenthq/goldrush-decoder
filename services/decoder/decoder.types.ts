@@ -2,6 +2,7 @@ import {
     type CovalentClient,
     type Chain,
     type LogEvent,
+    type Transaction,
 } from "@covalenthq/client-sdk";
 import {
     type DECODED_ACTION,
@@ -57,7 +58,8 @@ export interface EventType {
 }
 
 export type DecodingFunction = (
-    log: LogEvent,
+    log_event: LogEvent,
+    tx: Transaction,
     chain_name: Chain,
     covalent_client: CovalentClient
 ) => Promise<EventType>;

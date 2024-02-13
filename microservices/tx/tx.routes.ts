@@ -11,7 +11,7 @@ import {
     decodeTXHeadersSchema,
     type DecodeTXHeaders,
 } from "./tx.schema";
-import { fetchEventsFromLogs, fetchDataFromTx } from "./tx.service";
+import { decodeLogsfromTx, fetchTxFromHash } from "./tx.service";
 import { type Chain } from "@covalenthq/client-sdk";
 
 export const txRouter = Router();
@@ -26,14 +26,22 @@ const handleDecode = async (
             "x-covalent-api-key"
         ];
         const { network, tx_hash } = req.body as DecodeTXRequest;
-        const { log_events, metadata } = await fetchDataFromTx(
+        const tx = await fetchTxFromHash(
             network as Chain,
             tx_hash,
             covalentApiKey
         );
-        const data = await fetchEventsFromLogs(
-            network as Chain,
+        const {
             log_events,
+            dex_details,
+            nft_sale_details,
+            lending_details,
+            safe_details,
+            ...metadata
+        } = tx;
+        const events = await decodeLogsfromTx(
+            network as Chain,
+            tx,
             covalentApiKey
         );
         const parsedMetadata = JSON.parse(
@@ -43,7 +51,7 @@ const handleDecode = async (
         );
         res.json({
             success: true,
-            events: data,
+            events: events,
             metadata: parsedMetadata,
         });
     } catch (error) {

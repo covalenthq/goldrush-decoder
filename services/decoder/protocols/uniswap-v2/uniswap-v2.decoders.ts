@@ -13,13 +13,13 @@ GoldRushDecoder.on(
     "uniswap-v2:Swap",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const {
             sender_address: exchange_contract,
             block_signed_at,
             raw_log_data,
             raw_log_topics,
-        } = log;
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: PairABI,
@@ -104,8 +104,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Swap",
             protocol: {
-                logo: log.sender_logo_url as string,
-                name: log.sender_name as string,
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
             },
             tokens: [
                 {
@@ -143,12 +143,12 @@ GoldRushDecoder.on(
     "uniswap-v2:Mint",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const {
             sender_address: exchange_contract,
             raw_log_data,
             raw_log_topics,
-        } = log;
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: PairABI,
@@ -189,8 +189,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Mint",
             protocol: {
-                logo: log.sender_logo_url as string,
-                name: log.sender_name as string,
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
             },
             tokens: [
                 {

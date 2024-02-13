@@ -11,8 +11,8 @@ GoldRushDecoder.on(
     "grindery-one:Transfer",
     ["matic-mainnet"],
     ABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics, sender_contract_decimals } = log;
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: ABI,
@@ -33,8 +33,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Transfer",
             protocol: {
-                logo: log.sender_logo_url as string,
-                name: log.sender_name as string,
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
             },
             details: [
                 {
@@ -47,13 +47,15 @@ GoldRushDecoder.on(
                     value: decoded.to,
                     type: "address",
                 },
+            ],
+            tokens: [
                 {
-                    title: "Value",
-                    value: (
-                        decoded.value /
-                        BigInt(Math.pow(10, sender_contract_decimals))
-                    ).toString(),
-                    type: "text",
+                    decimals: log_event.sender_contract_decimals,
+                    heading: "Token Amount",
+                    pretty_quote: "",
+                    ticker_logo: log_event.sender_logo_url,
+                    ticker_symbol: log_event.sender_contract_ticker_symbol,
+                    value: decoded.value.toString(),
                 },
             ],
         };

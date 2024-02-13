@@ -11,8 +11,9 @@ GoldRushDecoder.on(
     "4337-entry-point:UserOperationEvent",
     ["matic-mainnet"],
     ABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics, sender_contract_decimals } = log;
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics, sender_contract_decimals } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: ABI,
@@ -37,8 +38,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.OTHERS,
             name: "User Operation Event",
             protocol: {
-                logo: log.sender_logo_url as string,
-                name: log.sender_name as string,
+                logo: log_event.sender_logo_url as string,
+                name: "4337 Entry Point",
             },
             details: [
                 {
@@ -70,7 +71,7 @@ GoldRushDecoder.on(
                 {
                     title: "User Operation Hash",
                     value: decoded.userOpHash,
-                    type: "text",
+                    type: "address",
                 },
             ],
         };

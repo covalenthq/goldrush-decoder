@@ -11,8 +11,8 @@ GoldRushDecoder.on(
     "source-zorb:Transfer",
     ["zora-mainnet"],
     SourceZorbABI as Abi,
-    async (log, chain_name, covalent_client): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics, sender_address } = log;
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics, sender_address } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: SourceZorbABI,
@@ -40,7 +40,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Transfer",
             protocol: {
-                logo: log.sender_logo_url as string,
+                logo: log_event.sender_logo_url as string,
                 name: "SOURCE ZORB",
             },
             nfts: [

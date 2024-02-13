@@ -3,7 +3,7 @@ import { join } from "path";
 import {
     CovalentClient,
     type Chain,
-    type LogEvent,
+    type Transaction,
 } from "@covalenthq/client-sdk";
 import {
     type Configs,
@@ -109,12 +109,13 @@ export class GoldRushDecoder {
 
     public static decode = async (
         network: Chain,
-        logs: LogEvent[],
+        tx: Transaction,
         covalent_api_key: string
     ) => {
         try {
-            const covalentClient = new CovalentClient(covalent_api_key);
+            const covalent_client = new CovalentClient(covalent_api_key);
             const events: EventType[] = [];
+            const logs = tx.log_events.reverse();
             for (const log of logs) {
                 const {
                     raw_log_topics: [topic0_hash],
@@ -129,8 +130,9 @@ export class GoldRushDecoder {
                 if (function_index !== undefined) {
                     const event = await this.decoding_functions[function_index](
                         log,
+                        tx,
                         network,
-                        covalentClient
+                        covalent_client
                     );
                     events.push(event);
                 }
