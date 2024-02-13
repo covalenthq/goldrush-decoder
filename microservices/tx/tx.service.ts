@@ -10,7 +10,10 @@ export const fetchTxDataFromHash = async (
     network: Chain,
     tx_hash: string,
     covalentApiKey: string
-) => {
+): Promise<{
+    log_events: LogEvent[];
+    metadata: TransactionMetadata;
+}> => {
     const covalentClient = new CovalentClient(covalentApiKey);
     const { data, error_code, error_message } =
         await covalentClient.TransactionService.getTransaction(
@@ -27,7 +30,18 @@ export const fetchTxDataFromHash = async (
         );
     const tx = data?.items?.[0];
     if (tx) {
-        return tx;
+        const {
+            log_events,
+            dex_details,
+            nft_sale_details,
+            lending_details,
+            safe_details,
+            ...metadata
+        } = tx;
+        return {
+            log_events: log_events,
+            metadata: metadata,
+        };
     } else {
         throw {
             errorCode: error_code,

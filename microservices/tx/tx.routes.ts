@@ -26,19 +26,11 @@ const handleDecode = async (
             "x-covalent-api-key"
         ];
         const { network, tx_hash } = req.body as DecodeTXRequest;
-        const tx = await fetchTxDataFromHash(
+        const { log_events, metadata } = await fetchTxDataFromHash(
             network as Chain,
             tx_hash,
             covalentApiKey
         );
-        const {
-            dex_details,
-            nft_sale_details,
-            lending_details,
-            safe_details,
-            log_events,
-            ...metadata
-        } = tx;
         const events = await fetchEventsFromLogs(
             network as Chain,
             log_events,
