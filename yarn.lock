@@ -314,10 +314,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@covalenthq/client-sdk@^0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@covalenthq/client-sdk/-/client-sdk-0.8.5.tgz#36a72239af37690a340a2f9f5818939ebb53d701"
-  integrity sha512-iAaAqCdthoVe3qHcckxOkZ/dPAhlJiT3SKcDGl/bY7EttkrGuMD7ZRG9lbMBHCEO73upsTOL0QyT88K55w/jig==
+"@covalenthq/client-sdk@^0.8.7":
+  version "0.8.7"
+  resolved "https://registry.yarnpkg.com/@covalenthq/client-sdk/-/client-sdk-0.8.7.tgz#ff59da4ac5abeb3a8e96a17946f70c01a81671b3"
+  integrity sha512-SEUisC1057tHsfqUZejq6yqsgNlWf0iJUx2rzP0GsZ+iUBkbsvr6qUE2JVMBVa6QkezyWoN9xeB8kTiHc6Y9RA==
   dependencies:
     "@rollup/plugin-commonjs" "^25.0.4"
     "@rollup/plugin-node-resolve" "^15.2.1"

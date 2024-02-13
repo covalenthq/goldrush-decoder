@@ -12,7 +12,7 @@ GoldRushDecoder.on(
     ["matic-mainnet"],
     ABI as Abi,
     async (log, chain_name, covalent_client): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics, sender_contract_decimals } = log;
+        const { raw_log_data, raw_log_topics } = log;
 
         const { args: decoded } = decodeEventLog({
             abi: ABI,
@@ -47,13 +47,15 @@ GoldRushDecoder.on(
                     value: decoded.to,
                     type: "address",
                 },
+            ],
+            tokens: [
                 {
-                    title: "Value",
-                    value: (
-                        decoded.value /
-                        BigInt(Math.pow(10, sender_contract_decimals))
-                    ).toString(),
-                    type: "text",
+                    decimals: log.sender_contract_decimals,
+                    heading: "Token Amount",
+                    pretty_quote: "",
+                    ticker_logo: log.sender_logo_url,
+                    ticker_symbol: log.sender_contract_ticker_symbol,
+                    value: decoded.value.toString(),
                 },
             ],
         };
