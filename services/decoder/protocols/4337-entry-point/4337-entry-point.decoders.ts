@@ -9,7 +9,7 @@ import ABI from "./abis/4337-entry-point.abi.json";
 
 GoldRushDecoder.on(
     "4337-entry-point:UserOperationEvent",
-    ["matic-mainnet"],
+    ["matic-mainnet", "avalanche-mainnet"],
     ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics, sender_contract_decimals } =
