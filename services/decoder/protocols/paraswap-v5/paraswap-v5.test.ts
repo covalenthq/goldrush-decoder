@@ -38,4 +38,22 @@ describe("paraswap-v5", () => {
         expect(event.details?.length).toEqual(4);
         expect(event.tokens?.length).toEqual(2);
     });
+
+    test("avalanche-mainnet:SwappedV3", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                network: "avalanche-mainnet",
+                tx_hash:
+                    "0x41525d4a5790d110ec0816397cafeab5d777e8a8c21f07b06a800d5c567d2804",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Swap V3");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.details?.length).toEqual(4);
+        expect(event.tokens?.length).toEqual(2);
+    });
 });

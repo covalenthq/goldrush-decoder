@@ -21,4 +21,23 @@ describe("4337-entry-point", () => {
         }
         expect(event.details?.length).toEqual(5);
     });
+
+    test("avalanche-mainnet:UserOperationEvent", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                network: "avalanche-mainnet",
+                tx_hash:
+                    "0xc244be4710c3ad34e120c596555ce75c40356c3d9de9b141a8d5ce0ed056e0d2",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(
+            ({ name }) => name === "User Operation Event"
+        );
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.details?.length).toEqual(5);
+    });
 });

@@ -43,7 +43,7 @@ GoldRushDecoder.on(
                 {
                     title: "Specimen Hash",
                     value: decoded.specimenHash,
-                    type: "text",
+                    type: "address",
                 },
                 {
                     title: "Storage URL",
