@@ -180,17 +180,6 @@ GoldRushDecoder.on(
                 value: INTEREST_RATE_MODE[decoded.interestRateMode],
                 type: "text",
             },
-            {
-                title: "Premium",
-                value:
-                    new Intl.NumberFormat().format(
-                        Number(decoded.premium) /
-                            10 ** FlashloanToken?.[0]?.contract_decimals
-                    ) +
-                    " " +
-                    FlashloanToken?.[0]?.contract_ticker_symbol,
-                type: "text",
-            },
         ];
 
         const tokens: EventTokens = [
@@ -208,6 +197,21 @@ GoldRushDecoder.on(
                 ticker_logo: FlashloanToken?.[0]?.logo_url,
                 ticker_symbol: FlashloanToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.amount),
+            },
+            {
+                decimals: FlashloanToken?.[0]?.contract_decimals,
+                heading: "Flash Loan Premium",
+                pretty_quote: prettifyCurrency(
+                    FlashloanToken?.[0]?.prices?.[0]?.price *
+                        (Number(decoded.premium) /
+                            Math.pow(
+                                10,
+                                FlashloanToken?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo: FlashloanToken?.[0]?.logo_url,
+                ticker_symbol: FlashloanToken?.[0]?.contract_ticker_symbol,
+                value: String(decoded.premium),
             },
         ];
 

@@ -84,11 +84,12 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
+        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
         expect(event?.tokens?.length).toBeGreaterThan(0);
-        expect(event?.details?.length).toEqual(5);
+        expect(event?.details?.length).toEqual(4);
     });
     test("eth-mainnet:LiquidationCall", async () => {
         const res = await request(app)
