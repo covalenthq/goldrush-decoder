@@ -2,7 +2,6 @@ import { GoldRushDecoder } from "../../services";
 import {
     CovalentClient,
     type Chain,
-    type LogEvent,
     type Transaction,
 } from "@covalenthq/client-sdk";
 
