@@ -83,7 +83,7 @@ describe("aave-v3", () => {
                     "0xa3d772345d3c8cb19bf91f9aca52257a00eaf115f2c7df2de0fd179420717aeb",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "FlashLoan");
+        const event = events.find(({ name }) => name === "Flash Loan");
         if (!event) {
             throw Error("Event not found");
         }
@@ -100,7 +100,7 @@ describe("aave-v3", () => {
                     "0x6719d800b14f376406810aacbc19e49a243df2287f2001ccd9354b3d4ff33ac9",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "LiquidationCall");
+        const event = events.find(({ name }) => name === "Liquidation Call");
         if (!event) {
             throw Error("Event not found");
         }
