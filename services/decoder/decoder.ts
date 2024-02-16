@@ -151,35 +151,28 @@ export class GoldRushDecoder {
         tx: Transaction,
         covalent_api_key: string
     ) => {
-        try {
-            const covalent_client = new CovalentClient(covalent_api_key);
-            const events: EventType[] = [];
-            const logs = tx.log_events.reverse();
-            for (const log of logs) {
-                const {
-                    raw_log_topics: [topic0_hash],
-                    sender_address: contract_address,
-                    // !ERROR: add factory_contract_address in the log_event(s)
-                    // factory_contract_address,
-                } = log;
-                const decoding_index =
-                    // !ERROR: add factory_contract_address in the log_event(s)
-                    // factory_contract_address ||
-                    this.decoders[network][contract_address]?.[topic0_hash];
-                const fallback_index = this.fallbacks[topic0_hash];
-                if (
-                    decoding_index !== undefined ||
-                    fallback_index !== undefined
-                ) {
-                    const event = await this.decoding_functions[
-                        decoding_index ?? fallback_index
-                    ](log, tx, network, covalent_client);
-                    events.push(event);
-                }
+        const covalent_client = new CovalentClient(covalent_api_key);
+        const events: EventType[] = [];
+        const logs = tx.log_events.reverse();
+        for (const log of logs) {
+            const {
+                raw_log_topics: [topic0_hash],
+                sender_address: contract_address,
+                // !ERROR: add factory_contract_address in the log_event(s)
+                // factory_contract_address,
+            } = log;
+            const decoding_index =
+                // !ERROR: add factory_contract_address in the log_event(s)
+                // factory_contract_address ||
+                this.decoders[network][contract_address]?.[topic0_hash];
+            const fallback_index = this.fallbacks[topic0_hash];
+            if (decoding_index !== undefined || fallback_index !== undefined) {
+                const event = await this.decoding_functions[
+                    decoding_index ?? fallback_index
+                ](log, tx, network, covalent_client);
+                events.push(event);
             }
-            return events;
-        } catch (error) {
-            console.error(error);
         }
+        return events;
     };
 }

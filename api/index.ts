@@ -21,7 +21,6 @@ app.get("/api/v1/healthcheck", (_req: Request, res: Response) => {
     res.json({
         success: true,
         timestamp: now.toISOString(),
-        // time: TimestampParser(now, "descriptive"),
         uptime: process.uptime(),
     });
 });

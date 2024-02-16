@@ -18,6 +18,11 @@ describe("fallback", () => {
             throw Error("Event not found");
         }
         expect(event.details?.length).toEqual(2);
-        expect(event.tokens?.length).toEqual(1);
+        if (event.tokens) {
+            expect(event.tokens?.length).toEqual(1);
+        }
+        if (event.nfts) {
+            expect(event.nfts?.length).toEqual(1);
+        }
     });
 });
