@@ -17,7 +17,16 @@ enum INTEREST_RATE_MODE {
 
 GoldRushDecoder.on(
     "aave-v3:Borrow",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
     ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
@@ -123,7 +132,16 @@ GoldRushDecoder.on(
 
 GoldRushDecoder.on(
     "aave-v3:FlashLoan",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
     ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
@@ -231,7 +249,16 @@ GoldRushDecoder.on(
 
 GoldRushDecoder.on(
     "aave-v3:LiquidationCall",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
     ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
@@ -349,7 +376,16 @@ GoldRushDecoder.on(
 
 GoldRushDecoder.on(
     "aave-v3:Repay",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
     ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
@@ -440,7 +476,16 @@ GoldRushDecoder.on(
 
 GoldRushDecoder.on(
     "aave-v3:Supply",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
     ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
@@ -528,7 +573,16 @@ GoldRushDecoder.on(
 
 GoldRushDecoder.on(
     "aave-v3:Withdraw",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
     ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
