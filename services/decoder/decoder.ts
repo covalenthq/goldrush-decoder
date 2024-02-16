@@ -153,7 +153,7 @@ export class GoldRushDecoder {
     ) => {
         const covalent_client = new CovalentClient(covalent_api_key);
         const events: EventType[] = [];
-        const logs = tx.log_events.reverse();
+        const logs = (tx.log_events ?? []).reverse();
         for (const log of logs) {
             const {
                 raw_log_topics: [topic0_hash],
