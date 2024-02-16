@@ -107,6 +107,18 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
+            details: [
+                {
+                    title: "Sender",
+                    type: "address",
+                    value: decoded.sender,
+                },
+                {
+                    title: "To",
+                    type: "address",
+                    value: decoded.to,
+                },
+            ],
             tokens: [
                 {
                     ticker_logo: inputToken?.logo_url ?? null,
@@ -192,6 +204,13 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
+            details: [
+                {
+                    title: "Sender",
+                    type: "address",
+                    value: decoded.sender,
+                },
+            ],
             tokens: [
                 {
                     ticker_logo: token0?.logo_url ?? null,

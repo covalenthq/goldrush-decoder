@@ -20,6 +20,7 @@ describe("uniswap-v2", () => {
             throw Error("Event not found");
         }
         expect(event.tokens?.length).toEqual(2);
+        expect(event.details?.length).toEqual(2);
     });
 
     test("eth-mainnet:Mint", async () => {
@@ -39,5 +40,6 @@ describe("uniswap-v2", () => {
             throw Error("Event not found");
         }
         expect(event.tokens?.length).toEqual(2);
+        expect(event.details?.length).toEqual(1);
     });
 });
