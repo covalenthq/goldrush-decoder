@@ -447,7 +447,7 @@ GoldRushDecoder.on(
                 decimals: RepayToken?.[0]?.contract_decimals,
                 heading: "Repay Amount",
                 pretty_quote: prettifyCurrency(
-                    RepayToken?.[0]?.prices?.[0].price *
+                    RepayToken?.[0]?.prices?.[0]?.price *
                         (Number(decoded.amount) /
                             Math.pow(
                                 10,
@@ -638,7 +638,7 @@ GoldRushDecoder.on(
                 decimals: RepayToken?.[0]?.contract_decimals,
                 heading: "Withdraw Amount",
                 pretty_quote: prettifyCurrency(
-                    RepayToken?.[0]?.prices?.[0].price *
+                    RepayToken?.[0]?.prices?.[0]?.price *
                         (Number(decoded.amount) /
                             Math.pow(
                                 10,
