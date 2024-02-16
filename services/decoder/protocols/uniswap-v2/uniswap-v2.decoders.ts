@@ -9,6 +9,7 @@ import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
+import { string } from "yup";
 
 GoldRushDecoder.on(
     "uniswap-v2:Swap",
@@ -99,11 +100,11 @@ GoldRushDecoder.on(
                     decimals: +(inputToken?.contract_decimals ?? 18),
                     pretty_quote: prettifyCurrency(
                         inputToken?.quote_rate ??
-                            0 *
-                                (Number(inputValue) /
-                                    Math.pow(10, 
-                                        +(inputToken?.contract_decimals ?? 18)
-                                    ))
+                        0 *
+                        (Number(inputValue) /
+                            Math.pow(10,
+                                +(inputToken?.contract_decimals ?? 18)
+                            ))
                     ),
                     heading: "Token In",
                 },
@@ -114,11 +115,11 @@ GoldRushDecoder.on(
                     decimals: +(outputToken?.contract_decimals ?? 18),
                     pretty_quote: prettifyCurrency(
                         outputToken?.quote_rate ??
-                            0 *
-                                (Number(outputValue) /
-                                    Math.pow(10, 
-                                        +(outputToken?.contract_decimals ?? 18)
-                                    ))
+                        0 *
+                        (Number(outputValue) /
+                            Math.pow(10,
+                                +(outputToken?.contract_decimals ?? 18)
+                            ))
                     ),
                     heading: "Token Out",
                 },
@@ -195,12 +196,12 @@ GoldRushDecoder.on(
                     decimals: +(token0?.contract_decimals ?? 18),
                     pretty_quote: prettifyCurrency(
                         token0?.quote_rate ??
-                            0 *
-                                (Number(value0) /
-                                    Math.pow(
-                                        10,
-                                        +(token0?.contract_decimals ?? 18)
-                                    ))
+                        0 *
+                        (Number(value0) /
+                            Math.pow(
+                                10,
+                                +(token0?.contract_decimals ?? 18)
+                            ))
                     ),
                     heading: "Token 0 Deposited",
                 },
@@ -211,12 +212,12 @@ GoldRushDecoder.on(
                     decimals: +(token1?.contract_decimals ?? 18),
                     pretty_quote: prettifyCurrency(
                         token1?.quote_rate ??
-                            0 *
-                                (Number(value1) /
-                                    Math.pow(
-                                        10,
-                                        +(token1?.contract_decimals ?? 18)
-                                    ))
+                        0 *
+                        (Number(value1) /
+                            Math.pow(
+                                10,
+                                +(token1?.contract_decimals ?? 18)
+                            ))
                     ),
                     heading: "Token 1 Deposited",
                 },
@@ -289,11 +290,11 @@ GoldRushDecoder.on(
                     pretty_quote: prettifyCurrency(
                         token0?.quote_rate ??
                         0 *
-                            (Number(value0) / 
+                        (Number(value0) /
                             Math.pow(
                                 10,
                                 +(token0?.contract_decimals ?? 18)
-                                ))
+                            ))
                     ),
                     heading: "Token 0 Redeemed",
                 },
@@ -305,11 +306,11 @@ GoldRushDecoder.on(
                     pretty_quote: prettifyCurrency(
                         token1?.quote_rate ??
                         0 *
-                            (Number(value0) / 
+                        (Number(value0) /
                             Math.pow(
                                 10,
                                 +(token1?.contract_decimals ?? 18)
-                                ))
+                            ))
                     ),
                     heading: "Token 1 Redeemed",
                 },
@@ -381,11 +382,11 @@ GoldRushDecoder.on(
                     pretty_quote: prettifyCurrency(
                         token0?.quote_rate ??
                         0 *
-                            (Number(value0) / 
+                        (Number(value0) /
                             Math.pow(
                                 10,
                                 +(token0?.contract_decimals ?? 18)
-                                ))
+                            ))
                     ),
                     heading: "Reserve 0",
                 },
@@ -397,11 +398,11 @@ GoldRushDecoder.on(
                     pretty_quote: prettifyCurrency(
                         token1?.quote_rate ??
                         0 *
-                            (Number(value0) / 
+                        (Number(value0) /
                             Math.pow(
                                 10,
                                 +(token1?.contract_decimals ?? 18)
-                                ))
+                            ))
                     ),
                     heading: "Reserve 1",
                 },
@@ -412,48 +413,47 @@ GoldRushDecoder.on(
 );
 
 GoldRushDecoder.on(
-    "uniswap-v2:Pair Created",
+    "uniswap-v2:PairCreated",
     ["eth-mainnet"],
     FactoryABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const {
-            sender_address: exchange_contract,
-            block_signed_at,
             raw_log_data,
             raw_log_topics
         } = log_event;
 
+
         const { args: decoded } = decodeEventLog({
             abi: FactoryABI,
             topics: raw_log_topics as [],
-            data: raw_log_data as '0x${string}',
-            eventName: "Pair Created"
+            data: raw_log_data as `0x${string}`,
+            eventName: "LOL",
         }) as {
-            eventName: "Pair Created";
+            eventName: "LOL";
             args: {
-                token0: string;
-                token1: string;
-                pair: string;
-                noname: bigint;
+
             };
         };
 
-        let token0: Token | null = null,
-            token1: Token | null = null,
-            pair: Token | null = null;
 
-        const { data } = await covalent_client.XykService.getPoolByAddress(
-            chain_name,
-            "uniswap_v2",
-            exchange_contract
-        );
-        const { token_0, token_1 } = data?.items?.[0];
-        if (token_0 && token_1) {
-            [token0, token1] = [
-                token_0,
-                token_1,
-            ];
-        }
+        console.log(decoded)
+
+        let token0: Token | null = null,
+            token1: Token | null = null;
+
+        // const { data } = await covalent_client.XykService.getPoolByAddress(
+        //     chain_name,
+        //     "uniswap_v2",
+        //     decoded.pair
+        // );
+        // console.log(data)
+        // const { token_0, token_1 } = data?.items?.[0];
+        // if (token_0 && token_1) {
+        //     [token0, token1] = [
+        //         token_0,
+        //         token_1,
+        //     ];
+        // }
 
         return {
             action: DECODED_ACTION.SWAPPED,
@@ -463,16 +463,22 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
-            tokens: [
-                {
-                    ticker_logo: token0?.logo_url ?? null,
-                    ticker_symbol: token0?.contract_ticker_symbol ?? null,
-                    heading: "Token 0",
-                },
-                {
-                    
-                    heading: "Token 1",
-                },
+            details: [
+                // {
+                //     title: `${token0?.contract_name || ""} Symbol`, // USDC Name
+                //     value: token0?.contract_ticker_symbol || "",
+                //     type: "text",
+                // },
+                // {
+                //     title: `${token0?.contract_name || ""} Decimals`,
+                //     value: (token0?.contract_decimals ?? 18).toString(),
+                //     type: "text",
+                // },
+                // {
+                //     title: `${token0?.contract_name || ""} Address`,
+                //     value: token0?.contract_address || "",
+                //     type: "address",
+                // },
             ],
         };
 

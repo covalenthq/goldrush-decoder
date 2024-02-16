@@ -74,7 +74,7 @@ describe("uniswap-v2", () => {
                     "0xf419cd1a89b928cb93f38237e9b1e6743218fbb87aaac678cb1f950951b7476e",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Burn");
+        const event = events.find(({ name }) => name === "Sync");
         if (!event) {
             throw Error("Event not found");
         }
