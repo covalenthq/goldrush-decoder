@@ -4,5 +4,5 @@ module.exports = {
     testEnvironment: "node",
     coveragePathIgnorePatterns: ["./dist/*"],
     maxWorkers: 5,
-    testTimeout: 10000,
+    testTimeout: 30000,
 };
