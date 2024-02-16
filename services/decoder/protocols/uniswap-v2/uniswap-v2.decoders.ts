@@ -4,6 +4,7 @@ import { GoldRushDecoder } from "../../decoder";
 import { TimestampParser } from "../../../../utils/functions";
 import { type EventType } from "../../decoder.types";
 import PairABI from "./abis/uniswap-v2.pair.abi.json";
+import FactoryABI from "./abis/uniswap-v2.factory.abi.json";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
@@ -45,8 +46,6 @@ GoldRushDecoder.on(
             inputDecimals: number = 0,
             outputDecimals: number = 0;
 
-        const prices: number[] = [];
-
         const { data } = await covalent_client.XykService.getPoolByAddress(
             chain_name,
             "uniswap_v2",
@@ -70,33 +69,6 @@ GoldRushDecoder.on(
                     decoded.amount0Out,
                 ];
             }
-
-            inputDecimals = +inputToken.contract_decimals;
-            outputDecimals = +outputToken.contract_decimals;
-
-            const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
-            const pricesData = await Promise.all(
-                [inputToken, outputToken].map(
-                    ({ contract_address: token_address }) =>
-                        covalent_client.PricingService.getTokenPrices(
-                            chain_name,
-                            "USD",
-                            token_address,
-                            {
-                                from: date,
-                                to: date,
-                            }
-                        )
-                )
-            );
-            pricesData.forEach(({ data }) => {
-                const price = data?.[0]?.items;
-                if (price?.[0]?.price) {
-                    prices.push(price[0].price);
-                } else {
-                    prices.push(1);
-                }
-            });
         }
 
         return {
@@ -124,27 +96,31 @@ GoldRushDecoder.on(
                     ticker_logo: inputToken?.logo_url ?? null,
                     ticker_symbol: inputToken?.contract_ticker_symbol ?? null,
                     value: inputValue.toString(),
-                    decimals: inputDecimals,
+                    decimals: +(inputToken?.contract_decimals ?? 18),
                     pretty_quote: prettifyCurrency(
                         inputToken?.quote_rate ??
                             0 *
                                 (Number(inputValue) /
-                                    Math.pow(10, inputDecimals))
+                                    Math.pow(10, 
+                                        +(inputToken?.contract_decimals ?? 18)
+                                    ))
                     ),
-                    heading: "Input",
+                    heading: "Token In",
                 },
                 {
                     ticker_logo: outputToken?.logo_url ?? null,
                     ticker_symbol: outputToken?.contract_ticker_symbol ?? null,
                     value: outputValue.toString(),
-                    decimals: outputDecimals,
+                    decimals: +(outputToken?.contract_decimals ?? 18),
                     pretty_quote: prettifyCurrency(
                         outputToken?.quote_rate ??
                             0 *
                                 (Number(outputValue) /
-                                    Math.pow(10, outputDecimals))
+                                    Math.pow(10, 
+                                        +(outputToken?.contract_decimals ?? 18)
+                                    ))
                     ),
-                    heading: "Output",
+                    heading: "Token Out",
                 },
             ],
         };
@@ -226,7 +202,7 @@ GoldRushDecoder.on(
                                         +(token0?.contract_decimals ?? 18)
                                     ))
                     ),
-                    heading: "Input",
+                    heading: "Token 0 Deposited",
                 },
                 {
                     ticker_logo: token1?.logo_url ?? null,
@@ -242,9 +218,263 @@ GoldRushDecoder.on(
                                         +(token1?.contract_decimals ?? 18)
                                     ))
                     ),
-                    heading: "Output",
+                    heading: "Token 1 Deposited",
                 },
             ],
         };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v2:Burn",
+    ["eth-mainnet"],
+    PairABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const {
+            sender_address: exchange_contract,
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics
+        } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PairABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as '0x${string}',
+            eventName: "Burn"
+        }) as {
+            eventName: "Burn";
+            args: {
+                sender: string;
+                amount0: bigint;
+                amount1: bigint;
+                to: string;
+            };
+        };
+
+        let token0: Token | null = null,
+            token1: Token | null = null,
+            value0: bigint = BigInt(0),
+            value1: bigint = BigInt(0);
+
+        const { data } = await covalent_client.XykService.getPoolByAddress(
+            chain_name,
+            "uniswap_v2",
+            exchange_contract
+        );
+        const { token_0, token_1 } = data?.items?.[0];
+        if (token_0 && token_1) {
+            [token0, token1, value0, value1] = [
+                token_0,
+                token_1,
+                decoded.amount0,
+                decoded.amount1,
+            ];
+        }
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Burn",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
+            },
+            tokens: [
+                {
+                    ticker_logo: token0?.logo_url ?? null,
+                    ticker_symbol: token0?.contract_ticker_symbol ?? null,
+                    value: value0.toString(),
+                    decimals: +(token0?.contract_decimals ?? 18),
+                    pretty_quote: prettifyCurrency(
+                        token0?.quote_rate ??
+                        0 *
+                            (Number(value0) / 
+                            Math.pow(
+                                10,
+                                +(token0?.contract_decimals ?? 18)
+                                ))
+                    ),
+                    heading: "Token 0 Redeemed",
+                },
+                {
+                    ticker_logo: token1?.logo_url ?? null,
+                    ticker_symbol: token1?.contract_ticker_symbol ?? null,
+                    value: value1.toString(),
+                    decimals: +(token1?.contract_decimals ?? 18),
+                    pretty_quote: prettifyCurrency(
+                        token1?.quote_rate ??
+                        0 *
+                            (Number(value0) / 
+                            Math.pow(
+                                10,
+                                +(token1?.contract_decimals ?? 18)
+                                ))
+                    ),
+                    heading: "Token 1 Redeemed",
+                },
+            ],
+        };
+
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v2:Sync",
+    ["eth-mainnet"],
+    PairABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const {
+            sender_address: exchange_contract,
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics
+        } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PairABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as '0x${string}',
+            eventName: "Sync"
+        }) as {
+            eventName: "Sync";
+            args: {
+                reserve0: bigint;
+                reserve1: bigint;
+            };
+        };
+
+        let token0: Token | null = null,
+            token1: Token | null = null,
+            value0: bigint = BigInt(0),
+            value1: bigint = BigInt(0);
+
+        const { data } = await covalent_client.XykService.getPoolByAddress(
+            chain_name,
+            "uniswap_v2",
+            exchange_contract
+        );
+        const { token_0, token_1 } = data?.items?.[0];
+        if (token_0 && token_1) {
+            [token0, token1, value0, value1] = [
+                token_0,
+                token_1,
+                decoded.reserve0,
+                decoded.reserve1,
+            ];
+        }
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Sync",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
+            },
+            tokens: [
+                {
+                    ticker_logo: token0?.logo_url ?? null,
+                    ticker_symbol: token0?.contract_ticker_symbol ?? null,
+                    value: value0.toString(),
+                    decimals: +(token0?.contract_decimals ?? 18),
+                    pretty_quote: prettifyCurrency(
+                        token0?.quote_rate ??
+                        0 *
+                            (Number(value0) / 
+                            Math.pow(
+                                10,
+                                +(token0?.contract_decimals ?? 18)
+                                ))
+                    ),
+                    heading: "Reserve 0",
+                },
+                {
+                    ticker_logo: token1?.logo_url ?? null,
+                    ticker_symbol: token1?.contract_ticker_symbol ?? null,
+                    value: value1.toString(),
+                    decimals: +(token1?.contract_decimals ?? 18),
+                    pretty_quote: prettifyCurrency(
+                        token1?.quote_rate ??
+                        0 *
+                            (Number(value0) / 
+                            Math.pow(
+                                10,
+                                +(token1?.contract_decimals ?? 18)
+                                ))
+                    ),
+                    heading: "Reserve 1",
+                },
+            ],
+        };
+
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v2:Pair Created",
+    ["eth-mainnet"],
+    FactoryABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const {
+            sender_address: exchange_contract,
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics
+        } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: FactoryABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as '0x${string}',
+            eventName: "Pair Created"
+        }) as {
+            eventName: "Pair Created";
+            args: {
+                token0: string;
+                token1: string;
+                pair: string;
+                noname: bigint;
+            };
+        };
+
+        let token0: Token | null = null,
+            token1: Token | null = null,
+            pair: Token | null = null;
+
+        const { data } = await covalent_client.XykService.getPoolByAddress(
+            chain_name,
+            "uniswap_v2",
+            exchange_contract
+        );
+        const { token_0, token_1 } = data?.items?.[0];
+        if (token_0 && token_1) {
+            [token0, token1] = [
+                token_0,
+                token_1,
+            ];
+        }
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Pair Created",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
+            },
+            tokens: [
+                {
+                    ticker_logo: token0?.logo_url ?? null,
+                    ticker_symbol: token0?.contract_ticker_symbol ?? null,
+                    heading: "Token 0",
+                },
+                {
+                    
+                    heading: "Token 1",
+                },
+            ],
+        };
+
     }
 );
