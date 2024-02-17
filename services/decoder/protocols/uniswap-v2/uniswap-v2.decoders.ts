@@ -405,67 +405,93 @@ GoldRushDecoder.on(
     }
 );
 
-// GoldRushDecoder.on(
-//     "uniswap-v2:PairCreated",
-//     ["eth-mainnet"],
-//     FactoryABI as Abi,
-//     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
-//         const { raw_log_data, raw_log_topics } = log_event;
+GoldRushDecoder.on(
+    "uniswap-v2:PairCreated",
+    ["eth-mainnet"],
+    FactoryABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
 
-//         const { args: decoded } = decodeEventLog({
-//             abi: FactoryABI,
-//             topics: raw_log_topics as [],
-//             data: raw_log_data as `0x${string}`,
-//             eventName: "LOL",
-//         }) as {
-//             eventName: "LOL";
-//             args: {};
-//         };
+        const { args: decoded } = decodeEventLog({
+            abi: FactoryABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "PairCreated",
+            strict: false,
+        }) as {
+            eventName: "PairCreated";
+            args: {
+                token0: string;
+                token1: string;
+                pair: string;
+                allPairsLength: bigint;
+            };
+        };
 
-//         console.log(decoded);
+        const { data } = await covalent_client.XykService.getPoolByAddress(
+            chain_name,
+            "uniswap_v2",
+            decoded.pair
+        );
 
-//         let token0: Token | null = null,
-//             token1: Token | null = null;
-
-//         // const { data } = await covalent_client.XykService.getPoolByAddress(
-//         //     chain_name,
-//         //     "uniswap_v2",
-//         //     decoded.pair
-//         // );
-//         // console.log(data)
-//         // const { token_0, token_1 } = data?.items?.[0];
-//         // if (token_0 && token_1) {
-//         //     [token0, token1] = [
-//         //         token_0,
-//         //         token_1,
-//         //     ];
-//         // }
-
-//         return {
-//             action: DECODED_ACTION.SWAPPED,
-//             category: DECODED_EVENT_CATEGORY.DEX,
-//             name: "Pair Created",
-//             protocol: {
-//                 logo: log_event.sender_logo_url as string,
-//                 name: log_event.sender_name as string,
-//             },
-//             details: [
-//                 // {
-//                 //     title: `${token0?.contract_name || ""} Symbol`, // USDC Name
-//                 //     value: token0?.contract_ticker_symbol || "",
-//                 //     type: "text",
-//                 // },
-//                 // {
-//                 //     title: `${token0?.contract_name || ""} Decimals`,
-//                 //     value: (token0?.contract_decimals ?? 18).toString(),
-//                 //     type: "text",
-//                 // },
-//                 // {
-//                 //     title: `${token0?.contract_name || ""} Address`,
-//                 //     value: token0?.contract_address || "",
-//                 //     type: "address",
-//                 // },
-//             ],
-//         };
-//     }
-// );
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Pair Created",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
+            },
+            details: [
+                {
+                    title: `${
+                        data?.items?.[0]?.token_0?.contract_name || ""
+                    } Symbol`,
+                    value:
+                        data?.items?.[0]?.token_0?.contract_ticker_symbol || "",
+                    type: "text",
+                },
+                {
+                    title: `${
+                        data?.items?.[0]?.token_0?.contract_name || ""
+                    } Decimals`,
+                    value: (
+                        data?.items?.[0]?.token_0?.contract_decimals ?? 18
+                    ).toString(),
+                    type: "text",
+                },
+                {
+                    title: `${
+                        data?.items?.[0]?.token_0?.contract_name || ""
+                    } Address`,
+                    value: data?.items?.[0]?.token_0?.contract_address || "",
+                    type: "address",
+                },
+                {
+                    title: `${
+                        data?.items?.[0]?.token_1?.contract_name || ""
+                    } Symbol`,
+                    value:
+                        data?.items?.[0]?.token_1?.contract_ticker_symbol || "",
+                    type: "text",
+                },
+                {
+                    title: `${
+                        data?.items?.[0]?.token_1?.contract_name || ""
+                    } Decimals`,
+                    value: (
+                        data?.items?.[0]?.token_1?.contract_decimals ?? 18
+                    ).toString(),
+                    type: "text",
+                },
+                {
+                    title: `${
+                        data?.items?.[0]?.token_1?.contract_name || ""
+                    } Address`,
+                    value: data?.items?.[0]?.token_1?.contract_address || "",
+                    type: "address",
+                },
+            ],
+        };
+    }
+);
