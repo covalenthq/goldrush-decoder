@@ -11,7 +11,7 @@ import {
 
 export type Configs = {
     protocol_name: string;
-    network: Chain;
+    chain_name: Chain;
     address: string;
     is_factory: boolean;
 }[];
@@ -66,7 +66,7 @@ export type DecodingFunction = (
 
 export type DecoderConfig =
     | {
-          [network in Chain]: {
+          [chain_name in Chain]: {
               [protocol_name: string]: {
                   [address: string]: {
                       is_factory: boolean;
@@ -78,7 +78,7 @@ export type DecoderConfig =
 
 export type Decoders =
     | {
-          [network in Chain]: {
+          [chain_name in Chain]: {
               [address: string]: {
                   [topic0_hash: string]: number;
               };

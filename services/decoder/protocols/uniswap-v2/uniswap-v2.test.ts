@@ -10,7 +10,7 @@ describe("uniswap-v2", () => {
                 "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
             })
             .send({
-                network: "eth-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
                     "0x7c0d75a2c4407917a0f70c48655f8a66f35f9aba7d36e615bcabc2c191ac2658",
             });
@@ -30,7 +30,7 @@ describe("uniswap-v2", () => {
                 "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
             })
             .send({
-                network: "eth-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
                     "0x020468ae7052596fdd72deac82891de9bdd581f4bb12631c729d1825ad7ba2b6",
             });

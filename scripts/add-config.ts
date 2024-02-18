@@ -39,10 +39,10 @@ const customLog = (message: string, type: "success" | "info") => {
 const nameSchema = yup.string().trim().required("name is required");
 const addressSchema = yup.string().trim().required("address is required");
 const isFactorySchema = yup.boolean().required("is_factory is required");
-const networkSchema = yup
+const chainNameSchema = yup
     .mixed()
-    .oneOf(Object.values(Chains), "incorrect network name")
-    .required("network is required");
+    .oneOf(Object.values(Chains), "chain_name is incorrect")
+    .required("chain_name is required");
 (async () => {
     const { protocol_name } = (await prompt({
         type: "input",
@@ -86,7 +86,7 @@ const networkSchema = yup
         );
     }
 
-    const { address, is_factory, network } = (await prompt([
+    const { address, is_factory, chain_name } = (await prompt([
         {
             type: "input",
             name: "address",
@@ -123,13 +123,13 @@ const networkSchema = yup
         },
         {
             type: "input",
-            name: "network",
-            message: "What is the Network or the Chain for this contract?",
+            name: "chain_name",
+            message: "What is the Chain on which this contract is deployed?",
             format: (value) => slugify(value),
             result: (value) => slugify(value),
             validate: async (value) => {
                 try {
-                    await networkSchema.validate(value, {
+                    await chainNameSchema.validate(value, {
                         abortEarly: false,
                     });
                     return true;
@@ -141,15 +141,15 @@ const networkSchema = yup
     ])) as {
         address: string;
         is_factory: boolean;
-        network: Chain;
+        chain_name: Chain;
     };
 
     if (!exists) {
         const eventName: string = "<EVENT NAME>";
         const abiContent: string = `[]`;
-        const configsContent: string = `import{type Configs}from"../../decoder.types";\n\nconst configs:Configs=[{address:"${address}",is_factory:${is_factory},protocol_name:"${protocol_name}",network:"${network}"}];\n\nexport default configs;`;
-        const decodersContent: string = `import{GoldRushDecoder}from"../../decoder";import{type EventType}from"../../decoder.types";import{DECODED_ACTION,DECODED_EVENT_CATEGORY}from"../../decoder.constants";import{decodeEventLog,type Abi}from"viem";import ABI from "./abis/${protocol_name}.abi.json";\n\nGoldRushDecoder.on("${protocol_name}:${eventName}",["${network}"],ABI as Abi,async(log_event,tx,chain_name,covalent_client):Promise<EventType> =>{const{raw_log_data,raw_log_topics}=log_event;\n\nconst{args:decoded}=decodeEventLog({abi:ABI,topics:raw_log_topics as[],data:raw_log_data as \`0x\${string}\`,eventName:"${eventName}"})as{eventName:"${eventName}";args:{}};\n\nreturn{action:DECODED_ACTION.SWAPPED,category:DECODED_EVENT_CATEGORY.DEX,name:"${eventName}",protocol:{logo:log_event.sender_logo_url as string,name:log_event.sender_name as string}};});`;
-        const testContent: string = `import request from"supertest";import app from"../../../../api";import{type EventType}from"../../decoder.types";\n\ndescribe("${protocol_name}",()=>{test("${network}:${eventName}",async()=>{const res=await request(app).post("/api/v1/tx/decode").set({"x-covalent-api-key":process.env.TEST_COVALENT_API_KEY}).send({network:"${network}",tx_hash:"<ENTER TX HASH FOR TESTING>"});const{events}=res.body as{events:EventType[]};const event=events.find(({name})=>name==="${eventName}");if(!event){throw Error("Event not found")}const testAdded:boolean=false;expect(testAdded).toEqual(true)})});`;
+        const configsContent: string = `import{type Configs}from"../../decoder.types";\n\nconst configs:Configs=[{address:"${address}",is_factory:${is_factory},protocol_name:"${protocol_name}",chain_name:"${chain_name}"}];\n\nexport default configs;`;
+        const decodersContent: string = `import{GoldRushDecoder}from"../../decoder";import{type EventType}from"../../decoder.types";import{DECODED_ACTION,DECODED_EVENT_CATEGORY}from"../../decoder.constants";import{decodeEventLog,type Abi}from"viem";import ABI from "./abis/${protocol_name}.abi.json";\n\nGoldRushDecoder.on("${protocol_name}:${eventName}",["${chain_name}"],ABI as Abi,async(log_event,tx,chain_name,covalent_client):Promise<EventType> =>{const{raw_log_data,raw_log_topics}=log_event;\n\nconst{args:decoded}=decodeEventLog({abi:ABI,topics:raw_log_topics as[],data:raw_log_data as \`0x\${string}\`,eventName:"${eventName}"})as{eventName:"${eventName}";args:{}};\n\nreturn{action:DECODED_ACTION.SWAPPED,category:DECODED_EVENT_CATEGORY.DEX,name:"${eventName}",protocol:{logo:log_event.sender_logo_url as string,name:log_event.sender_name as string}};});`;
+        const testContent: string = `import request from"supertest";import app from"../../../../api";import{type EventType}from"../../decoder.types";\n\ndescribe("${protocol_name}",()=>{test("${chain_name}:${eventName}",async()=>{const res=await request(app).post("/api/v1/tx/decode").set({"x-covalent-api-key":process.env.TEST_COVALENT_API_KEY}).send({chain_name:"${chain_name}",tx_hash:"<ENTER TX HASH FOR TESTING>"});const{events}=res.body as{events:EventType[]};const event=events.find(({name})=>name==="${eventName}");if(!event){throw Error("Event not found")}const testAdded:boolean=false;expect(testAdded).toEqual(true)})});`;
         await writeInFile(
             protocolDir,
             `${protocol_name}.decoders.ts`,
@@ -182,7 +182,7 @@ const networkSchema = yup
             address: address,
             is_factory: is_factory,
             protocol_name: protocol_name,
-            network: network,
+            chain_name: chain_name,
         });
         const configsContent: string = `import{type Configs}from"../../decoder.types";\n\nconst configs:Configs=${JSON.stringify(
             configs

@@ -10,7 +10,7 @@ describe("opensea", () => {
                 "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
             })
             .send({
-                network: "eth-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
                     "0x7a038d2f5be4d196a3ff389497f8d61a639e4a32d353758b4f062cafbc5d475c",
             });
@@ -37,7 +37,7 @@ describe("opensea", () => {
                 "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
             })
             .send({
-                network: "matic-mainnet",
+                chain_name: "matic-mainnet",
                 tx_hash:
                     "0xbb0849b132f97174bd1f0c41ef39b4105ddb0e07b8f6730910d56d48dfffa0e8",
             });

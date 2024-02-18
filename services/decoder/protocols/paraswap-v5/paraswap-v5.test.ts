@@ -8,7 +8,7 @@ describe("paraswap-v5", () => {
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                network: "eth-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
                     "0x7b0e0718e211149bdd480fe372e0cfec2e8c3c2737ace1dc969674843e313258",
             });
@@ -26,7 +26,7 @@ describe("paraswap-v5", () => {
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                network: "matic-mainnet",
+                chain_name: "matic-mainnet",
                 tx_hash:
                     "0xbd0f211af42276a79dca5a5bd5a9b27c95eaa8403083171fa2a129c35a74996f",
             });
@@ -44,7 +44,7 @@ describe("paraswap-v5", () => {
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                network: "avalanche-mainnet",
+                chain_name: "avalanche-mainnet",
                 tx_hash:
                     "0x41525d4a5790d110ec0816397cafeab5d777e8a8c21f07b06a800d5c567d2804",
             });

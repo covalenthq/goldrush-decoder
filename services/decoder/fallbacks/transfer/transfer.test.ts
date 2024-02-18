@@ -8,7 +8,7 @@ describe("fallback", () => {
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                network: "eth-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
                     "0xe7b894fdac8c037fa69bbabe168fe7984033226e1b1871bd9f70c861b6f6a35d",
             });

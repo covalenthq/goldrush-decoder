@@ -20,12 +20,12 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
 
 ## Knowledge Primer
 
-1.  **Config**: A `config` is a mapping of a contract address, network, and protocol name to create a unique configuration for every protocol on all the networks across all the chains for all the contracts. A protocol can have a collection of configs in an array. It looks like
+1.  **Config**: A `config` is a mapping of a contract address, chain name, and protocol name to create a unique configuration for every protocol across all the chains for all the contracts. A protocol can have a collection of configs in an array. It looks like
 
     ```ts
     export type Configs = {
         protocol_name: string;
-        network: Chain;
+        chain_name: Chain;
         address: string;
         is_factory: boolean;
     }[];
@@ -34,12 +34,12 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
 2.  **GoldRushDecoder**: The `GoldRushDecoder` class has different methods that enable the decoding logic to run. The various methods are
 
     1.  `initDecoder`: Scans the `./services/decoder/protocols` directory for all the protocols, extracts the `configs` from them and creates a mapping to the respective decoding function. It is run when the server starts.
-    2.  `on`: Creates a decoding function for the specified protocol name on the specified networks. Its declaration is:
+    2.  `on`: Creates a decoding function for the specified protocol name on the specified chains. Its declaration is:
 
         ```ts
         GoldRushDecoder.on(
             "<protocol-name>:<EventName>",
-            ["<network_1>", "<network_2>"],
+            ["<chain_name_1>", "<chain_name_2>"],
             ABI as Abi,
             async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
                 <!-- decoding logic -->
@@ -50,12 +50,12 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
         The method has 4 arguments:
 
         1. **Event Id**: A case-sensitive string concatenation of the `protocol name` with the `event name` by a `:`.
-        2. **Networks**: An array of all the networks the defined decoding function will run for.
+        2. **Chain Names**: An array of all the chains the defined decoding function will run for.
         3. **ABI**: The ABI of the contract on which the event exists.
         4. **Decoding Function**: The actual decoding function, it has 3 arguments passed to it:
             1. `log_event`: The raw log event that is being decoded.
             2. `tx`: The transaction object that generated this log.
-            3. `chain_name`: Network to which the log belongs to.
+            3. `chain_name`: Name of the chain to which the log belongs to.
             4. `covalent_client`: The covalent client created with your covalent API key.
 
     3.  `fallback`: Creates a fallback function for the specified event name. This function is not linked to any chain or contract. Its declaration is:
@@ -77,7 +77,7 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
         3. **Decoding Function**: The actual decoding function, it has 3 arguments passed to it:
             1. `log_event`: The raw log event that is being decoded.
             2. `tx`: The transaction object that generated this log.
-            3. `chain_name`: Network to which the log belongs to.
+            3. `chain_name`: Name of the chain to which the log belongs to.
             4. `covalent_client`: The covalent client created with your covalent API key.
 
     4.  `decode`: The function that chooses which decoding function needs to be called for which log event. It collects all the decoded events for a transaction and returns them in an array of structured data. It is run when the API server receives a request.
@@ -106,11 +106,11 @@ Follow the following steps to start the development server of the **GoldRush Dec
 
 1.  `/api/v1`: The default endpoint for the v1 of the server. A header of the key `x-covalent-api-key` with the value as the [Covalent API key](https://www.covalenthq.com/platform/apikey/) is **mandatory** for the Decoder to work.
 
-    1.  `/tx/decode`: Decodes a transaction of a network.
+    1.  `/tx/decode`: Decodes a transaction of a chain.
 
         Expects the JSON body:
 
-        1.  `network`: The chain name of the transaction
+        1.  `chain_name`: The chain name of the transaction
         2.  `tx_hash`: Hash of the transaction to be decoded.
 
         ```bash
@@ -118,7 +118,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
         --header 'x-covalent-api-key: <COVALENT_API_KEY>' \
         --header 'Content-Type: application/json' \
         --data '{
-        "network": "<CHAIN_NAME>",
+        "chain_name": "<CHAIN_NAME>",
         "tx_hash": "<TX_HASH>"
         }'
         ```
@@ -136,7 +136,7 @@ Follow the following steps to add a Decoding logic for an event from a contract 
 
     -   `address`: This is the contract address. It can either be a standalone contract or a factory contract.
     -   `is_factory`: If the input address is a factory contract or not.
-    -   `network`: The network or chain the added config is for.
+    -   `chain_name`: The chain for which the config is added.
 
     This will modify the configs added to the [Protocols](services/protocols) folder. A config will be added to `${protocol_name}.configs.ts`. A sample decoder with a dummy event name (`<EVENT NAME>`) will be added to `${protocol_name}.decoders.ts`. Along with this, a test file `${protocol_name}.test.ts` will also be created which needs to be fixed so that the test passes.
 
@@ -174,6 +174,7 @@ Follow the following steps to add a Decoding logic for an event from a contract 
         details?: {
             title: string;
             value: string;
+            type: "address" | "text";
         }[];
     }
     ```
