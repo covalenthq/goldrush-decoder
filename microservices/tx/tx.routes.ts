@@ -37,22 +37,22 @@ const handleDecode = async (
             nft_sale_details,
             lending_details,
             safe_details,
-            ...metadata
+            ...tx_metadata
         } = tx;
         const events = await decodeLogsfromTx(
             chain_name as Chain,
             tx,
             covalentApiKey
         );
-        const parsedMetadata = JSON.parse(
-            JSON.stringify(metadata, (_key, value) => {
+        const parsedTx = JSON.parse(
+            JSON.stringify(tx_metadata, (_key, value) => {
                 return typeof value === "bigint" ? value.toString() : value;
             })
         );
         res.json({
             success: true,
             events: events,
-            metadata: parsedMetadata,
+            tx_metadata: parsedTx,
         });
     } catch (error) {
         next(error);
