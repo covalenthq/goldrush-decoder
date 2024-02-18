@@ -25,9 +25,9 @@ const handleDecode = async (
         const covalentApiKey = (req.headers as DecodeTXHeaders)[
             "x-covalent-api-key"
         ];
-        const { network, tx_hash } = req.body as DecodeTXRequest;
+        const { chain_name, tx_hash } = req.body as DecodeTXRequest;
         const tx = await fetchTxFromHash(
-            network as Chain,
+            chain_name as Chain,
             tx_hash,
             covalentApiKey
         );
@@ -40,7 +40,7 @@ const handleDecode = async (
             ...metadata
         } = tx;
         const events = await decodeLogsfromTx(
-            network as Chain,
+            chain_name as Chain,
             tx,
             covalentApiKey
         );

@@ -6,7 +6,7 @@ const configs: Configs = [
         // ? only for testing
         address: "0xaf31fd9c3b0350424bf96e551d2d1264d8466205",
         is_factory: false,
-        network: "eth-mainnet",
+        chain_name: "eth-mainnet",
     },
 ];
 

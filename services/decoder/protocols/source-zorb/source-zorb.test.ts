@@ -10,7 +10,7 @@ describe("source-zorb", () => {
                 "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
             })
             .send({
-                network: "zora-mainnet",
+                chain_name: "zora-mainnet",
                 tx_hash:
                     "0x14219bb78009c81a7192799ba5fe172e8c3e2dd4635cdf0d173af942f0c33a4f",
             });

@@ -10,7 +10,7 @@ describe("covalent-network", () => {
                 "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
             })
             .send({
-                network: "moonbeam-mainnet",
+                chain_name: "moonbeam-mainnet",
                 tx_hash:
                     "0x34ff300049313fde3ffb055d4fcbea1257fd8ca341c913033ccff6976eb7b231",
             });

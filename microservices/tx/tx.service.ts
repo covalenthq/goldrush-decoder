@@ -6,14 +6,14 @@ import {
 } from "@covalenthq/client-sdk";
 
 export const fetchTxFromHash = async (
-    network: Chain,
+    chain_name: Chain,
     tx_hash: string,
     covalentApiKey: string
 ): Promise<Transaction> => {
     const covalentClient = new CovalentClient(covalentApiKey);
     const { data, error_code, error_message } =
         await covalentClient.TransactionService.getTransaction(
-            network,
+            chain_name,
             tx_hash,
             {
                 noLogs: false,
@@ -36,10 +36,10 @@ export const fetchTxFromHash = async (
 };
 
 export const decodeLogsfromTx = async (
-    network: Chain,
+    chain_name: Chain,
     tx: Transaction,
     covalentApiKey: string
 ) => {
-    const events = await GoldRushDecoder.decode(network, tx, covalentApiKey);
+    const events = await GoldRushDecoder.decode(chain_name, tx, covalentApiKey);
     return events;
 };

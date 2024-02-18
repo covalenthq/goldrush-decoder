@@ -8,7 +8,7 @@ describe("4337-entry-point", () => {
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                network: "matic-mainnet",
+                chain_name: "matic-mainnet",
                 tx_hash:
                     "0x8070ea41ed0dcb4f52a6033c0357b2700d689412a2f32effed839df240f37175",
             });
@@ -27,7 +27,7 @@ describe("4337-entry-point", () => {
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                network: "avalanche-mainnet",
+                chain_name: "avalanche-mainnet",
                 tx_hash:
                     "0xc244be4710c3ad34e120c596555ce75c40356c3d9de9b141a8d5ce0ed056e0d2",
             });

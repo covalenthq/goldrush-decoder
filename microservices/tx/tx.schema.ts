@@ -2,10 +2,10 @@ import { Chains } from "@covalenthq/client-sdk";
 import * as yup from "yup";
 
 export const decodeTXRequestSchema = yup.object({
-    network: yup
+    chain_name: yup
         .mixed()
-        .oneOf(Object.values(Chains))
-        .required("network is required"),
+        .oneOf(Object.values(Chains), "chain_name is incorrect")
+        .required("chain_name is required"),
     tx_hash: yup.string().trim().required("tx_hash is required"),
 });
 

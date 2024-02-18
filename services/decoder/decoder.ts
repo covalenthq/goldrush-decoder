@@ -48,10 +48,10 @@ export class GoldRushDecoder {
                 const configs = require(join(protocolPath, configFile))
                     .default as Configs;
                 configs.forEach(
-                    ({ address, is_factory, network, protocol_name }) => {
-                        this.configs[network] ??= {};
-                        this.configs[network][protocol_name] ??= {};
-                        this.configs[network][protocol_name][address] = {
+                    ({ address, is_factory, chain_name, protocol_name }) => {
+                        this.configs[chain_name] ??= {};
+                        this.configs[chain_name][protocol_name] ??= {};
+                        this.configs[chain_name][protocol_name][address] = {
                             is_factory: is_factory,
                         };
                     }
@@ -82,10 +82,10 @@ export class GoldRushDecoder {
 
         const decodersCount = Object.keys(this.decoding_functions).length;
         const configsCount = Object.values(this.configs).reduce(
-            (networkCount, network) => {
+            (chainCount, chain) => {
                 return (
-                    networkCount +
-                    Object.values(network).reduce((addressCount, protocol) => {
+                    chainCount +
+                    Object.values(chain).reduce((addressCount, protocol) => {
                         return addressCount + Object.keys(protocol).length;
                     }, 0)
                 );
@@ -101,7 +101,7 @@ export class GoldRushDecoder {
 
     public static on = (
         event_id: string,
-        networks: Chain[],
+        chain_names: Chain[],
         abi: Abi,
         decoding_function: DecodingFunction
     ) => {
@@ -113,21 +113,23 @@ export class GoldRushDecoder {
         this.decoding_functions.push(decoding_function);
         const decoding_function_index: number =
             this.decoding_functions.length - 1;
-        networks.forEach((network) => {
-            const configExists = this.configs[network]?.[protocol]
+        chain_names.forEach((chain_name) => {
+            const configExists = this.configs[chain_name]?.[protocol]
                 ? true
                 : false;
             if (!configExists) {
                 throw Error(
-                    `config for ${protocol} does not exist on the network ${network}`
+                    `config for ${protocol} does not exist on ${chain_name}`
                 );
             }
-            Object.keys(this.configs[network][protocol]).forEach((address) => {
-                this.decoders[network] ??= {};
-                this.decoders[network][address] ??= {};
-                this.decoders[network][address][topic0_hash] =
-                    decoding_function_index;
-            });
+            Object.keys(this.configs[chain_name][protocol]).forEach(
+                (address) => {
+                    this.decoders[chain_name] ??= {};
+                    this.decoders[chain_name][address] ??= {};
+                    this.decoders[chain_name][address][topic0_hash] =
+                        decoding_function_index;
+                }
+            );
         });
     };
 
@@ -147,7 +149,7 @@ export class GoldRushDecoder {
     };
 
     public static decode = async (
-        network: Chain,
+        chain_name: Chain,
         tx: Transaction,
         covalent_api_key: string
     ) => {
@@ -164,12 +166,12 @@ export class GoldRushDecoder {
             const decoding_index =
                 // !ERROR: add factory_contract_address in the log_event(s)
                 // factory_contract_address ||
-                this.decoders[network][contract_address]?.[topic0_hash];
+                this.decoders[chain_name][contract_address]?.[topic0_hash];
             const fallback_index = this.fallbacks[topic0_hash];
             if (decoding_index !== undefined || fallback_index !== undefined) {
                 const event = await this.decoding_functions[
                     decoding_index ?? fallback_index
-                ](log, tx, network, covalent_client);
+                ](log, tx, chain_name, covalent_client);
                 events.push(event);
             }
         }
