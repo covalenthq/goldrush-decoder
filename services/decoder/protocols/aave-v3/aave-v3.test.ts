@@ -30,7 +30,6 @@ describe("aave-v3", () => {
                 tx_hash:
                     "0xc03e40824bf7e8cda8d9e13f1cbcc6aeec71d1c64e2c557b1744f0b1e526295e",
             });
-        console.log(await res.body);
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Borrow");
         if (!event) {
@@ -54,7 +53,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(6);
     });
@@ -73,7 +71,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(6);
     });
@@ -92,7 +89,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(6);
     });
@@ -111,7 +107,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(6);
     });
@@ -130,7 +125,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(6);
     });
@@ -149,7 +143,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(6);
     });
@@ -186,7 +179,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -205,7 +197,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -224,7 +215,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -243,7 +233,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -262,7 +251,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -281,7 +269,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -300,7 +287,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -337,7 +323,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -356,7 +341,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -375,7 +359,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -394,7 +377,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -413,7 +395,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -432,7 +413,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -451,7 +431,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -488,7 +467,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(3);
     });
@@ -507,7 +485,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(3);
     });
@@ -526,7 +503,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(3);
     });
@@ -545,7 +521,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(3);
     });
@@ -564,7 +539,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(3);
     });
@@ -583,7 +557,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(3);
     });
@@ -602,7 +575,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(3);
     });
@@ -618,7 +590,6 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
@@ -637,11 +608,9 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -657,11 +626,9 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -677,11 +644,9 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -697,11 +662,9 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -717,11 +680,9 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -737,11 +698,9 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -757,11 +716,9 @@ describe("aave-v3", () => {
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Flash Loan");
-        console.log(event);
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(4);
     });
@@ -798,7 +755,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(5);
     });
@@ -817,7 +773,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(5);
     });
@@ -836,7 +791,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(5);
     });
@@ -855,7 +809,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(5);
     });
@@ -874,7 +827,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(5);
     });
@@ -893,7 +845,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(5);
     });
@@ -912,7 +863,6 @@ describe("aave-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        console.log(event);
         expect(event?.tokens?.length).toBeGreaterThan(0);
         expect(event?.details?.length).toEqual(5);
     });

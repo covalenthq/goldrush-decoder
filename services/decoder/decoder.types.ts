@@ -86,4 +86,10 @@ export type Decoders =
       }
     | Record<string, never>;
 
+export type Fallbacks =
+    | {
+          [topic0_hash: string]: number;
+      }
+    | Record<string, never>;
+
 export type DecodingFunctions = DecodingFunction[];
