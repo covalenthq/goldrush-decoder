@@ -172,7 +172,7 @@ Follow the following steps to add a Decoding logic for an event from a contract 
             };
         }[];
         details?: {
-            title: string;
+            heading: string;
             value: string;
             type: "address" | "text";
         }[];

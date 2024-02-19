@@ -62,17 +62,17 @@ GoldRushDecoder.on(
         const nfts: EventNFTs = [];
         const details: EventDetails = [
             {
-                title: "Offerer",
+                heading: "Offerer",
                 value: decoded.offerer,
                 type: "address",
             },
             {
-                title: "Recipient",
+                heading: "Recipient",
                 value: decoded.recipient,
                 type: "address",
             },
             {
-                title: "Order Hash",
+                heading: "Order Hash",
                 value: decoded.orderHash,
                 type: "address",
             },

@@ -41,17 +41,17 @@ GoldRushDecoder.on(
             },
             details: [
                 {
-                    title: "Specimen Hash",
+                    heading: "Specimen Hash",
                     value: decoded.specimenHash,
                     type: "address",
                 },
                 {
-                    title: "Storage URL",
+                    heading: "Storage URL",
                     value: decoded.storageURL,
                     type: "text",
                 },
                 {
-                    title: "Submitted Stake",
+                    heading: "Submitted Stake",
                     value: (
                         decoded.submittedStake / BigInt(Math.pow(10, 18))
                     ).toString(),

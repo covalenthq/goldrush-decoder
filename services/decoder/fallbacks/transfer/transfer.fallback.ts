@@ -64,12 +64,12 @@ GoldRushDecoder.fallback(
 
         const details: EventDetails = [
             {
-                title: "From",
+                heading: "From",
                 value: decoded.from,
                 type: "address",
             },
             {
-                title: "To",
+                heading: "To",
                 value: decoded.to,
                 type: "address",
             },
