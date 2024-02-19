@@ -55,22 +55,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                title: "UUID",
+                heading: "UUID",
                 value: decoded.uuid,
                 type: "text",
             },
             {
-                title: "Beneficiary",
+                heading: "Beneficiary",
                 value: decoded.beneficiary,
                 type: "address",
             },
             {
-                title: "Initiator",
+                heading: "Initiator",
                 value: decoded.initiator,
                 type: "address",
             },
             {
-                title: "Expected Amount",
+                heading: "Expected Amount",
                 value: calculatePrettyBalance(
                     decoded.expectedAmount,
                     destToken?.[0]?.contract_decimals ?? 0

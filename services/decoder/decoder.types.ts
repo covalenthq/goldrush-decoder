@@ -17,7 +17,7 @@ export type Configs = {
 }[];
 
 export type EventDetails = {
-    title: string;
+    heading: string;
     value: string;
     type: "address" | "text";
 }[];

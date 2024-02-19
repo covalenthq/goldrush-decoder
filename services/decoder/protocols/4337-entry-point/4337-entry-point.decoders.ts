@@ -43,7 +43,7 @@ GoldRushDecoder.on(
             },
             details: [
                 {
-                    title: "Gas Cost",
+                    heading: "Gas Cost",
                     value: (
                         decoded.actualGasCost /
                         BigInt(Math.pow(10, sender_contract_decimals))
@@ -51,7 +51,7 @@ GoldRushDecoder.on(
                     type: "text",
                 },
                 {
-                    title: "Gas Used",
+                    heading: "Gas Used",
                     value: (
                         decoded.actualGasUsed /
                         BigInt(Math.pow(10, sender_contract_decimals))
@@ -59,17 +59,17 @@ GoldRushDecoder.on(
                     type: "text",
                 },
                 {
-                    title: "Paymaster",
+                    heading: "Paymaster",
                     value: decoded.paymaster,
                     type: "address",
                 },
                 {
-                    title: "Sender",
+                    heading: "Sender",
                     value: decoded.sender,
                     type: "address",
                 },
                 {
-                    title: "User Operation Hash",
+                    heading: "User Operation Hash",
                     value: decoded.userOpHash,
                     type: "address",
                 },

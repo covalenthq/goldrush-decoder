@@ -51,22 +51,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                title: "Reserve",
+                heading: "Reserve",
                 value: decoded.reserve,
                 type: "address",
             },
             {
-                title: "User",
+                heading: "User",
                 value: decoded.user,
                 type: "address",
             },
             {
-                title: "On Behalf Of",
+                heading: "On Behalf Of",
                 value: decoded.onBehalfOf,
                 type: "address",
             },
             {
-                title: "Borrow Rate",
+                heading: "Borrow Rate",
                 value:
                     new Intl.NumberFormat().format(
                         (Number(decoded.borrowRate) / 1e27) * 100
@@ -74,12 +74,12 @@ GoldRushDecoder.on(
                 type: "text",
             },
             {
-                title: "Interest Rate Mode",
+                heading: "Interest Rate Mode",
                 value: INTEREST_RATE_MODE[decoded.interestRateMode],
                 type: "text",
             },
             {
-                title: "Referal Code",
+                heading: "Referal Code",
                 value: String(decoded.referralCode),
                 type: "text",
             },
@@ -179,22 +179,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                title: "Target",
+                heading: "Target",
                 value: decoded.target,
                 type: "address",
             },
             {
-                title: "Initiator",
+                heading: "Initiator",
                 value: decoded.initiator,
                 type: "address",
             },
             {
-                title: "Asset",
+                heading: "Asset",
                 value: decoded.asset,
                 type: "address",
             },
             {
-                title: "Interest Rate Mode",
+                heading: "Interest Rate Mode",
                 value: INTEREST_RATE_MODE[decoded.interestRateMode],
                 type: "text",
             },
@@ -283,27 +283,27 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                title: "Collateral Asset",
+                heading: "Collateral Asset",
                 value: decoded.collateralAsset,
                 type: "address",
             },
             {
-                title: "Debt Asset",
+                heading: "Debt Asset",
                 value: decoded.debtAsset,
                 type: "address",
             },
             {
-                title: "User",
+                heading: "User",
                 value: decoded.user,
                 type: "address",
             },
             {
-                title: "Liquidator",
+                heading: "Liquidator",
                 value: decoded.liquidator,
                 type: "address",
             },
             {
-                title: "Receive A Token",
+                heading: "Receive A Token",
                 value: decoded.receiveAToken ? "Yes" : "No",
                 type: "text",
             },
@@ -408,22 +408,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                title: "Reserve",
+                heading: "Reserve",
                 value: decoded.reserve,
                 type: "address",
             },
             {
-                title: "User",
+                heading: "User",
                 value: decoded.user,
                 type: "address",
             },
             {
-                title: "Repayer",
+                heading: "Repayer",
                 value: decoded.repayer,
                 type: "address",
             },
             {
-                title: "Use A Tokens",
+                heading: "Use A Tokens",
                 value: decoded.useATokens ? "Yes" : "No",
                 type: "text",
             },
@@ -508,22 +508,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                title: "Reserve",
+                heading: "Reserve",
                 value: decoded.reserve,
                 type: "address",
             },
             {
-                title: "User",
+                heading: "User",
                 value: decoded.user,
                 type: "address",
             },
             {
-                title: "On Behalf Of",
+                heading: "On Behalf Of",
                 value: decoded.onBehalfOf,
                 type: "address",
             },
             {
-                title: "Referal Code",
+                heading: "Referal Code",
                 value: String(decoded.referralCode),
                 type: "text",
             },
@@ -604,17 +604,17 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                title: "Reserve",
+                heading: "Reserve",
                 value: decoded.reserve,
                 type: "address",
             },
             {
-                title: "User",
+                heading: "User",
                 value: decoded.user,
                 type: "address",
             },
             {
-                title: "To",
+                heading: "To",
                 value: decoded.to,
                 type: "address",
             },

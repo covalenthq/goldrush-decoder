@@ -109,12 +109,12 @@ GoldRushDecoder.on(
             },
             details: [
                 {
-                    title: "Sender",
+                    heading: "Sender",
                     type: "address",
                     value: decoded.sender,
                 },
                 {
-                    title: "To",
+                    heading: "To",
                     type: "address",
                     value: decoded.to,
                 },
@@ -206,7 +206,7 @@ GoldRushDecoder.on(
             },
             details: [
                 {
-                    title: "Sender",
+                    heading: "Sender",
                     type: "address",
                     value: decoded.sender,
                 },
