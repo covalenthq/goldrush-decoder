@@ -253,12 +253,12 @@ GoldRushDecoder.on(
             },
             details: [
                 {
-                    title: "Sender",
+                    heading: "Sender",
                     value: decoded.sender,
                     type: "address",
                 },
                 {
-                    title: "To",
+                    heading: "To",
                     value: decoded.to,
                     type: "address",
                 },
@@ -444,7 +444,7 @@ GoldRushDecoder.on(
             },
             details: [
                 {
-                    title: `${
+                    heading: `${
                         data?.items?.[0]?.token_0?.contract_name || ""
                     } Symbol`,
                     value:
@@ -452,7 +452,7 @@ GoldRushDecoder.on(
                     type: "text",
                 },
                 {
-                    title: `${
+                    heading: `${
                         data?.items?.[0]?.token_0?.contract_name || ""
                     } Decimals`,
                     value: (
@@ -461,14 +461,14 @@ GoldRushDecoder.on(
                     type: "text",
                 },
                 {
-                    title: `${
+                    heading: `${
                         data?.items?.[0]?.token_0?.contract_name || ""
                     } Address`,
                     value: data?.items?.[0]?.token_0?.contract_address || "",
                     type: "address",
                 },
                 {
-                    title: `${
+                    heading: `${
                         data?.items?.[0]?.token_1?.contract_name || ""
                     } Symbol`,
                     value:
@@ -476,7 +476,7 @@ GoldRushDecoder.on(
                     type: "text",
                 },
                 {
-                    title: `${
+                    heading: `${
                         data?.items?.[0]?.token_1?.contract_name || ""
                     } Decimals`,
                     value: (
@@ -485,7 +485,7 @@ GoldRushDecoder.on(
                     type: "text",
                 },
                 {
-                    title: `${
+                    heading: `${
                         data?.items?.[0]?.token_1?.contract_name || ""
                     } Address`,
                     value: data?.items?.[0]?.token_1?.contract_address || "",

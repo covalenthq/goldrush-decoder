@@ -11,19 +11,19 @@ const configs: Configs = [
         address: "0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc",
         is_factory: false,
         protocol_name: "uniswap-v2",
-        network: "eth-mainnet",
+        chain_name: "eth-mainnet",
     },
     {
         address: "0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852",
         is_factory: false,
         protocol_name: "uniswap-v2",
-        network: "eth-mainnet",
+        chain_name: "eth-mainnet",
     },
     {
         address: "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
         is_factory: true,
         protocol_name: "uniswap-v2",
-        network: "eth-mainnet",
+        chain_name: "eth-mainnet",
     },
 ];
 
