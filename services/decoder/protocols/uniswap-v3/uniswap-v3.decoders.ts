@@ -125,7 +125,7 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: FactoryABI,
+            abi: PairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Burn",
@@ -178,6 +178,228 @@ GoldRushDecoder.on(
             action: DECODED_ACTION.SWAPPED,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Burn",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Uniswap V3",
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v3:Mint",
+    ["eth-mainnet"],
+    PairABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PairABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Mint",
+        }) as { 
+            eventName: "Mint"; 
+            args: {
+                sender: string;
+                owner: string;
+                tickLower: bigint;
+                tickUpper: bigint;
+                amount: bigint;
+                amount0: bigint;
+                amount1: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "sender",
+                value: decoded.sender,
+                type: "address"
+            },
+            {
+                heading: "owner",
+                value: decoded.owner,
+                type: "address"
+            },
+            {
+                heading: "tickLower",
+                value: decoded.tickLower.toString(),
+                type: "text"
+            },
+            {
+                heading: "tickUpper",
+                value: decoded.tickUpper.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount",
+                value: decoded.amount.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount0",
+                value: decoded.amount0.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount1",
+                value: decoded.amount1.toString(),
+                type: "text"
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Mint",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Uniswap V3",
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v3:Swap",
+    ["eth-mainnet"],
+    PairABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PairABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Swap",
+        }) as { 
+            eventName: "Swap"; 
+            args: {
+                sender: string;
+                recipient: string;
+                amount0: bigint;
+                amount1: bigint;
+                sqrtPriceX96: bigint;
+                liquidity: bigint;
+                tick: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "sender",
+                value: decoded.sender,
+                type: "address"
+            },
+            {
+                heading: "recipient",
+                value: decoded.recipient,
+                type: "address"
+            },
+            {
+                heading: "amount0",
+                value: decoded.amount0.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount1",
+                value: decoded.amount1.toString(),
+                type: "text"
+            },
+            {
+                heading: "sqrtPriceX96",
+                value: decoded.sqrtPriceX96.toString(),
+                type: "text"
+            },
+            {
+                heading: "liquidity",
+                value: decoded.liquidity.toString(),
+                type: "text"
+            },
+            {
+                heading: "tick",
+                value: decoded.tick.toString(),
+                type: "text"
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Swap",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Uniswap V3",
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v3:Collect",
+    ["eth-mainnet"],
+    PairABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PairABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Collect",
+        }) as { 
+            eventName: "Collect"; 
+            args: {
+                owner: string;
+                recipient: string;
+                tickLower: bigint;
+                tickUpper: bigint;
+                amount0: bigint;
+                amount1: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "owner",
+                value: decoded.owner,
+                type: "address"
+            },
+            {
+                heading: "recipient",
+                value: decoded.recipient,
+                type: "address"
+            },
+            {
+                heading: "tickLower",
+                value: decoded.tickLower.toString(),
+                type: "text"
+            },
+            {
+                heading: "tickUpper",
+                value: decoded.tickUpper.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount0",
+                value: decoded.amount0.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount1",
+                value: decoded.amount1.toString(),
+                type: "text"
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Collect Fees",
             protocol: {
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
