@@ -444,50 +444,50 @@ GoldRushDecoder.on(
             },
             details: [
                 {
-                    heading: `${
-                        data?.items?.[0]?.token_0?.contract_name || ""
-                    } Symbol`,
+                    heading: "Token 0 Name",
+                    value:
+                        data?.items?.[0]?.token_0?.contract_name || "",
+                    type: "text",
+                },
+                {
+                    heading: "Token 0 Ticker Symbol",
                     value:
                         data?.items?.[0]?.token_0?.contract_ticker_symbol || "",
                     type: "text",
                 },
                 {
-                    heading: `${
-                        data?.items?.[0]?.token_0?.contract_name || ""
-                    } Decimals`,
+                    heading: "Token 0 Decimals",
                     value: (
                         data?.items?.[0]?.token_0?.contract_decimals ?? 18
                     ).toString(),
                     type: "text",
                 },
                 {
-                    heading: `${
-                        data?.items?.[0]?.token_0?.contract_name || ""
-                    } Address`,
+                    heading: "Token 0 Address",
                     value: data?.items?.[0]?.token_0?.contract_address || "",
                     type: "address",
                 },
                 {
-                    heading: `${
-                        data?.items?.[0]?.token_1?.contract_name || ""
-                    } Symbol`,
+                    heading: "Token 1 Name",
+                    value:
+                        data?.items?.[0]?.token_1?.contract_name || "",
+                    type: "text",
+                },
+                {
+                    heading: "Token 1 Ticker Symbol",
                     value:
                         data?.items?.[0]?.token_1?.contract_ticker_symbol || "",
                     type: "text",
                 },
                 {
-                    heading: `${
-                        data?.items?.[0]?.token_1?.contract_name || ""
-                    } Decimals`,
+                    heading: "Token 1 Decimals",
                     value: (
                         data?.items?.[0]?.token_1?.contract_decimals ?? 18
                     ).toString(),
                     type: "text",
                 },
                 {
-                    heading: `${
-                        data?.items?.[0]?.token_1?.contract_name || ""
-                    } Address`,
+                    heading: "Token 1 Address",
                     value: data?.items?.[0]?.token_1?.contract_address || "",
                     type: "address",
                 },
