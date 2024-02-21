@@ -87,4 +87,55 @@ describe("uniswap-v3", () => {
         const testAdded: boolean = false;
         expect(testAdded).toEqual(true);
     });
+
+    test("eth-mainnet:Flash", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash: "0xe3fcabe33a5ebf9ed6450f11b907da4a5d72f2e58917e8b2ae20fb259be385d4",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Flash");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        const testAdded: boolean = false;
+        expect(testAdded).toEqual(true);
+    });
+
+    test("eth-mainnet:DecreaseLiquidity", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash: "0x509ffb3e2e1338991b27284d6365a93bdf36ac50a9a89e6260b5f791bf0e50e6",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "DecreaseLiquidity");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        const testAdded: boolean = false;
+        expect(testAdded).toEqual(true);
+    });
+
+    test("eth-mainnet:IncreaseLiquidity", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash: "0x509ffb3e2e1338991b27284d6365a93bdf36ac50a9a89e6260b5f791bf0e50e6",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "IncreaseLiquidity");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        const testAdded: boolean = false;
+        expect(testAdded).toEqual(true);
+    });
 });

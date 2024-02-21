@@ -13,6 +13,12 @@ const configs: Configs = [
         protocol_name: "uniswap-v3",
         chain_name: "eth-mainnet",
     },
+    {
+        address: "0xc36442b4a4522e871399cd717abdd847ab11fe88",
+        is_factory: false,
+        protocol_name: "uniswap-v3",
+        chain_name: "eth-mainnet",
+    },
 ];
 
 export default configs;

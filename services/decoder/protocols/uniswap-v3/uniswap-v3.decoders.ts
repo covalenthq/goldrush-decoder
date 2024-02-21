@@ -7,6 +7,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import FactoryABI from "./abis/uniswap-v3.factory.abi.json";
 import PairABI from "./abis/uniswap-v3.pair.abi.json";
+import PositionManagerABI from "./abis/uniswap-v3.NonfungiblePositionManager.abi.json";
 import { TimestampParser } from "../../../../utils/functions";
 
 GoldRushDecoder.on(
@@ -383,6 +384,250 @@ GoldRushDecoder.on(
                 heading: "tickUpper",
                 value: decoded.tickUpper.toString(),
                 type: "text"
+            },
+            {
+                heading: "amount0",
+                value: decoded.amount0.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount1",
+                value: decoded.amount1.toString(),
+                type: "text"
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Collect Fees",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Uniswap V3",
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v3:Flash",
+    ["eth-mainnet"],
+    PairABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PairABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Flash",
+        }) as { 
+            eventName: "Flash"; 
+            args: {
+                sender: string;
+                recipient: string;
+                amount0: bigint;
+                amount1: bigint;
+                paid0: bigint;
+                paid1: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "sender",
+                value: decoded.sender,
+                type: "address"
+            },
+            {
+                heading: "recipient",
+                value: decoded.recipient,
+                type: "address"
+            },
+            {
+                heading: "amount0",
+                value: decoded.amount0.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount1",
+                value: decoded.amount1.toString(),
+                type: "text"
+            },
+            {
+                heading: "paid0",
+                value: decoded.paid0.toString(),
+                type: "text"
+            },
+            {
+                heading: "paid1",
+                value: decoded.paid1.toString(),
+                type: "text"
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Flash Loan",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Uniswap V3",
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v3:DecreaseLiquidity",
+    ["eth-mainnet"],
+    PositionManagerABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PositionManagerABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "DecreaseLiquidity",
+        }) as { 
+            eventName: "DecreaseLiquidity"; 
+            args: {
+                tokenId: bigint;
+                liquidity: bigint;
+                amount0: bigint;
+                amount1: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "tokenId",
+                value: decoded.tokenId.toString(),
+                type: "text"
+            },
+            {
+                heading: "liquidity",
+                value: decoded.liquidity.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount0",
+                value: decoded.amount0.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount1",
+                value: decoded.amount1.toString(),
+                type: "text"
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Decrease Liquidity",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Uniswap V3",
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v3:IncreaseLiquidity",
+    ["eth-mainnet"],
+    PositionManagerABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PositionManagerABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "IncreaseLiquidity",
+        }) as { 
+            eventName: "IncreaseLiquidity"; 
+            args: {
+                tokenId: bigint;
+                liquidity: bigint;
+                amount0: bigint;
+                amount1: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "tokenId",
+                value: decoded.tokenId.toString(),
+                type: "text"
+            },
+            {
+                heading: "liquidity",
+                value: decoded.liquidity.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount0",
+                value: decoded.amount0.toString(),
+                type: "text"
+            },
+            {
+                heading: "amount1",
+                value: decoded.amount1.toString(),
+                type: "text"
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Increase Liquidity",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Uniswap V3",
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "uniswap-v3:Collect",
+    ["eth-mainnet"],
+    PositionManagerABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: PositionManagerABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Collect",
+        }) as { 
+            eventName: "Collect"; 
+            args: {
+                tokenId: bigint;
+                recipient: string;
+                amount0: bigint;
+                amount1: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "tokenId",
+                value: decoded.tokenId.toString(),
+                type: "text"
+            },
+            {
+                heading: "recipient",
+                value: decoded.recipient,
+                type: "address"
             },
             {
                 heading: "amount0",
