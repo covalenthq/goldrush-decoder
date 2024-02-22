@@ -36,29 +36,29 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "token0",
+                heading: "Token 0",
                 value: decoded.token0,
                 type: "address",
             },
             {
-                heading: "token1",
+                heading: "Token 1",
                 value: decoded.token0,
                 type: "address",
             },
             {
-                heading: "fee",
+                heading: "Fee",
                 value:
                     new Intl.NumberFormat().format(Number(decoded.fee) / 1e4) +
                     "%",
                 type: "text",
             },
             {
-                heading: "tickSpacing",
+                heading: "Tick Spacing",
                 value: decoded.tickSpacing.toString(),
                 type: "text",
             },
             {
-                heading: "pool",
+                heading: "Pool",
                 value: decoded.pool,
                 type: "address",
             },
@@ -147,32 +147,32 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "owner",
+                heading: "Owner",
                 value: decoded.owner,
                 type: "address",
             },
             {
-                heading: "tickLower",
+                heading: "Tick Lower",
                 value: decoded.tickLower.toString(),
                 type: "text",
             },
             {
-                heading: "tickUpper",
+                heading: "Tick Upper",
                 value: decoded.tickUpper.toString(),
                 type: "text",
             },
             {
-                heading: "amount",
+                heading: "Amount",
                 value: decoded.amount.toString(),
                 type: "text",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
@@ -218,37 +218,37 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "sender",
+                heading: "Sender",
                 value: decoded.sender,
                 type: "address",
             },
             {
-                heading: "owner",
+                heading: "Owner",
                 value: decoded.owner,
                 type: "address",
             },
             {
-                heading: "tickLower",
+                heading: "Tick Lower",
                 value: decoded.tickLower.toString(),
                 type: "text",
             },
             {
-                heading: "tickUpper",
+                heading: "Tick Upper",
                 value: decoded.tickUpper.toString(),
                 type: "text",
             },
             {
-                heading: "amount",
+                heading: "Amount",
                 value: decoded.amount.toString(),
                 type: "text",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
@@ -294,22 +294,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "sender",
+                heading: "Sender",
                 value: decoded.sender,
                 type: "address",
             },
             {
-                heading: "recipient",
+                heading: "Recipient",
                 value: decoded.recipient,
                 type: "address",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
@@ -319,12 +319,12 @@ GoldRushDecoder.on(
                 type: "text",
             },
             {
-                heading: "liquidity",
+                heading: "Liquidity",
                 value: decoded.liquidity.toString(),
                 type: "text",
             },
             {
-                heading: "tick",
+                heading: "Tick",
                 value: decoded.tick.toString(),
                 type: "text",
             },
@@ -369,32 +369,32 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "owner",
+                heading: "Owner",
                 value: decoded.owner,
                 type: "address",
             },
             {
-                heading: "recipient",
+                heading: "Recipient",
                 value: decoded.recipient,
                 type: "address",
             },
             {
-                heading: "tickLower",
+                heading: "Tick Lower",
                 value: decoded.tickLower.toString(),
                 type: "text",
             },
             {
-                heading: "tickUpper",
+                heading: "Tick Upper",
                 value: decoded.tickUpper.toString(),
                 type: "text",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
@@ -439,32 +439,32 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "sender",
+                heading: "Sender",
                 value: decoded.sender,
                 type: "address",
             },
             {
-                heading: "recipient",
+                heading: "Recipient",
                 value: decoded.recipient,
                 type: "address",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
             {
-                heading: "paid0",
+                heading: "Paid 0",
                 value: decoded.paid0.toString(),
                 type: "text",
             },
             {
-                heading: "paid1",
+                heading: "Paid 1",
                 value: decoded.paid1.toString(),
                 type: "text",
             },
@@ -507,22 +507,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "tokenId",
+                heading: "Token ID",
                 value: decoded.tokenId.toString(),
                 type: "text",
             },
             {
-                heading: "liquidity",
+                heading: "Liquidity",
                 value: decoded.liquidity.toString(),
                 type: "text",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
@@ -565,22 +565,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "tokenId",
+                heading: "Token ID",
                 value: decoded.tokenId.toString(),
                 type: "text",
             },
             {
-                heading: "liquidity",
+                heading: "Liquidity",
                 value: decoded.liquidity.toString(),
                 type: "text",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
@@ -623,22 +623,22 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "tokenId",
+                heading: "Token ID",
                 value: decoded.tokenId.toString(),
                 type: "text",
             },
             {
-                heading: "recipient",
+                heading: "Recipient",
                 value: decoded.recipient,
                 type: "address",
             },
             {
-                heading: "amount0",
+                heading: "Amount 0",
                 value: decoded.amount0.toString(),
                 type: "text",
             },
             {
-                heading: "amount1",
+                heading: "Amount 1",
                 value: decoded.amount1.toString(),
                 type: "text",
             },
