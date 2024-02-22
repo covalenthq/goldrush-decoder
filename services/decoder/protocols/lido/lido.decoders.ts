@@ -32,12 +32,12 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "from",
+                heading: "From",
                 value: decoded.from,
                 type: "address",
             },
             {
-                heading: "to",
+                heading: "To",
                 value: decoded.to,
                 type: "address",
             },
@@ -150,17 +150,17 @@ GoldRushDecoder.on(
 
         const details: EventDetails = [
             {
-                heading: "sender",
+                heading: "Sender",
                 value: decoded.sender,
                 type: "address",
             },
             {
-                heading: "to",
+                heading: "To",
                 value: decoded.amount.toString(),
                 type: "text",
             },
             {
-                heading: "referral",
+                heading: "Referral",
                 value: decoded.referral,
                 type: "address",
             },
