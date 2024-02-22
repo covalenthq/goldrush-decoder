@@ -647,7 +647,7 @@ GoldRushDecoder.on(
         return {
             action: DECODED_ACTION.SWAPPED,
             category: DECODED_EVENT_CATEGORY.DEX,
-            name: "Collect Fees",
+            name: "Collect",
             protocol: {
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",

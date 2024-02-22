@@ -13,12 +13,12 @@ describe("uniswap-v3", () => {
                     "0xf87d91f3d72a8e912c020c2e316151f3557b1217b44d4f6b6bec126448318530",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "PoolCreated");
+        const event = events.find(({ name }) => name === "Pool Created");
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.tokens?.length).toEqual(2);
+        expect(event.details?.length).toEqual(5);
     });
 
     test("eth-mainnet:Burn", async () => {
@@ -35,8 +35,7 @@ describe("uniswap-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.details?.length).toEqual(6);
     });
 
     test("eth-mainnet:Mint", async () => {
@@ -53,8 +52,7 @@ describe("uniswap-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.details?.length).toEqual(7);
     });
 
     test("eth-mainnet:Swap", async () => {
@@ -71,8 +69,7 @@ describe("uniswap-v3", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.details?.length).toEqual(7);
     });
 
     test("eth-mainnet:Collect", async () => {
@@ -85,12 +82,11 @@ describe("uniswap-v3", () => {
                     "0x7c927bbab8a2f60f0a36ee9425c03db556a44c87dddf855d5641f5f1c2270ebd",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Collect");
+        const event = events.find(({ name }) => name === "Collect Fees");
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.details?.length).toEqual(6);
     });
 
     test("eth-mainnet:Flash", async () => {
@@ -103,12 +99,11 @@ describe("uniswap-v3", () => {
                     "0xe3fcabe33a5ebf9ed6450f11b907da4a5d72f2e58917e8b2ae20fb259be385d4",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Flash");
+        const event = events.find(({ name }) => name === "Flash Loan");
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.details?.length).toEqual(6);
     });
 
     test("eth-mainnet:DecreaseLiquidity", async () => {
@@ -118,15 +113,14 @@ describe("uniswap-v3", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x509ffb3e2e1338991b27284d6365a93bdf36ac50a9a89e6260b5f791bf0e50e6",
+                    "0x3d1748ea19a9c6c3b7690652fca03c54f6636f1403b9df25e4965ddfa765f06c",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "DecreaseLiquidity");
+        const event = events.find(({ name }) => name === "Decrease Liquidity");
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.details?.length).toEqual(4);
     });
 
     test("eth-mainnet:IncreaseLiquidity", async () => {
@@ -139,11 +133,10 @@ describe("uniswap-v3", () => {
                     "0x509ffb3e2e1338991b27284d6365a93bdf36ac50a9a89e6260b5f791bf0e50e6",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "IncreaseLiquidity");
+        const event = events.find(({ name }) => name === "Increase Liquidity");
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event.details?.length).toEqual(4);
     });
 });
