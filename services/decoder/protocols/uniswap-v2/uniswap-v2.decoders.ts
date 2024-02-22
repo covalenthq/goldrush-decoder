@@ -445,8 +445,7 @@ GoldRushDecoder.on(
             details: [
                 {
                     heading: "Token 0 Name",
-                    value:
-                        data?.items?.[0]?.token_0?.contract_name || "",
+                    value: data?.items?.[0]?.token_0?.contract_name || "",
                     type: "text",
                 },
                 {
@@ -469,8 +468,7 @@ GoldRushDecoder.on(
                 },
                 {
                     heading: "Token 1 Name",
-                    value:
-                        data?.items?.[0]?.token_1?.contract_name || "",
+                    value: data?.items?.[0]?.token_1?.contract_name || "",
                     type: "text",
                 },
                 {
