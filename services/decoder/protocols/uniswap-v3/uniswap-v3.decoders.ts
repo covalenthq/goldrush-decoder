@@ -1,5 +1,6 @@
 import { GoldRushDecoder } from "../../decoder";
-import { EventDetails, EventTokens, type EventType } from "../../decoder.types";
+import type { EventDetails, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
@@ -22,8 +23,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "PoolCreated",
-        }) as { 
-            eventName: "PoolCreated"; 
+        }) as {
+            eventName: "PoolCreated";
             args: {
                 token0: string;
                 token1: string;
@@ -37,27 +38,29 @@ GoldRushDecoder.on(
             {
                 heading: "token0",
                 value: decoded.token0,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "token1",
                 value: decoded.token0,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "fee",
-                value: new Intl.NumberFormat().format((Number(decoded.fee) / 1e4)) + "%",
-                type: "text"
+                value:
+                    new Intl.NumberFormat().format(Number(decoded.fee) / 1e4) +
+                    "%",
+                type: "text",
             },
             {
                 heading: "tickSpacing",
                 value: decoded.tickSpacing.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "pool",
                 value: decoded.pool,
-                type: "address"
+                type: "address",
             },
         ];
 
@@ -130,8 +133,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Burn",
-        }) as { 
-            eventName: "Burn"; 
+        }) as {
+            eventName: "Burn";
             args: {
                 owner: string;
                 tickLower: bigint;
@@ -146,32 +149,32 @@ GoldRushDecoder.on(
             {
                 heading: "owner",
                 value: decoded.owner,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "tickLower",
                 value: decoded.tickLower.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "tickUpper",
                 value: decoded.tickUpper.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount",
                 value: decoded.amount.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
@@ -200,8 +203,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Mint",
-        }) as { 
-            eventName: "Mint"; 
+        }) as {
+            eventName: "Mint";
             args: {
                 sender: string;
                 owner: string;
@@ -217,37 +220,37 @@ GoldRushDecoder.on(
             {
                 heading: "sender",
                 value: decoded.sender,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "owner",
                 value: decoded.owner,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "tickLower",
                 value: decoded.tickLower.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "tickUpper",
                 value: decoded.tickUpper.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount",
                 value: decoded.amount.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
@@ -276,8 +279,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Swap",
-        }) as { 
-            eventName: "Swap"; 
+        }) as {
+            eventName: "Swap";
             args: {
                 sender: string;
                 recipient: string;
@@ -293,37 +296,37 @@ GoldRushDecoder.on(
             {
                 heading: "sender",
                 value: decoded.sender,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "recipient",
                 value: decoded.recipient,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "sqrtPriceX96",
                 value: decoded.sqrtPriceX96.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "liquidity",
                 value: decoded.liquidity.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "tick",
                 value: decoded.tick.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
@@ -352,8 +355,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Collect",
-        }) as { 
-            eventName: "Collect"; 
+        }) as {
+            eventName: "Collect";
             args: {
                 owner: string;
                 recipient: string;
@@ -368,32 +371,32 @@ GoldRushDecoder.on(
             {
                 heading: "owner",
                 value: decoded.owner,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "recipient",
                 value: decoded.recipient,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "tickLower",
                 value: decoded.tickLower.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "tickUpper",
                 value: decoded.tickUpper.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
@@ -422,8 +425,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Flash",
-        }) as { 
-            eventName: "Flash"; 
+        }) as {
+            eventName: "Flash";
             args: {
                 sender: string;
                 recipient: string;
@@ -438,32 +441,32 @@ GoldRushDecoder.on(
             {
                 heading: "sender",
                 value: decoded.sender,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "recipient",
                 value: decoded.recipient,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "paid0",
                 value: decoded.paid0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "paid1",
                 value: decoded.paid1.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
@@ -492,8 +495,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "DecreaseLiquidity",
-        }) as { 
-            eventName: "DecreaseLiquidity"; 
+        }) as {
+            eventName: "DecreaseLiquidity";
             args: {
                 tokenId: bigint;
                 liquidity: bigint;
@@ -506,22 +509,22 @@ GoldRushDecoder.on(
             {
                 heading: "tokenId",
                 value: decoded.tokenId.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "liquidity",
                 value: decoded.liquidity.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
@@ -550,8 +553,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "IncreaseLiquidity",
-        }) as { 
-            eventName: "IncreaseLiquidity"; 
+        }) as {
+            eventName: "IncreaseLiquidity";
             args: {
                 tokenId: bigint;
                 liquidity: bigint;
@@ -564,22 +567,22 @@ GoldRushDecoder.on(
             {
                 heading: "tokenId",
                 value: decoded.tokenId.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "liquidity",
                 value: decoded.liquidity.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
@@ -608,8 +611,8 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Collect",
-        }) as { 
-            eventName: "Collect"; 
+        }) as {
+            eventName: "Collect";
             args: {
                 tokenId: bigint;
                 recipient: string;
@@ -622,22 +625,22 @@ GoldRushDecoder.on(
             {
                 heading: "tokenId",
                 value: decoded.tokenId.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "recipient",
                 value: decoded.recipient,
-                type: "address"
+                type: "address",
             },
             {
                 heading: "amount0",
                 value: decoded.amount0.toString(),
-                type: "text"
+                type: "text",
             },
             {
                 heading: "amount1",
                 value: decoded.amount1.toString(),
-                type: "text"
+                type: "text",
             },
         ];
 
