@@ -131,3 +131,4 @@ dist
 
 # Custom added
 decoders.dump
+.env.example
