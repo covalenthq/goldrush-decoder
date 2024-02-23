@@ -146,4 +146,81 @@ describe("lido", () => {
         }
         expect(event.details?.length).toEqual(2);
     });
+
+    test("eth-mainnet:Withdrawal Requested", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash:
+                    "0x1cdcd47924e59bab5026da93fa5f5f7dd96718fee5e9e2924a4ba39e23da3a0a",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(
+            ({ name }) => name === "Withdrawal Requested"
+        );
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.details?.length).toEqual(4);
+        expect(event.tokens?.length).toEqual(1);
+    });
+
+    test("eth-mainnet:Withdrawal Claimed", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash:
+                    "0xfadc5ea23b04adf5a55f4933a464ed2deb03b9cbf42257831e3e5c93203123d7",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Withdrawal Claimed");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.details?.length).toEqual(3);
+        expect(event.tokens?.length).toEqual(1);
+    });
+
+    test("eth-mainnet:Batch Metadata Update", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash:
+                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(
+            ({ name }) => name === "Batch Metadata Update"
+        );
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.details?.length).toEqual(2);
+    });
+
+    test("eth-mainnet:Withdrawals Finalized", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash:
+                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(
+            ({ name }) => name === "Withdrawals Finalized"
+        );
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.details?.length).toEqual(4);
+        expect(event.tokens?.length).toEqual(1);
+    });
 });

@@ -7,6 +7,7 @@ import {
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/lido.steth.abi.json";
+import WithdrawalABI from "./abis/lido.withdrawalQueue.abi.json";
 import { addMethod, date } from "yup";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 import { TimestampParser } from "../../../../utils/functions";
@@ -588,6 +589,293 @@ GoldRushDecoder.on(
                 name: "Lido" as string,
             },
             details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "lido:WithdrawalRequested",
+    ["eth-mainnet"],
+    WithdrawalABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: WithdrawalABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "WithdrawalRequested",
+        }) as {
+            eventName: "WithdrawalRequested";
+            args: {
+                requestId: bigint;
+                requestor: string;
+                owner: string;
+                amountOfStETH: bigint;
+                amountOfShares: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "Request ID",
+                value: decoded.requestId.toString(),
+                type: "text",
+            },
+            {
+                heading: "Requestor",
+                value: decoded.requestor,
+                type: "address",
+            },
+            {
+                heading: "Owner",
+                value: decoded.owner,
+                type: "address",
+            },
+            {
+                heading: "Amount Of Shares",
+                value: decoded.amountOfShares.toString(),
+                type: "text",
+            },
+        ];
+
+        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: StakingToken } =
+            await covalent_client.PricingService.getTokenPrices(
+                chain_name,
+                "USD",
+                "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+                {
+                    from: date,
+                    to: date,
+                }
+            );
+
+        const tokens: EventTokens = [
+            {
+                heading: "Amount Of stETH",
+                value: decoded.amountOfStETH.toString(),
+                decimals: StakingToken?.[0]?.contract_decimals,
+                ticker_symbol: StakingToken?.[0]?.contract_ticker_symbol,
+                ticker_logo: StakingToken?.[0]?.logo_url,
+                pretty_quote: prettifyCurrency(
+                    (StakingToken?.[0]?.prices?.[0]?.price ?? 0) *
+                        (Number(decoded.amountOfStETH) /
+                            Math.pow(
+                                10,
+                                +(StakingToken?.[0]?.contract_decimals ?? 18)
+                            ))
+                ),
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.TRANSFERRED,
+            category: DECODED_EVENT_CATEGORY.STAKING,
+            name: "Withdrawal Requested",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Lido" as string,
+            },
+            details,
+            tokens,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "lido:WithdrawalClaimed",
+    ["eth-mainnet"],
+    WithdrawalABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: WithdrawalABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "WithdrawalClaimed",
+        }) as {
+            eventName: "WithdrawalClaimed";
+            args: {
+                requestId: bigint;
+                owner: string;
+                receiver: string;
+                amountOfETH: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "Request ID",
+                value: decoded.requestId.toString(),
+                type: "text",
+            },
+            {
+                heading: "Owner",
+                value: decoded.owner,
+                type: "address",
+            },
+            {
+                heading: "Requestor",
+                value: decoded.receiver,
+                type: "address",
+            },
+        ];
+
+        const tokens: EventTokens = [
+            {
+                heading: "Amount Of ETH",
+                value: decoded.amountOfETH.toString(),
+                decimals: tx?.gas_metadata?.contract_decimals,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
+                ticker_logo: tx?.gas_metadata?.logo_url,
+                pretty_quote: prettifyCurrency(
+                    (tx?.gas_quote_rate ?? 0) *
+                        (Number(decoded.amountOfETH) /
+                            Math.pow(
+                                10,
+                                +(tx?.gas_metadata?.contract_decimals ?? 18)
+                            ))
+                ),
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.TRANSFERRED,
+            category: DECODED_EVENT_CATEGORY.STAKING,
+            name: "Withdrawal Claimed",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Lido" as string,
+            },
+            details,
+            tokens,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "lido:BatchMetadataUpdate",
+    ["eth-mainnet"],
+    WithdrawalABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: WithdrawalABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "BatchMetadataUpdate",
+        }) as {
+            eventName: "BatchMetadataUpdate";
+            args: {
+                _fromTokenId: bigint;
+                _toTokenId: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "From Token ID",
+                value: decoded._fromTokenId.toString(),
+                type: "text",
+            },
+            {
+                heading: "To Token ID",
+                value: decoded._toTokenId.toString(),
+                type: "text",
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.TRANSFERRED,
+            category: DECODED_EVENT_CATEGORY.STAKING,
+            name: "Batch Metadata Update",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Lido" as string,
+            },
+            details,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "lido:WithdrawalsFinalized",
+    ["eth-mainnet"],
+    WithdrawalABI as Abi,
+    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: WithdrawalABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "WithdrawalsFinalized",
+        }) as {
+            eventName: "WithdrawalsFinalized";
+            args: {
+                from: bigint;
+                to: bigint;
+                amountOfETHLocked: bigint;
+                sharesToBurn: bigint;
+                timestamp: bigint;
+            };
+        };
+
+        const details: EventDetails = [
+            {
+                heading: "From",
+                value: decoded.from.toString(),
+                type: "text",
+            },
+            {
+                heading: "To",
+                value: decoded.to.toString(),
+                type: "text",
+            },
+            {
+                heading: "Shares To Burn",
+                value: decoded.sharesToBurn.toString(),
+                type: "text",
+            },
+            {
+                heading: "Timestamp",
+                value: decoded.timestamp.toString(),
+                type: "text",
+            },
+        ];
+
+        const tokens: EventTokens = [
+            {
+                heading: "Amount Of ETH Locked",
+                value: decoded.amountOfETHLocked.toString(),
+                decimals: tx?.gas_metadata?.contract_decimals,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
+                ticker_logo: tx?.gas_metadata?.logo_url,
+                pretty_quote: prettifyCurrency(
+                    (tx?.gas_quote_rate ?? 0) *
+                        (Number(decoded.amountOfETHLocked) /
+                            Math.pow(
+                                10,
+                                +(tx?.gas_metadata?.contract_decimals ?? 18)
+                            ))
+                ),
+            },
+        ];
+
+        return {
+            action: DECODED_ACTION.TRANSFERRED,
+            category: DECODED_EVENT_CATEGORY.STAKING,
+            name: "Withdrawals Finalized",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: "Lido" as string,
+            },
+            details,
+            tokens,
         };
     }
 );
