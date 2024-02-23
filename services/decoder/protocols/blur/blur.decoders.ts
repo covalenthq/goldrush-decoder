@@ -23,7 +23,7 @@ GoldRushDecoder.on(
 
         enum SIDE {
             "BUY" = 0,
-            "SELL" = 1
+            "SELL" = 1,
         }
 
         const { args: decoded } = decodeEventLog({
@@ -31,7 +31,7 @@ GoldRushDecoder.on(
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "OrdersMatched",
-        }) as { 
+        }) as {
             eventName: "OrdersMatched";
             args: {
                 maker: string;
@@ -53,9 +53,9 @@ GoldRushDecoder.on(
                     }[];
                     salt: bigint;
                     extraParams: string;
-                  };
-                  sellHash: string;
-                  buy: {
+                };
+                sellHash: string;
+                buy: {
                     trader: string;
                     side: SIDE;
                     matchingPolicy: string;
@@ -72,8 +72,8 @@ GoldRushDecoder.on(
                     }[];
                     salt: bigint;
                     extraParams: string;
-                  };
-                  buyHash: string;
+                };
+                buyHash: string;
             }
         };
 
@@ -104,14 +104,14 @@ GoldRushDecoder.on(
 
         const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
         const { data: tokenPriceData } = await covalent_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.sell.collection || decoded.buy.collection,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
+            chain_name,
+            "USD",
+            decoded.sell.collection || decoded.buy.collection,
+            {
+                from: date,
+                to: date,
+            }
+        );
         tokens.push({
             heading: `Matched to ${decoded.buy.trader}`,
             value: decoded.sell.amount.toString() || decoded.buy.amount.toString(),
@@ -120,12 +120,12 @@ GoldRushDecoder.on(
                     ?.contract_decimals ?? 18,
             pretty_quote: prettifyCurrency(
                 tokenPriceData?.[0]?.items?.[0]?.price *
-                    (Number(decoded.sell.amount.toString() || decoded.buy.amount.toString()) /
-                        Math.pow(
-                            10,
-                            tokenPriceData?.[0]?.items?.[0]?.contract_metadata
-                                ?.contract_decimals ?? 18
-                        ))
+                (Number(decoded.sell.amount.toString() || decoded.buy.amount.toString()) /
+                    Math.pow(
+                        10,
+                        tokenPriceData?.[0]?.items?.[0]?.contract_metadata
+                            ?.contract_decimals ?? 18
+                    ))
             ),
             ticker_symbol:
                 tokenPriceData?.[0]?.items?.[0]?.contract_metadata
@@ -143,30 +143,30 @@ GoldRushDecoder.on(
                     withUncached: true,
                 }
             );
-            nfts.push({
-                heading: `Matched to ${decoded.buy.trader}`,
-                collection_address: data?.items?.[0]?.contract_address,
-                collection_name:
-                    data?.items?.[0]?.nft_data?.external_data?.name ||
-                    null,
-                token_identifier:
-                    data?.items?.[0]?.nft_data?.token_id?.toString() ||
-                    null,
-                images: {
-                    "1024":
-                        data?.items?.[0]?.nft_data?.external_data
-                            ?.image_1024 || null,
-                    "512":
-                        data?.items?.[0]?.nft_data?.external_data
-                            ?.image_512 || null,
-                    "256":
-                        data?.items?.[0]?.nft_data?.external_data
-                            ?.image_256 || null,
-                    default:
-                        data?.items?.[0]?.nft_data?.external_data
-                            ?.image || null,
-                },
-            });
+        nfts.push({
+            heading: `Matched to ${decoded.buy.trader}`,
+            collection_address: data?.items?.[0]?.contract_address,
+            collection_name:
+                data?.items?.[0]?.nft_data?.external_data?.name ||
+                null,
+            token_identifier:
+                data?.items?.[0]?.nft_data?.token_id?.toString() ||
+                null,
+            images: {
+                "1024":
+                    data?.items?.[0]?.nft_data?.external_data
+                        ?.image_1024 || null,
+                "512":
+                    data?.items?.[0]?.nft_data?.external_data
+                        ?.image_512 || null,
+                "256":
+                    data?.items?.[0]?.nft_data?.external_data
+                        ?.image_256 || null,
+                default:
+                    data?.items?.[0]?.nft_data?.external_data
+                        ?.image || null,
+            },
+        });
 
         return {
             action: DECODED_ACTION.SWAPPED,
