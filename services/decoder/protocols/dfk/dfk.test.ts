@@ -3,20 +3,20 @@ import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
 
 describe("dfk", () => {
-    test("defi-kingdoms-mainnet:<EVENT NAME>", async () => {
+    test("defi-kingdoms-mainnet:Pet Fed", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
                 chain_name: "defi-kingdoms-mainnet",
-                tx_hash: "<ENTER TX HASH FOR TESTING>",
+                tx_hash:
+                    "0x038746ca8d77f7df46d669da7108fb618afc927cbcb64615846e91286e2327a8",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "<EVENT NAME>");
+        const event = events.find(({ name }) => name === "Pet Fed");
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event?.details?.length).toEqual(4);
     });
 });
