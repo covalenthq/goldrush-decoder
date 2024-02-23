@@ -74,7 +74,7 @@ GoldRushDecoder.on(
                     extraParams: string;
                 };
                 buyHash: string;
-            }
+            };
         };
 
         const tokens: EventTokens = [];
@@ -103,15 +103,16 @@ GoldRushDecoder.on(
         ];
 
         const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
-        const { data: tokenPriceData } = await covalent_client.PricingService.getTokenPrices(
-            chain_name,
-            "USD",
-            decoded.sell.collection || decoded.buy.collection,
-            {
-                from: date,
-                to: date,
-            }
-        );
+        const { data: tokenPriceData } =
+            await covalent_client.PricingService.getTokenPrices(
+                chain_name,
+                "USD",
+                decoded.sell.collection || decoded.buy.collection,
+                {
+                    from: date,
+                    to: date,
+                }
+            );
         tokens.push({
             heading: `Matched to ${decoded.buy.trader}`,
             value: decoded.sell.amount.toString() || decoded.buy.amount.toString(),
