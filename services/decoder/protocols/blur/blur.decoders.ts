@@ -10,7 +10,7 @@ import {
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
-import ABI from "./abis/blur.abi.json";
+import ABI from "./abis/blur.BlurExchange.abi.json";
 import { TimestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
