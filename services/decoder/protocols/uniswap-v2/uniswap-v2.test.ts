@@ -42,4 +42,61 @@ describe("uniswap-v2", () => {
         expect(event.tokens?.length).toEqual(2);
         expect(event.details?.length).toEqual(1);
     });
+
+    test("eth-mainnet:Burn", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({
+                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+            })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash:
+                    "0xf419cd1a89b928cb93f38237e9b1e6743218fbb87aaac678cb1f950951b7476e",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Burn");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.tokens?.length).toEqual(2);
+    });
+
+    test("eth-mainnet:Sync", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({
+                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+            })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash:
+                    "0xf419cd1a89b928cb93f38237e9b1e6743218fbb87aaac678cb1f950951b7476e",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Sync");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.tokens?.length).toEqual(2);
+    });
+
+    test("eth-mainnet:PairCreated", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({
+                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+            })
+            .send({
+                chain_name: "eth-mainnet",
+                tx_hash:
+                    "0x9584cdf7d99a22e18843cf26c484018bfb11ab4ce4f2d898ec69075ed8e3c8dc",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Pair Created");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.details?.length).toEqual(9);
+    });
 });
