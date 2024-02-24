@@ -17,7 +17,8 @@ describe("blur", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event?.details?.length).toEqual(4);
+        expect(event?.tokens?.length).toEqual(1);
+        expect(event?.nfts?.length).toEqual(1);
     });
 });
