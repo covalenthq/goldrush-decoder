@@ -9,7 +9,8 @@ describe("blur", () => {
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
-                tx_hash: "0xb7664c23d72d66ae56d7c51fee4b04968d33af513e1c2d52f1b6fc583374d0cb",
+                tx_hash:
+                    "0xb7664c23d72d66ae56d7c51fee4b04968d33af513e1c2d52f1b6fc583374d0cb",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "OrdersMatched");
