@@ -5,12 +5,12 @@ export enum DECODED_EVENT_CATEGORY {
     DEX = "DEX",
     TOKEN = "Token",
     SWAP = "Swap",
-    MINT = "Mint",
     DEFI = "DeFi",
     BRIDGE = "Bridge",
     GAMING = "Gaming",
     SOCIAL = "Social",
     OTHERS = "Others",
+    STAKING = "Staking",
 }
 
 export enum DECODED_ACTION {
@@ -20,4 +20,19 @@ export enum DECODED_ACTION {
     TRANSFERRED = "Transferred",
     RECEIVED_BRIDGE = "Received Bridge",
     ACCOUNT_ABSTRACTION = "Account Abstraction Transaction",
+    SALE = "Sale",
+    MINT = "Mint",
+    BURN = "Burn",
+    WITHDRAW = "Withdraw",
+    DEPOSIT = "Deposit",
+    ADD_LIQUIDITY = "Add Liquidity",
+    REMOVE_LIQUIDITY = "Remove Liquidity",
+    UPDATE = "Update",
+    FLASHLOAN = "Flashloan",
+    REPAY = "Repay",
+    BORROW = "Borrow",
+    LIQUIDATE = "Liquidate",
+    CLAIM_REWARDS = "Claim Rewards",
+    GAME_ACTION = "Game Action",
+    CREATE = "Create Pool"
 }

@@ -179,8 +179,8 @@ GoldRushDecoder.on(
         }
 
         return {
-            action: DECODED_ACTION.SWAPPED,
-            category: DECODED_EVENT_CATEGORY.DEX,
+            action: DECODED_ACTION.SALE,
+            category: DECODED_EVENT_CATEGORY.NFT,
             name: "Basic Order Fulfilled",
             protocol: {
                 logo: log_event.sender_logo_url as string,
