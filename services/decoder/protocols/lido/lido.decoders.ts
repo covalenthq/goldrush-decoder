@@ -109,7 +109,7 @@ GoldRushDecoder.on(
                         (Number(decoded.amount) /
                             Math.pow(
                                 10,
-                                tx?.gas_metadata?.contract_decimals ?? 18,
+                                tx?.gas_metadata?.contract_decimals ?? 18
                             ))
                 ),
             },
