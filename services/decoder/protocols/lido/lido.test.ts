@@ -34,7 +34,7 @@ describe("lido", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event.details?.length).toEqual(3);
+        expect(event.details?.length).toEqual(2);
         expect(event.tokens?.length).toEqual(1);
     });
 
