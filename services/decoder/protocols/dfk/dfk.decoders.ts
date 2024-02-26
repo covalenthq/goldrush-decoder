@@ -51,7 +51,7 @@ GoldRushDecoder.on(
                 heading: "Hungry At",
                 value: TimestampParser(
                     new Date(Number(decoded.hungryAt) * 1000),
-                    "YYYY-MM-DD"
+                    "descriptive"
                 ),
                 type: "text",
             },
