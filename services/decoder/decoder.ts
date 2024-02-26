@@ -166,7 +166,7 @@ export class GoldRushDecoder {
             const decoding_index =
                 // !ERROR: add factory_contract_address in the log_event(s)
                 // factory_contract_address ||
-                this.decoders[chain_name][contract_address]?.[topic0_hash];
+                this.decoders[chain_name]?.[contract_address]?.[topic0_hash];
             const fallback_index = this.fallbacks[topic0_hash];
             if (decoding_index !== undefined || fallback_index !== undefined) {
                 const event = await this.decoding_functions[
