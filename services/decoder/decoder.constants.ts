@@ -34,5 +34,5 @@ export enum DECODED_ACTION {
     LIQUIDATE = "Liquidate",
     CLAIM_REWARDS = "Claim Rewards",
     GAME_ACTION = "Game Action",
-    CREATE = "Create Pool"
+    CREATE = "Create Pool",
 }
