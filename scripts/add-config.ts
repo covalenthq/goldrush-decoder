@@ -89,6 +89,23 @@ const chainNameSchema = yup
     const { address, is_factory, chain_name } = (await prompt([
         {
             type: "input",
+            name: "chain_name",
+            message: "What is the Chain on which the contract is deployed?",
+            format: (value) => slugify(value),
+            result: (value) => slugify(value),
+            validate: async (value) => {
+                try {
+                    await chainNameSchema.validate(value, {
+                        abortEarly: false,
+                    });
+                    return true;
+                } catch (error: yup.ValidationError | any) {
+                    return `Invalid Input: ${error.errors.join(". ")}`;
+                }
+            },
+        },
+        {
+            type: "input",
             name: "address",
             message: "What is the Contract Address?",
             format: (value) => value.toLowerCase(),
@@ -113,23 +130,6 @@ const chainNameSchema = yup
             validate: async (value) => {
                 try {
                     await isFactorySchema.validate(value, {
-                        abortEarly: false,
-                    });
-                    return true;
-                } catch (error: yup.ValidationError | any) {
-                    return `Invalid Input: ${error.errors.join(". ")}`;
-                }
-            },
-        },
-        {
-            type: "input",
-            name: "chain_name",
-            message: "What is the Chain on which this contract is deployed?",
-            format: (value) => slugify(value),
-            result: (value) => slugify(value),
-            validate: async (value) => {
-                try {
-                    await chainNameSchema.validate(value, {
                         abortEarly: false,
                     });
                     return true;
