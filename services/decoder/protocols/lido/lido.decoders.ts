@@ -100,11 +100,18 @@ GoldRushDecoder.on(
         const tokens: EventTokens = [
             {
                 heading: "Tokens Staked",
-                value: tx?.value!.toString(),
+                value: decoded.amount.toString(),
                 decimals: tx?.gas_metadata?.contract_decimals,
                 ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
                 ticker_logo: tx?.gas_metadata?.logo_url,
-                pretty_quote: tx?.value_quote?.toString(),
+                pretty_quote: prettifyCurrency(
+                    tx?.gas_quote_rate *
+                        (Number(decoded.amount) /
+                            Math.pow(
+                                10,
+                                tx?.gas_metadata?.contract_decimals ?? 18,
+                            ))
+                ),
             },
         ];
 
@@ -150,11 +157,14 @@ GoldRushDecoder.on(
         const details: EventDetails = [
             {
                 heading: "Time Stamp",
-                value: decoded.reportTimestamp.toString(),
+                value: TimestampParser(
+                    new Date(Number(decoded.reportTimestamp) * 1000),
+                    "descriptive"
+                ),
                 type: "text",
             },
             {
-                heading: "Time Elapsed",
+                heading: "Time Elapsed (Seconds)",
                 value: decoded.timeElapsed.toString(),
                 type: "text",
             },
@@ -344,7 +354,10 @@ GoldRushDecoder.on(
         const details: EventDetails = [
             {
                 heading: "Time Stamp",
-                value: decoded.reportTimestamp.toString(),
+                value: TimestampParser(
+                    new Date(Number(decoded.reportTimestamp) * 1000),
+                    "descriptive"
+                ),
                 type: "text",
             },
         ];
@@ -396,7 +409,7 @@ GoldRushDecoder.on(
                 ),
             },
             {
-                heading: "Execution Layer Rewards Withdrawn",
+                heading: "Execution Layer Rewards",
                 value: decoded.executionLayerRewardsWithdrawn.toString(),
                 decimals: tx?.gas_metadata?.contract_decimals,
                 ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
@@ -837,7 +850,10 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Timestamp",
-                value: decoded.timestamp.toString(),
+                value: TimestampParser(
+                    new Date(Number(decoded.timestamp) * 1000),
+                    "descriptive"
+                ),
                 type: "text",
             },
         ];

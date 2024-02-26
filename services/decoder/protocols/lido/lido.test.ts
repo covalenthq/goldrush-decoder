@@ -63,7 +63,7 @@ describe("lido", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+                    "0x8235c55ee3e43973710fbad71934c29e1b635e346e22a3923f3760d2c8d0b759",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Shares Burnt");
@@ -81,7 +81,7 @@ describe("lido", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+                    "0x588d3ae5e31dd66788a4e9ac7f677a02c2e7b691dce014a7a6702153ef440e49",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "ETH Distributed");
@@ -99,7 +99,7 @@ describe("lido", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+                    "0x71eb6c994ba206d35e9625c0139a94e85665fb2ac7a5ac3d2c346bc9f5a9de40",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(
@@ -118,7 +118,7 @@ describe("lido", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+                    "0x9ca6a5bda1d982c871c74c6603c7c96d1559140bd69a64b692b59b2fc1a91293",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "EL Rewards Received");
@@ -135,7 +135,7 @@ describe("lido", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+                    "0xfcf4097cc6b61801e5c9f3a11f16e1d7f7fa76921d182e8b0c4ff88c1a6b5b3f",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(
@@ -192,7 +192,7 @@ describe("lido", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+                    "0x54e8178be9dad3ae0a7ec4e52bdd231b86d5a0a8b76e07d76b75f0a1144388c7",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(
@@ -211,7 +211,7 @@ describe("lido", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x406f1e0feb4259f667ef0ae2270933b2249fe8bd35f1eec36b8f15e987ee6e32",
+                    "0xaaa7a76022040bfc7d93c52db52f58d6187906c0b71bb9b0a002e8860ce9a465",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(
