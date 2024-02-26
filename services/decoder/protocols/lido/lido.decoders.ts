@@ -8,7 +8,6 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/lido.steth.abi.json";
 import WithdrawalABI from "./abis/lido.withdrawalQueue.abi.json";
-import { addMethod, date } from "yup";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 import { TimestampParser } from "../../../../utils/functions";
 
@@ -90,11 +89,6 @@ GoldRushDecoder.on(
                 heading: "Sender",
                 value: decoded.sender,
                 type: "address",
-            },
-            {
-                heading: "To",
-                value: decoded.amount.toString(),
-                type: "text",
             },
             {
                 heading: "Referral",
