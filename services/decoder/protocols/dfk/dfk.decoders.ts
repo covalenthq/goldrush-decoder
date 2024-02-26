@@ -7,6 +7,7 @@ import {
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
 import PetABI from "./abis/dfk.pets.abi.json";
+import { TimestampParser } from "../../../../utils/functions";
 
 GoldRushDecoder.on(
     "dfk:PetFed",
@@ -48,7 +49,10 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Hungry At",
-                value: decoded.hungryAt.toString(),
+                value: TimestampParser(
+                    new Date(Number(decoded.hungryAt) * 1000),
+                    "YYYY-MM-DD"
+                ),
                 type: "text",
             },
         ];
