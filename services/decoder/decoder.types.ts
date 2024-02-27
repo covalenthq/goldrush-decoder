@@ -64,6 +64,8 @@ export type DecodingFunction = (
     covalent_client: CovalentClient
 ) => Promise<EventType>;
 
+export type NativeDecodingFunction = (tx: Transaction) => EventType;
+
 export type DecoderConfig =
     | {
           [chain_name in Chain]: {

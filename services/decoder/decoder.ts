@@ -13,6 +13,7 @@ import {
     type EventType,
     type DecoderConfig,
     type Fallbacks,
+    type NativeDecodingFunction,
 } from "./decoder.types";
 import { encodeEventTopics, type Abi } from "viem";
 
@@ -20,7 +21,10 @@ export class GoldRushDecoder {
     private static configs: DecoderConfig = {};
     private static decoders: Decoders = {};
     private static fallbacks: Fallbacks = {};
+    private static native_decoder: NativeDecodingFunction;
     private static decoding_functions: DecodingFunctions = [];
+    private static fileExtension: "js" | "ts" =
+        process.env.NODE_ENV !== "test" ? "js" : "ts";
 
     public static initDecoder = () => {
         console.info("Initializing GoldrushDecoder Service...");
@@ -34,12 +38,10 @@ export class GoldRushDecoder {
             let configFile: string | null = null,
                 decodersFile: string | null = null;
             files.forEach((file) => {
-                const fileExtension =
-                    process.env.NODE_ENV !== "test" ? "js" : "ts";
-                if (file.endsWith(`.configs.${fileExtension}`)) {
+                if (file.endsWith(`.configs.${this.fileExtension}`)) {
                     configFile = file;
                 }
-                if (file.endsWith(`.decoders.${fileExtension}`)) {
+                if (file.endsWith(`.decoders.${this.fileExtension}`)) {
                     decodersFile = file;
                 }
             });
@@ -68,9 +70,7 @@ export class GoldRushDecoder {
             const files = readdirSync(fallbackPath);
             let fallbackFile: string | null = null;
             files.forEach((file) => {
-                const fileExtension =
-                    process.env.NODE_ENV !== "test" ? "js" : "ts";
-                if (file.endsWith(`.fallback.${fileExtension}`)) {
+                if (file.endsWith(`.fallback.${this.fileExtension}`)) {
                     fallbackFile = file;
                 }
             });
@@ -79,6 +79,12 @@ export class GoldRushDecoder {
                 require(join(fallbackPath, fallbackFile));
             }
         }
+
+        const nativeDecoderPath: string = join(
+            __dirname,
+            `native-transfer.decoder.${this.fileExtension}`
+        );
+        require(join(nativeDecoderPath));
 
         const decodersCount = Object.keys(this.decoding_functions).length;
         const configsCount = Object.values(this.configs).reduce(
@@ -93,6 +99,7 @@ export class GoldRushDecoder {
             0
         );
 
+        console.info("native decoder added");
         console.info(`${protocolsCount.toLocaleString()} protocols found`);
         console.info(`${configsCount.toLocaleString()} configs generated`);
         console.info(`${decodersCount.toLocaleString()} decoders generated`);
@@ -148,6 +155,10 @@ export class GoldRushDecoder {
         this.fallbacks[topic0_hash] = decoding_function_index;
     };
 
+    public static native = (native_decoder: NativeDecodingFunction) => {
+        this.native_decoder = native_decoder;
+    };
+
     public static decode = async (
         chain_name: Chain,
         tx: Transaction,
@@ -156,6 +167,10 @@ export class GoldRushDecoder {
         const covalent_client = new CovalentClient(covalent_api_key);
         const events: EventType[] = [];
         const logs = (tx.log_events ?? []).reverse();
+        if (tx.value) {
+            const nativeEvent = this.native_decoder(tx);
+            events.push(nativeEvent);
+        }
         for (const log of logs) {
             const {
                 raw_log_topics: [topic0_hash],
@@ -169,10 +184,10 @@ export class GoldRushDecoder {
                 this.decoders[chain_name]?.[contract_address]?.[topic0_hash];
             const fallback_index = this.fallbacks[topic0_hash];
             if (decoding_index !== undefined || fallback_index !== undefined) {
-                const event = await this.decoding_functions[
+                const logEvent = await this.decoding_functions[
                     decoding_index ?? fallback_index
                 ](log, tx, chain_name, covalent_client);
-                events.push(event);
+                events.push(logEvent);
             }
         }
         return events;
