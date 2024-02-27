@@ -100,6 +100,52 @@ GoldRushDecoder.on(
                 value: decoded.buyHash,
                 type: "address",
             },
+            {
+                heading: "Sell Fees Rate",
+                value: decoded.sell.fees[0].rate.toLocaleString(),
+                type: "text",
+            },
+            {
+                heading: "Sell Fees Recipient",
+                value: decoded.sell.fees[0].recipient,
+                type: "address",
+            },
+            {
+                heading: "Expiration Time",
+                value: TimestampParser(
+                    new Date(Number(decoded.sell.expirationTime) * 1000),
+                    "descriptive"
+                ),
+                type: "text",
+            },
+            {
+                heading: "Listing Time",
+                value: TimestampParser(
+                    new Date(Number(decoded.sell.listingTime) * 1000),
+                    "descriptive"
+                ),
+                type: "text",
+            },
+            {
+                heading: "Extra Params",
+                value: decoded.sell.extraParams,
+                type: "text",
+            },
+            {
+                heading: "Matching Policy",
+                value: decoded.sell.matchingPolicy,
+                type: "address",
+            },
+            {
+                heading: "Sell Salt",
+                value: decoded.sell.salt.toLocaleString(),
+                type: "text",
+            },
+            {
+                heading: "Buy Salt",
+                value: decoded.buy.salt.toLocaleString(),
+                type: "text",
+            },
         ];
 
         const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
@@ -107,25 +153,21 @@ GoldRushDecoder.on(
             await covalent_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
-                decoded.sell.collection || decoded.buy.collection,
+                decoded.sell.collection,
                 {
                     from: date,
                     to: date,
                 }
             );
         tokens.push({
-            heading: `Matched to ${decoded.buy.trader}`,
-            value:
-                decoded.sell.amount.toString() || decoded.buy.amount.toString(),
+            heading: `Match Amount`,
+            value: decoded.sell.amount.toString(),
             decimals:
                 tokenPriceData?.[0]?.items?.[0]?.contract_metadata
                     ?.contract_decimals ?? 18,
             pretty_quote: prettifyCurrency(
                 tokenPriceData?.[0]?.items?.[0]?.price *
-                    (Number(
-                        decoded.sell.amount.toString() ||
-                            decoded.buy.amount.toString()
-                    ) /
+                    (Number(decoded.sell.amount) /
                         Math.pow(
                             10,
                             tokenPriceData?.[0]?.items?.[0]?.contract_metadata
@@ -142,9 +184,8 @@ GoldRushDecoder.on(
         const { data } =
             await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
-                decoded.sell.collection || decoded.buy.collection,
-                decoded.sell.tokenId.toString() ||
-                    decoded.buy.tokenId.toString(),
+                decoded.sell.collection,
+                decoded.sell.tokenId.toString(),
                 {
                     withUncached: true,
                 }
@@ -174,7 +215,7 @@ GoldRushDecoder.on(
         return {
             action: DECODED_ACTION.SWAPPED,
             category: DECODED_EVENT_CATEGORY.DEX,
-            name: "OrdersMatched",
+            name: "Orders Matched",
             protocol: {
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
