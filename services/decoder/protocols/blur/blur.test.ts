@@ -13,11 +13,11 @@ describe("blur", () => {
                     "0xb7664c23d72d66ae56d7c51fee4b04968d33af513e1c2d52f1b6fc583374d0cb",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "OrdersMatched");
+        const event = events.find(({ name }) => name === "Orders Matched");
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event?.details?.length).toEqual(4);
+        expect(event?.details?.length).toEqual(12);
         expect(event?.tokens?.length).toEqual(1);
         expect(event?.nfts?.length).toEqual(1);
     });
