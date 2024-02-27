@@ -82,7 +82,8 @@ export class GoldRushDecoder {
 
         const nativeDecoderPath: string = join(
             __dirname,
-            `native-transfer.decoder.${this.fileExtension}`
+            "native",
+            `native.decoder.${this.fileExtension}`
         );
         require(join(nativeDecoderPath));
 

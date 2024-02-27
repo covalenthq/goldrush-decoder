@@ -1,7 +1,7 @@
-import { GoldRushDecoder } from "./decoder";
-import { type EventType } from "./decoder.types";
+import { GoldRushDecoder } from "../decoder";
+import { type EventType } from "../decoder.types";
 
-import { DECODED_ACTION, DECODED_EVENT_CATEGORY } from "./decoder.constants";
+import { DECODED_ACTION, DECODED_EVENT_CATEGORY } from "../decoder.constants";
 
 GoldRushDecoder.native((tx): EventType => {
     return {
