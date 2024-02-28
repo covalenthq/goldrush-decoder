@@ -20,6 +20,9 @@ describe("fallback", () => {
         if (event.tokens?.length) {
             expect(event.tokens?.length).toEqual(1);
             expect(event.details?.length).toEqual(2);
+        } else if (event.nfts?.length) {
+            expect(event.nfts?.length).toEqual(1);
+            expect(event.details?.length).toEqual(2);
         } else {
             expect(event.details?.length).toEqual(3);
         }
