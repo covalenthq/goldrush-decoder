@@ -23,6 +23,7 @@ export class GoldRushDecoder {
     private static fallbacks: Fallbacks = {};
     private static native_decoder: NativeDecodingFunction;
     private static decoding_functions: DecodingFunctions = [];
+    private static fallback_functions: DecodingFunctions = [];
     private static fileExtension: "js" | "ts" =
         process.env.NODE_ENV !== "test" ? "js" : "ts";
 
@@ -32,6 +33,7 @@ export class GoldRushDecoder {
         const protocolsDirectoryPath: string = join(__dirname, "/protocols");
         const protocols = readdirSync(protocolsDirectoryPath);
         let protocolsCount: number = 0;
+        let configsCount: number = 0;
         for (const protocol of protocols) {
             const protocolPath = join(protocolsDirectoryPath, protocol);
             const files = readdirSync(protocolPath);
@@ -56,6 +58,7 @@ export class GoldRushDecoder {
                         this.configs[chain_name][protocol_name][address] = {
                             is_factory: is_factory,
                         };
+                        configsCount++;
                     }
                 );
                 require(join(protocolPath, decodersFile));
@@ -64,7 +67,6 @@ export class GoldRushDecoder {
 
         const fallbacksDirectoryPath: string = join(__dirname, "/fallbacks");
         const fallbacks = readdirSync(fallbacksDirectoryPath);
-        let fallbacksCount: number = 0;
         for (const fallback of fallbacks) {
             const fallbackPath = join(fallbacksDirectoryPath, fallback);
             const files = readdirSync(fallbackPath);
@@ -75,7 +77,6 @@ export class GoldRushDecoder {
                 }
             });
             if (fallbackFile) {
-                fallbacksCount++;
                 require(join(fallbackPath, fallbackFile));
             }
         }
@@ -87,20 +88,10 @@ export class GoldRushDecoder {
         );
         require(join(nativeDecoderPath));
 
-        const decodersCount = Object.keys(this.decoding_functions).length;
-        const configsCount = Object.values(this.configs).reduce(
-            (chainCount, chain) => {
-                return (
-                    chainCount +
-                    Object.values(chain).reduce((addressCount, protocol) => {
-                        return addressCount + Object.keys(protocol).length;
-                    }, 0)
-                );
-            },
-            0
-        );
+        const decodersCount = this.decoding_functions.length;
+        const fallbacksCount = this.fallback_functions.length;
 
-        console.info("native decoder added");
+        console.info("1 native decoder added");
         console.info(`${protocolsCount.toLocaleString()} protocols found`);
         console.info(`${configsCount.toLocaleString()} configs generated`);
         console.info(`${decodersCount.toLocaleString()} decoders generated`);
@@ -150,10 +141,10 @@ export class GoldRushDecoder {
             abi: abi,
             eventName: event_name,
         });
-        this.decoding_functions.push(decoding_function);
-        const decoding_function_index: number =
-            this.decoding_functions.length - 1;
-        this.fallbacks[topic0_hash] = decoding_function_index;
+        this.fallback_functions.push(decoding_function);
+        const fallback_function_index: number =
+            this.fallback_functions.length - 1;
+        this.fallbacks[topic0_hash] = fallback_function_index;
     };
 
     public static native = (native_decoder: NativeDecodingFunction) => {
@@ -176,18 +167,27 @@ export class GoldRushDecoder {
             const {
                 raw_log_topics: [topic0_hash],
                 sender_address: contract_address,
-                // !ERROR: add factory_contract_address in the log_event(s)
-                // factory_contract_address,
             } = log;
             const decoding_index =
-                // !ERROR: add factory_contract_address in the log_event(s)
-                // factory_contract_address ||
                 this.decoders[chain_name]?.[contract_address]?.[topic0_hash];
             const fallback_index = this.fallbacks[topic0_hash];
-            if (decoding_index !== undefined || fallback_index !== undefined) {
-                const logEvent = await this.decoding_functions[
-                    decoding_index ?? fallback_index
-                ](log, tx, chain_name, covalent_client);
+            let logEvent: EventType | null = null;
+            if (decoding_index !== undefined) {
+                logEvent = await this.decoding_functions[decoding_index](
+                    log,
+                    tx,
+                    chain_name,
+                    covalent_client
+                );
+            } else if (fallback_index !== undefined) {
+                logEvent = await this.fallback_functions[fallback_index](
+                    log,
+                    tx,
+                    chain_name,
+                    covalent_client
+                );
+            }
+            if (logEvent) {
                 events.push(logEvent);
             }
         }
