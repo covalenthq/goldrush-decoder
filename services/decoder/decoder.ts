@@ -166,10 +166,14 @@ export class GoldRushDecoder {
         for (const log of logs) {
             const {
                 raw_log_topics: [topic0_hash],
-                sender_address: contract_address,
+                sender_address,
+                sender_factory_address,
             } = log;
             const decoding_index =
-                this.decoders[chain_name]?.[contract_address]?.[topic0_hash];
+                this.decoders[chain_name]?.[sender_address]?.[topic0_hash] ??
+                this.decoders[chain_name]?.[sender_factory_address]?.[
+                    topic0_hash
+                ];
             const fallback_index = this.fallbacks[topic0_hash];
             let logEvent: EventType | null = null;
             if (decoding_index !== undefined) {
