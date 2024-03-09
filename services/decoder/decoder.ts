@@ -158,43 +158,46 @@ export class GoldRushDecoder {
     ) => {
         const covalent_client = new CovalentClient(covalent_api_key);
         const events: EventType[] = [];
-        const logs = (tx.log_events ?? []).reverse();
         if (tx.value) {
             const nativeEvent = this.native_decoder(tx);
             events.push(nativeEvent);
         }
-        for (const log of logs) {
-            const {
-                raw_log_topics: [topic0_hash],
-                sender_address,
-                sender_factory_address,
-            } = log;
-            const decoding_index =
-                this.decoders[chain_name]?.[sender_address]?.[topic0_hash] ??
-                this.decoders[chain_name]?.[sender_factory_address]?.[
-                    topic0_hash
-                ];
-            const fallback_index = this.fallbacks[topic0_hash];
-            let logEvent: EventType | null = null;
-            if (decoding_index !== undefined) {
-                logEvent = await this.decoding_functions[decoding_index](
-                    log,
-                    tx,
-                    chain_name,
-                    covalent_client
-                );
-            } else if (fallback_index !== undefined) {
-                logEvent = await this.fallback_functions[fallback_index](
-                    log,
-                    tx,
-                    chain_name,
-                    covalent_client
-                );
-            }
-            if (logEvent) {
-                events.push(logEvent);
-            }
-        }
-        return events;
+
+        const decodedEvents = await Promise.all(
+            (tx.log_events ?? []).map((log) => {
+                const {
+                    raw_log_topics: [topic0_hash],
+                    sender_address,
+                    sender_factory_address,
+                } = log;
+                const decoding_index =
+                    this.decoders[chain_name]?.[sender_address]?.[
+                        topic0_hash
+                    ] ??
+                    this.decoders[chain_name]?.[sender_factory_address]?.[
+                        topic0_hash
+                    ];
+                const fallback_index = this.fallbacks[topic0_hash];
+
+                if (decoding_index !== undefined) {
+                    return this.decoding_functions[decoding_index](
+                        log,
+                        tx,
+                        chain_name,
+                        covalent_client
+                    );
+                } else if (fallback_index !== undefined) {
+                    return this.fallback_functions[fallback_index](
+                        log,
+                        tx,
+                        chain_name,
+                        covalent_client
+                    );
+                }
+                return null;
+            })
+        );
+
+        return events.concat(decodedEvents.filter(Boolean) as EventType[]);
     };
 }
