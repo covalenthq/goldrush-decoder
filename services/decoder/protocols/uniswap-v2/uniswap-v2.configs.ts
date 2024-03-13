@@ -8,7 +8,7 @@ const configs: Configs = [
         chain_name: "eth-mainnet",
     },
     {
-        address: "0xcf329b34049033de26e4449aebcb41f1992724d3",
+        address: "0x794c07912474351b3134e6d6b3b7b3b4a07cbaaa",
         is_factory: true,
         protocol_name: "uniswap-v2",
         chain_name: "defi-kingdoms-mainnet",
