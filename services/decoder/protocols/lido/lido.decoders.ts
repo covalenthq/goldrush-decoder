@@ -286,7 +286,7 @@ GoldRushDecoder.on(
                 value: decoded.preRebaseTokenAmount.toString(),
                 decimals: StakingToken?.[0]?.contract_decimals,
                 ticker_symbol: StakingToken?.[0]?.contract_ticker_symbol,
-                ticker_logo: StakingToken?.[0]?.logo_url,
+                ticker_logo: StakingToken?.[0]?.logo_urls?.token_logo_url,
                 pretty_quote: prettifyCurrency(
                     (StakingToken?.[0]?.prices?.[0]?.price ?? 0) *
                         (Number(decoded.preRebaseTokenAmount) /
@@ -301,7 +301,7 @@ GoldRushDecoder.on(
                 value: decoded.postRebaseTokenAmount.toString(),
                 decimals: StakingToken?.[0]?.contract_decimals,
                 ticker_symbol: StakingToken?.[0]?.contract_ticker_symbol,
-                ticker_logo: StakingToken?.[0]?.logo_url,
+                ticker_logo: StakingToken?.[0]?.logo_urls?.token_logo_url,
                 pretty_quote: prettifyCurrency(
                     (StakingToken?.[0]?.prices?.[0]?.price ?? 0) *
                         (Number(decoded.postRebaseTokenAmount) /
@@ -665,7 +665,7 @@ GoldRushDecoder.on(
                 value: decoded.amountOfStETH.toString(),
                 decimals: StakingToken?.[0]?.contract_decimals,
                 ticker_symbol: StakingToken?.[0]?.contract_ticker_symbol,
-                ticker_logo: StakingToken?.[0]?.logo_url,
+                ticker_logo: StakingToken?.[0]?.logo_urls?.token_logo_url,
                 pretty_quote: prettifyCurrency(
                     (StakingToken?.[0]?.prices?.[0]?.price ?? 0) *
                         (Number(decoded.amountOfStETH) /

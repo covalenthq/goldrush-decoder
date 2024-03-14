@@ -162,9 +162,7 @@ GoldRushDecoder.on(
         tokens.push({
             heading: `Match Amount`,
             value: decoded.sell.amount.toString(),
-            decimals:
-                tokenPriceData?.[0]?.items?.[0]?.contract_metadata
-                    ?.contract_decimals ?? 18,
+            decimals: tokenPriceData?.[0]?.contract_decimals ?? 18,
             pretty_quote: prettifyCurrency(
                 tokenPriceData?.[0]?.items?.[0]?.price *
                     (Number(decoded.sell.amount) /
@@ -174,11 +172,8 @@ GoldRushDecoder.on(
                                 ?.contract_decimals ?? 18
                         ))
             ),
-            ticker_symbol:
-                tokenPriceData?.[0]?.items?.[0]?.contract_metadata
-                    ?.contract_ticker_symbol,
-            ticker_logo:
-                tokenPriceData?.[0]?.items?.[0]?.contract_metadata?.logo_url,
+            ticker_symbol: tokenPriceData?.[0]?.contract_ticker_symbol,
+            ticker_logo: tokenPriceData?.[0]?.logo_urls?.token_logo_url,
         });
 
         const { data } =
