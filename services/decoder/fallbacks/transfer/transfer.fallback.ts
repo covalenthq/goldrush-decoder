@@ -113,18 +113,13 @@ GoldRushDecoder.fallback(
 
             parsedData.tokens = [
                 {
-                    decimals:
-                        data?.[0]?.items?.[0]?.contract_metadata
-                            ?.contract_decimals ?? 18,
+                    decimals: data?.[0]?.contract_decimals ?? 18,
                     heading: "Token Amount",
                     pretty_quote: pretty_quote
                         ? prettifyCurrency(pretty_quote)
                         : "",
-                    ticker_logo:
-                        data?.[0]?.items?.[0]?.contract_metadata?.logo_url,
-                    ticker_symbol:
-                        data?.[0]?.items?.[0]?.contract_metadata
-                            ?.contract_ticker_symbol,
+                    ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
+                    ticker_symbol: data?.[0]?.contract_ticker_symbol,
                     value: decoded.value.toString(),
                 },
             ];
