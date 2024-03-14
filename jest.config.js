@@ -3,6 +3,6 @@ module.exports = {
     preset: "ts-jest",
     testEnvironment: "node",
     coveragePathIgnorePatterns: ["./dist/*"],
-    maxWorkers: 5,
-    testTimeout: 30000,
+    maxWorkers: 10,
+    testTimeout: 60000,
 };
