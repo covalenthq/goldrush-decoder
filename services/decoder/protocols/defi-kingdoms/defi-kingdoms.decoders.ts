@@ -6,11 +6,11 @@ import {
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
-import PetABI from "./abis/dfk.pets.abi.json";
+import PetABI from "./abis/defi-kingdoms.pets.abi.json";
 import { TimestampParser } from "../../../../utils/functions";
 
 GoldRushDecoder.on(
-    "dfk:PetFed",
+    "defi-kingdoms:PetFed",
     ["defi-kingdoms-mainnet"],
     PetABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
@@ -63,7 +63,7 @@ GoldRushDecoder.on(
             name: "Pet Fed",
             protocol: {
                 logo: log_event.sender_logo_url as string,
-                name: "DFK Pets",
+                name: "DeFi Kingdoms",
             },
             details,
         };

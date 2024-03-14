@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
 
-describe("dfk", () => {
+describe("defi-kingdoms", () => {
     test("defi-kingdoms-mainnet:Pet Fed", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
