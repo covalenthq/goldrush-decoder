@@ -123,10 +123,16 @@ export class GoldRushDecoder {
             }
             Object.keys(this.configs[chain_name][protocol]).forEach(
                 (address) => {
-                    this.decoders[chain_name] ??= {};
-                    this.decoders[chain_name][address] ??= {};
-                    this.decoders[chain_name][address][topic0_hash] =
-                        decoding_function_index;
+                    const lowercaseChainName =
+                        chain_name.toLowerCase() as Chain;
+                    const lowercaseAddress = address.toLowerCase();
+                    const lowercaseTopic0Hash = topic0_hash.toLowerCase();
+
+                    this.decoders[lowercaseChainName] ??= {};
+                    this.decoders[lowercaseChainName][lowercaseAddress] ??= {};
+                    this.decoders[lowercaseChainName][lowercaseAddress][
+                        lowercaseTopic0Hash
+                    ] = decoding_function_index;
                 }
             );
         });
@@ -141,10 +147,11 @@ export class GoldRushDecoder {
             abi: abi,
             eventName: event_name,
         });
+        const lowercaseTopic0Hash = topic0_hash.toLowerCase();
         this.fallback_functions.push(decoding_function);
         const fallback_function_index: number =
             this.fallback_functions.length - 1;
-        this.fallbacks[topic0_hash] = fallback_function_index;
+        this.fallbacks[lowercaseTopic0Hash] = fallback_function_index;
     };
 
     public static native = (native_decoder: NativeDecodingFunction) => {
@@ -170,31 +177,31 @@ export class GoldRushDecoder {
                     sender_address,
                     sender_factory_address,
                 } = log;
-                const decoding_index =
-                    this.decoders[chain_name]?.[sender_address]?.[
-                        topic0_hash
-                    ] ??
-                    this.decoders[chain_name]?.[sender_factory_address]?.[
-                        topic0_hash
-                    ];
-                const fallback_index = this.fallbacks[topic0_hash];
+                const lowercaseChainName = chain_name.toLowerCase() as Chain;
+                const lowercaseSenderAddress = sender_address?.toLowerCase();
+                const lowercaseSenderFactoryAddress =
+                    sender_factory_address?.toLowerCase();
+                const lowercaseTopic0Hash = topic0_hash?.toLowerCase();
 
-                if (decoding_index !== undefined) {
-                    return this.decoding_functions[decoding_index](
-                        log,
-                        tx,
-                        chain_name,
-                        covalent_client
-                    );
-                } else if (fallback_index !== undefined) {
-                    return this.fallback_functions[fallback_index](
-                        log,
-                        tx,
-                        chain_name,
-                        covalent_client
-                    );
-                }
-                return null;
+                const decoding_index =
+                    this.decoders[lowercaseChainName]?.[
+                        lowercaseSenderAddress
+                    ]?.[lowercaseTopic0Hash] ??
+                    this.decoders[lowercaseChainName]?.[
+                        lowercaseSenderFactoryAddress
+                    ]?.[lowercaseTopic0Hash];
+                const fallback_index = this.fallbacks[lowercaseTopic0Hash];
+
+                const logFunction =
+                    decoding_index !== undefined
+                        ? this.decoding_functions[decoding_index]
+                        : fallback_index !== undefined
+                        ? this.fallback_functions[fallback_index]
+                        : null;
+
+                return logFunction
+                    ? logFunction(log, tx, chain_name, covalent_client)
+                    : null;
             })
         );
 
