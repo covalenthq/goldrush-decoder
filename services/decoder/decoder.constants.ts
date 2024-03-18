@@ -11,7 +11,6 @@ export enum DECODED_EVENT_CATEGORY {
     SOCIAL = "Social",
     STAKING = "Staking",
     OTHERS = "Others",
-    STAKING = "Staking",
 }
 
 export enum DECODED_ACTION {
@@ -19,6 +18,7 @@ export enum DECODED_ACTION {
     MULTISIG_ACTION = "MultiSig",
     APPROVAL = "Approval",
     TRANSFERRED = "Transferred",
+    NATIVE_TRANSFER = "Native Token Transfer",
     RECEIVED_BRIDGE = "Received Bridge",
     ACCOUNT_ABSTRACTION = "Account Abstraction Transaction",
     SALE = "Sale",
