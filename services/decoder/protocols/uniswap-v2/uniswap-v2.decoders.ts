@@ -157,7 +157,7 @@ GoldRushDecoder.on(
         );
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.ADD_LIQUIDITY,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Mint",
             protocol: {
@@ -256,7 +256,7 @@ GoldRushDecoder.on(
         );
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.REMOVE_LIQUIDITY,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Burn",
             protocol: {
@@ -358,7 +358,7 @@ GoldRushDecoder.on(
         );
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.UPDATE,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Sync",
             protocol: {
@@ -447,7 +447,7 @@ GoldRushDecoder.on(
         );
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.CREATE,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Pair Created",
             protocol: {
