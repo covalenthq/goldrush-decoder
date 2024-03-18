@@ -5,27 +5,36 @@ import {
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
-import ERC20ABI from "./abis/transfer-erc20.abi.json";
-import ERC721ABI from "./abis/transfer-erc721.abi.json";
+import ERC20ABI from "./abis/approval-erc20.abi.json";
+import ERC721ABI from "./abis/approval-erc721.abi.json";
 import { TimestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.fallback(
-    "Transfer",
+    "Approval",
     ERC20ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const {
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics,
+            sender_address,
+            sender_logo_url,
+            sender_name,
+            sender_contract_ticker_symbol,
+            sender_contract_decimals,
+        } = log_event;
 
         let decoded:
             | {
-                  from: string;
-                  to: string;
+                  owner: string;
+                  spender: string;
                   value: bigint;
                   tokenId?: never;
               }
             | {
-                  from: string;
-                  to: string;
+                  owner: string;
+                  spender: string;
                   tokenId: bigint;
                   value?: never;
               };
@@ -35,12 +44,12 @@ GoldRushDecoder.fallback(
                 abi: ERC20ABI,
                 topics: raw_log_topics as [],
                 data: raw_log_data as `0x${string}`,
-                eventName: "Transfer",
+                eventName: "Approval",
             }) as {
-                eventName: "Transfer";
+                eventName: "Approval";
                 args: {
-                    from: string;
-                    to: string;
+                    owner: string;
+                    spender: string;
                     value: bigint;
                 };
             };
@@ -50,12 +59,12 @@ GoldRushDecoder.fallback(
                 abi: ERC721ABI,
                 topics: raw_log_topics as [],
                 data: raw_log_data as `0x${string}`,
-                eventName: "Transfer",
+                eventName: "Approval",
             }) as {
-                eventName: "Transfer";
+                eventName: "Approval";
                 args: {
-                    from: string;
-                    to: string;
+                    owner: string;
+                    spender: string;
                     tokenId: bigint;
                 };
             };
@@ -64,70 +73,76 @@ GoldRushDecoder.fallback(
 
         const details: EventDetails = [
             {
-                heading: "From",
-                value: decoded.from,
+                heading: "Owner",
+                value: decoded.owner,
                 type: "address",
             },
             {
-                heading: "To",
-                value: decoded.to,
+                heading: "Spender",
+                value: decoded.spender,
                 type: "address",
             },
         ];
 
         const parsedData: EventType = {
-            action: DECODED_ACTION.TRANSFERRED,
-            category: DECODED_EVENT_CATEGORY.TOKEN,
-            name: "Transfer",
+            action: DECODED_ACTION.SWAPPED,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Approval",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url as string,
+                name: sender_name as string,
             },
             details: details,
         };
 
         if (decoded.value) {
-            const date = TimestampParser(
-                log_event.block_signed_at,
-                "YYYY-MM-DD"
-            );
-            const { data } =
-                await covalent_client.PricingService.getTokenPrices(
-                    chain_name,
-                    "USD",
-                    log_event.sender_address,
+            const unlimitedValue: boolean =
+                decoded.value.toString() ===
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+
+            if (unlimitedValue) {
+                details.push({
+                    heading: "Value",
+                    value: "Unlimited",
+                    type: "text",
+                });
+            } else {
+                const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
+                const { data } =
+                    await covalent_client.PricingService.getTokenPrices(
+                        chain_name,
+                        "USD",
+                        sender_address,
+                        {
+                            from: date,
+                            to: date,
+                        }
+                    );
+
+                parsedData.tokens = [
                     {
-                        from: date,
-                        to: date,
-                    }
-                );
-
-            const pretty_quote =
-                data?.[0]?.items?.[0]?.price *
-                (Number(decoded.value) /
-                    Math.pow(
-                        10,
-                        data?.[0]?.items?.[0]?.contract_metadata
-                            ?.contract_decimals ?? 18
-                    ));
-
-            parsedData.tokens = [
-                {
-                    decimals: data?.[0]?.contract_decimals ?? 18,
-                    heading: "Token Amount",
-                    pretty_quote: pretty_quote
-                        ? prettifyCurrency(pretty_quote)
-                        : "",
-                    ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
-                    ticker_symbol: data?.[0]?.contract_ticker_symbol,
-                    value: decoded.value.toString(),
-                },
-            ];
+                        heading: "Value",
+                        value: decoded.value.toString(),
+                        ticker_symbol: sender_contract_ticker_symbol,
+                        ticker_logo: sender_logo_url,
+                        decimals: sender_contract_decimals ?? 18,
+                        pretty_quote: prettifyCurrency(
+                            data?.[0]?.items?.[0]?.price *
+                                (Number(decoded.value) /
+                                    Math.pow(
+                                        10,
+                                        data?.[0]?.items?.[0]?.contract_metadata
+                                            ?.contract_decimals ?? 18
+                                    ))
+                        ),
+                    },
+                ];
+            }
         } else if (decoded.tokenId) {
             const { data } =
                 await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
                     chain_name,
-                    log_event.sender_address,
+                    sender_address,
                     decoded.tokenId.toString(),
                     {
                         withUncached: true,

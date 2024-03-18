@@ -11,7 +11,7 @@ import {
 
 GoldRushDecoder.on(
     "uniswap-v2:Swap",
-    ["eth-mainnet"],
+    ["eth-mainnet", "defi-kingdoms-mainnet"],
     PairABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const {

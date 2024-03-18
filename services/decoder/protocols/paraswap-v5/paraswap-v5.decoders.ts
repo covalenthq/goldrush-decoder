@@ -57,7 +57,7 @@ GoldRushDecoder.on(
             {
                 heading: "UUID",
                 value: decoded.uuid,
-                type: "text",
+                type: "address",
             },
             {
                 heading: "Beneficiary",

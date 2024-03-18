@@ -11,7 +11,7 @@ import {
     decodeTXHeadersSchema,
     type DecodeTXHeaders,
 } from "./tx.schema";
-import { decodeLogsfromTx, fetchTxFromHash } from "./tx.service";
+import { decodeLogsFromTx, fetchTxFromHash } from "./tx.service";
 import { type Chain } from "@covalenthq/client-sdk";
 
 export const txRouter = Router();
@@ -39,7 +39,7 @@ const handleDecode = async (
             safe_details,
             ...tx_metadata
         } = tx;
-        const events = await decodeLogsfromTx(
+        const events = await decodeLogsFromTx(
             chain_name as Chain,
             tx,
             covalentApiKey

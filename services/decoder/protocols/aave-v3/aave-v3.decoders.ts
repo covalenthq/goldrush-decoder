@@ -110,7 +110,7 @@ GoldRushDecoder.on(
                                 BorrowToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: BorrowToken?.[0]?.logo_url,
+                ticker_logo: BorrowToken?.[0]?.logo_urls?.token_logo_url,
                 ticker_symbol: BorrowToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.amount),
             },
@@ -166,7 +166,7 @@ GoldRushDecoder.on(
 
         const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: FlashloanToken } =
+        const { data: FlashLoanToken } =
             await covalent_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
@@ -202,33 +202,33 @@ GoldRushDecoder.on(
 
         const tokens: EventTokens = [
             {
-                decimals: FlashloanToken?.[0]?.contract_decimals,
+                decimals: FlashLoanToken?.[0]?.contract_decimals,
                 heading: "Flash Loan Amount",
                 pretty_quote: prettifyCurrency(
-                    FlashloanToken?.[0]?.prices?.[0]?.price *
+                    FlashLoanToken?.[0]?.prices?.[0]?.price *
                         (Number(decoded.amount) /
                             Math.pow(
                                 10,
-                                FlashloanToken?.[0]?.contract_decimals ?? 0
+                                FlashLoanToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: FlashloanToken?.[0]?.logo_url,
-                ticker_symbol: FlashloanToken?.[0]?.contract_ticker_symbol,
+                ticker_logo: FlashLoanToken?.[0]?.logo_urls?.token_logo_url,
+                ticker_symbol: FlashLoanToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.amount),
             },
             {
-                decimals: FlashloanToken?.[0]?.contract_decimals,
+                decimals: FlashLoanToken?.[0]?.contract_decimals,
                 heading: "Flash Loan Premium",
                 pretty_quote: prettifyCurrency(
-                    FlashloanToken?.[0]?.prices?.[0]?.price *
+                    FlashLoanToken?.[0]?.prices?.[0]?.price *
                         (Number(decoded.premium) /
                             Math.pow(
                                 10,
-                                FlashloanToken?.[0]?.contract_decimals ?? 0
+                                FlashLoanToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: FlashloanToken?.[0]?.logo_url,
-                ticker_symbol: FlashloanToken?.[0]?.contract_ticker_symbol,
+                ticker_logo: FlashLoanToken?.[0]?.logo_urls?.token_logo_url,
+                ticker_symbol: FlashLoanToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.premium),
             },
         ];
@@ -339,7 +339,7 @@ GoldRushDecoder.on(
                                 collateralToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: collateralToken?.[0]?.logo_url,
+                ticker_logo: collateralToken?.[0]?.logo_urls?.token_logo_url,
                 ticker_symbol: collateralToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.liquidatedCollateralAmount),
             },
@@ -354,7 +354,7 @@ GoldRushDecoder.on(
                                 debtToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: debtToken?.[0]?.logo_url,
+                ticker_logo: debtToken?.[0]?.logo_urls?.token_logo_url,
                 ticker_symbol: debtToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.debtToCover),
             },
@@ -454,7 +454,7 @@ GoldRushDecoder.on(
                                 RepayToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: RepayToken?.[0]?.logo_url,
+                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url,
                 ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.amount),
             },
@@ -551,7 +551,7 @@ GoldRushDecoder.on(
                                 SupplyToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: SupplyToken?.[0]?.logo_url,
+                ticker_logo: SupplyToken?.[0]?.logo_urls?.token_logo_url,
                 ticker_symbol: SupplyToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.amount),
             },
@@ -645,7 +645,7 @@ GoldRushDecoder.on(
                                 RepayToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: RepayToken?.[0]?.logo_url,
+                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url,
                 ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol,
                 value: String(decoded.amount),
             },

@@ -9,6 +9,7 @@ export enum DECODED_EVENT_CATEGORY {
     BRIDGE = "Bridge",
     GAMING = "Gaming",
     SOCIAL = "Social",
+    STAKING = "Staking",
     OTHERS = "Others",
     STAKING = "Staking",
 }

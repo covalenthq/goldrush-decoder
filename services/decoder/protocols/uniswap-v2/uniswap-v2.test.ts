@@ -23,6 +23,26 @@ describe("uniswap-v2", () => {
         expect(event.details?.length).toEqual(2);
     });
 
+    test("defi-kingdoms-mainnet:Swap", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({
+                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+            })
+            .send({
+                chain_name: "defi-kingdoms-mainnet",
+                tx_hash:
+                    "0x9327e7e7ba43fdb276e6b098e5ef7eb114640f14ce528f0419716d950ee9f947",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Swap");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event.tokens?.length).toEqual(2);
+        expect(event.details?.length).toEqual(2);
+    });
+
     test("eth-mainnet:Mint", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
