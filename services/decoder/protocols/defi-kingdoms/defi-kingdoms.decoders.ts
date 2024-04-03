@@ -196,16 +196,6 @@ GoldRushDecoder.on(
                 type: "text",
             },
             {
-                heading: "Starting Price",
-                value: decoded.startingPrice.toString(),
-                type: "text",
-            },
-            {
-                heading: "Ending Price",
-                value: decoded.endingPrice.toString(),
-                type: "text",
-            },
-            {
                 heading: "Duration",
                 value: decoded.duration.toString(),
                 type: "text",
@@ -409,11 +399,6 @@ GoldRushDecoder.on(
             {
                 heading: "Token ID",
                 value: decoded.tokenId.toString(),
-                type: "text",
-            },
-            {
-                heading: "Total Price",
-                value: decoded.totalPrice.toString(),
                 type: "text",
             },
             {
