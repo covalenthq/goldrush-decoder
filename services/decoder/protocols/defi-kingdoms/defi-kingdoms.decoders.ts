@@ -5,10 +5,10 @@ import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
+import { decodeEventLog, type Abi, isAddress } from "viem";
 import PetABI from "./abis/defi-kingdoms.pets.abi.json";
 import HERO_AUCTION_ABI from "./abis/defi-kingdoms.hero-auction.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { TimestampParser, isNullAddress } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
@@ -197,13 +197,17 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Duration",
-                value: decoded.duration.toString(),
+                value: decoded.duration.toString() + " seconds",
                 type: "text",
             },
             {
                 heading: "Winner",
-                value: decoded.winner.toString(),
-                type: "address",
+                value: !isNullAddress(decoded.winner)
+                ? decoded.winner
+                : "No winner",
+                type: !isNullAddress(decoded.winner)
+                ? "address"
+                : "text",
             },
         ];
 
@@ -403,7 +407,9 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Winner",
-                value: decoded.winner.toString(),
+                value: isNullAddress(decoded.winner)
+                    ? decoded.winner
+                    : "No winner",
                 type: "address",
             },
         ];
