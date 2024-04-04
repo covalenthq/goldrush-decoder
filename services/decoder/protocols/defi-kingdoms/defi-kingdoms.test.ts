@@ -19,4 +19,55 @@ describe("defi-kingdoms", () => {
         }
         expect(event?.details?.length).toEqual(4);
     });
+
+    test("defi-kingdoms-mainnet:Auction Created", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "defi-kingdoms-mainnet",
+                tx_hash:
+                    "0xa716c7e699fb26703b74c5cdae4a1d4930ef31353594185a9e7b40d881c56a57",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Auction Created");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event?.details?.length).toEqual(7);
+    });
+
+    test("defi-kingdoms-mainnet:Auction Cancelled", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "defi-kingdoms-mainnet",
+                tx_hash:
+                    "0x8a162e78fa5da11670555233052b31366c9784e78e18d849fe1edac06ad46c2c",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Auction Cancelled");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event?.details?.length).toEqual(2);
+    });
+
+    test("defi-kingdoms-mainnet:Auction Successful", async () => {
+        const res = await request(app)
+            .post("/api/v1/tx/decode")
+            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .send({
+                chain_name: "defi-kingdoms-mainnet",
+                tx_hash:
+                    "0xe313388c1d1f6e190abc93c30c48698d671da83ca0898646e3573a0c90d892db",
+            });
+        const { events } = res.body as { events: EventType[] };
+        const event = events.find(({ name }) => name === "Auction Successful");
+        if (!event) {
+            throw Error("Event not found");
+        }
+        expect(event?.details?.length).toEqual(4);
+    });
 });
