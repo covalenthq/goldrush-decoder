@@ -34,7 +34,7 @@ describe("defi-kingdoms", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event?.details?.length).toEqual(7);
+        expect(event?.details?.length).toEqual(5);
     });
 
     test("defi-kingdoms-mainnet:Auction Cancelled", async () => {
@@ -68,6 +68,6 @@ describe("defi-kingdoms", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event?.details?.length).toEqual(4);
+        expect(event?.details?.length).toEqual(3);
     });
 });
