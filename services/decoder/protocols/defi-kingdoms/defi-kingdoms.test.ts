@@ -34,6 +34,12 @@ describe("defi-kingdoms", () => {
         if (!event) {
             throw Error("Event not found");
         }
+        if (event.nfts) {
+            expect(event.nfts?.length).toBeGreaterThan(0);
+        }
+        if (event.tokens) {
+            expect(event.tokens?.length).toBeGreaterThan(0);
+        }
         expect(event?.details?.length).toEqual(5);
     });
 
@@ -51,6 +57,9 @@ describe("defi-kingdoms", () => {
         if (!event) {
             throw Error("Event not found");
         }
+        if (event.nfts) {
+            expect(event.nfts?.length).toBeGreaterThan(0);
+        }
         expect(event?.details?.length).toEqual(2);
     });
 
@@ -67,6 +76,12 @@ describe("defi-kingdoms", () => {
         const event = events.find(({ name }) => name === "Auction Successful");
         if (!event) {
             throw Error("Event not found");
+        }
+        if (event.nfts) {
+            expect(event.nfts?.length).toBeGreaterThan(0);
+        }
+        if (event.tokens) {
+            expect(event.tokens?.length).toBeGreaterThan(0);
         }
         expect(event?.details?.length).toEqual(3);
     });
