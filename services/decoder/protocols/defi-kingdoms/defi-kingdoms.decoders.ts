@@ -203,11 +203,9 @@ GoldRushDecoder.on(
             {
                 heading: "Winner",
                 value: !isNullAddress(decoded.winner)
-                ? decoded.winner
-                : "No winner",
-                type: !isNullAddress(decoded.winner)
-                ? "address"
-                : "text",
+                    ? decoded.winner
+                    : "No winner",
+                type: !isNullAddress(decoded.winner) ? "address" : "text",
             },
         ];
 
