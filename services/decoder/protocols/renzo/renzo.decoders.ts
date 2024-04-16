@@ -226,11 +226,6 @@ GoldRushDecoder.on(
                 type: "address",
             },
             {
-                heading: "ezETH Minted",
-                value: decoded.ezETHMinted.toString(),
-                type: "text",
-            },
-            {
                 heading: "Referral ID",
                 value: decoded.referralId.toString(),
                 type: "text",
