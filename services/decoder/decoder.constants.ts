@@ -21,4 +21,5 @@ export enum DECODED_ACTION {
     TRANSFERRED = "Transferred",
     RECEIVED_BRIDGE = "Received Bridge",
     ACCOUNT_ABSTRACTION = "Account Abstraction Transaction",
+    WITHDRAWAL = "Withdrawal",
 }
