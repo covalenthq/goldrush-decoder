@@ -42,7 +42,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Token 1",
-                value: decoded.token0,
+                value: decoded.token1,
                 type: "address",
             },
             {

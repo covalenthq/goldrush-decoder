@@ -8,7 +8,6 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import STRATEGY_MANAGER_ABI from "./abis/renzo.eigen-layer-strategy-manager.json";
 import RESTAKE_STRATEGY_ABI from "./abis/renzo.restake-manager-abi.json";
-import DEPOSIT_QUEUE_ABI from "./abis/renzo.deposit-queue-abi.json";
 import { TimestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
@@ -308,66 +307,3 @@ GoldRushDecoder.on(
         };
     }
 );
-
-// GoldRushDecoder.on(
-//     "renzo:ETHDepositedFromProtocol",
-//     ["eth-mainnet"],
-//     DEPOSIT_QUEUE_ABI as Abi,
-//     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
-//         const { raw_log_data, raw_log_topics } = log_event;
-
-//         const { args: decoded } = decodeEventLog({
-//             abi: RESTAKE_STRATEGY_ABI,
-//             topics: raw_log_topics as [],
-//             data: raw_log_data as `0x${string}`,
-//             eventName: "ETHDepositedFromProtocol",
-//         }) as {
-//             eventName: "ETHDepositedFromProtocol";
-//             args: {
-//                 amount: bigint;
-//             };
-//         };
-
-//         const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-//         const { data: TokenData } =
-//             await covalent_client.PricingService.getTokenPrices(
-//                 chain_name,
-//                 "USD",
-//                 "0x0000000000000000000000000000000000000000",
-//                 {
-//                     from: date,
-//                     to: date,
-//                 }
-//             );
-
-//         const tokens: EventTokens = [
-//             {
-//                 decimals: TokenData?.[0]?.contract_decimals,
-//                 heading: "Deposit Amount",
-//                 value: String(decoded.amount),
-//                 pretty_quote: prettifyCurrency(
-//                     TokenData?.[0]?.prices?.[0]?.price *
-//                         (Number(decoded.amount) /
-//                             Math.pow(
-//                                 10,
-//                                 TokenData?.[0]?.contract_decimals ?? 0
-//                             ))
-//                 ),
-//                 ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
-//                 ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
-//             },
-//         ];
-
-//         return {
-//             action: DECODED_ACTION.TRANSFERRED,
-//             category: DECODED_EVENT_CATEGORY.STAKING,
-//             name: "ETHDepositedFromProtocol",
-//             protocol: {
-//                 logo: log_event.sender_logo_url as string,
-//                 name: log_event.sender_name as string,
-//             },
-//             tokens,
-//         };
-//     }
-// );
