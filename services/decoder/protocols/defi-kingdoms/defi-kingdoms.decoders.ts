@@ -99,7 +99,7 @@ GoldRushDecoder.on(
 
         const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        // INFO: Fetching Jewel Token Price from Avalanche Mainnet as it is a native token on Defi Kingdoms
+        // * INFO: Fetching Jewel Token Price from Avalanche Mainnet as it is a native token on Defi Kingdoms
 
         const { data: JewelToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -115,7 +115,8 @@ GoldRushDecoder.on(
         const { data: HeroNFT } =
             await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
-                "0xEb9B61B145D6489Be575D3603F4a704810e143dF", // Hero NFT Contract Address
+                // * INFO: Hero NFT Contract Address
+                "0xEb9B61B145D6489Be575D3603F4a704810e143dF",
                 decoded.tokenId.toString(),
                 {
                     withUncached: true,
