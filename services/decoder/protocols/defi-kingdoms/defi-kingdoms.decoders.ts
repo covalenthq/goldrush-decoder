@@ -5,7 +5,7 @@ import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi, isAddress } from "viem";
+import { decodeEventLog, type Abi } from "viem";
 import PetABI from "./abis/defi-kingdoms.pets.abi.json";
 import HERO_AUCTION_ABI from "./abis/defi-kingdoms.hero-auction.abi.json";
 import { TimestampParser, isNullAddress } from "../../../../utils/functions";
