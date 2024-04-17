@@ -17,6 +17,7 @@ import {
     type QueryOptions,
 } from "./decoder.types";
 import { encodeEventTopics, type Abi } from "viem";
+import { chunkify } from "../../utils/functions";
 
 export class GoldRushDecoder {
     private static configs: DecoderConfig = {};
@@ -28,7 +29,7 @@ export class GoldRushDecoder {
     private static fileExtension: "js" | "ts" =
         process.env.NODE_ENV !== "test" ? "js" : "ts";
 
-    public static initDecoder = () => {
+    public static initDecoder = (): void => {
         console.info("Initializing GoldrushDecoder Service...");
 
         const protocolsDirectoryPath: string = join(__dirname, "/protocols");
@@ -104,7 +105,7 @@ export class GoldRushDecoder {
         chain_names: Chain[],
         abi: Abi,
         decoding_function: DecodingFunction
-    ) => {
+    ): void => {
         const [protocol, event_name] = event_id.split(":");
         const [topic0_hash] = encodeEventTopics({
             abi: abi,
@@ -143,7 +144,7 @@ export class GoldRushDecoder {
         event_name: string,
         abi: Abi,
         decoding_function: DecodingFunction
-    ) => {
+    ): void => {
         const [topic0_hash] = encodeEventTopics({
             abi: abi,
             eventName: event_name,
@@ -155,7 +156,7 @@ export class GoldRushDecoder {
         this.fallbacks[lowercaseTopic0Hash] = fallback_function_index;
     };
 
-    public static native = (native_decoder: NativeDecodingFunction) => {
+    public static native = (native_decoder: NativeDecodingFunction): void => {
         this.native_decoder = native_decoder;
     };
 
@@ -171,48 +172,45 @@ export class GoldRushDecoder {
             const nativeEvent = this.native_decoder(tx, options);
             events.push(nativeEvent);
         }
-
-        const decodedEvents = await Promise.all(
-            (tx.log_events ?? []).map((log_event) => {
-                const {
-                    raw_log_topics: [topic0_hash],
-                    sender_address,
-                    sender_factory_address,
-                } = log_event;
-                const lowercaseChainName = chain_name.toLowerCase() as Chain;
-                const lowercaseSenderAddress = sender_address?.toLowerCase();
-                const lowercaseSenderFactoryAddress =
-                    sender_factory_address?.toLowerCase();
-                const lowercaseTopic0Hash = topic0_hash?.toLowerCase();
-
-                const decoding_index =
-                    this.decoders[lowercaseChainName]?.[
-                        lowercaseSenderAddress
-                    ]?.[lowercaseTopic0Hash] ??
-                    this.decoders[lowercaseChainName]?.[
-                        lowercaseSenderFactoryAddress
-                    ]?.[lowercaseTopic0Hash];
-                const fallback_index = this.fallbacks[lowercaseTopic0Hash];
-
-                const logFunction =
-                    decoding_index !== undefined
-                        ? this.decoding_functions[decoding_index]
-                        : fallback_index !== undefined
-                        ? this.fallback_functions[fallback_index]
+        const logChunks = chunkify(tx.log_events ?? [], 500);
+        const decodedEvents: EventType[] = [];
+        for (const logChunk of logChunks) {
+            const decodedChunk = await Promise.all(
+                logChunk.map((log) => {
+                    const {
+                        raw_log_topics: [topic0_hash],
+                        sender_address,
+                        sender_factory_address,
+                    } = log;
+                    const lowercaseChainName =
+                        chain_name.toLowerCase() as Chain;
+                    const lowercaseSenderAddress =
+                        sender_address?.toLowerCase();
+                    const lowercaseSenderFactoryAddress =
+                        sender_factory_address?.toLowerCase();
+                    const lowercaseTopic0Hash = topic0_hash?.toLowerCase();
+                    const decoding_index =
+                        this.decoders[lowercaseChainName]?.[
+                            lowercaseSenderAddress
+                        ]?.[lowercaseTopic0Hash] ??
+                        this.decoders[lowercaseChainName]?.[
+                            lowercaseSenderFactoryAddress
+                        ]?.[lowercaseTopic0Hash];
+                    const fallback_index = this.fallbacks[lowercaseTopic0Hash];
+                    const logFunction =
+                        decoding_index !== undefined
+                            ? this.decoding_functions[decoding_index]
+                            : fallback_index !== undefined
+                            ? this.fallback_functions[fallback_index]
+                            : null;
+                    return logFunction
+                        ? logFunction(log, tx, chain_name, covalent_client)
                         : null;
-
-                return logFunction
-                    ? logFunction(
-                          log_event,
-                          tx,
-                          chain_name,
-                          covalent_client,
-                          options
-                      )
-                    : null;
-            })
-        );
-
-        return events.concat(decodedEvents).filter(Boolean) as EventType[];
+                })
+            );
+            decodedEvents.concat(decodedChunk.filter(Boolean) as EventType[]);
+        }
+        console.log(events.length + decodedEvents.length);
+        return events.concat(decodedEvents);
     };
 }
