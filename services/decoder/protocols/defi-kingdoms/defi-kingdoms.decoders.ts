@@ -406,7 +406,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Winner",
-                value: isNullAddress(decoded.winner)
+                value: !isNullAddress(decoded.winner)
                     ? decoded.winner
                     : "No winner",
                 type: "address",
