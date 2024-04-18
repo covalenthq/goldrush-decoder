@@ -16,8 +16,7 @@ describe("wormhole", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event?.details?.length).toEqual(5);
     });
 });
 
@@ -35,7 +34,6 @@ describe("wormhole", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        const testAdded: boolean = false;
-        expect(testAdded).toEqual(true);
+        expect(event?.details?.length).toEqual(3);
     });
 });
