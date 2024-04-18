@@ -255,7 +255,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.ADD_LIQUIDITY,
+            action: DECODED_ACTION.MINT,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Mint",
             protocol: {
