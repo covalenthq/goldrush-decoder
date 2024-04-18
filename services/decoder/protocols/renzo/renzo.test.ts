@@ -2,87 +2,81 @@ import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
 
-describe("defi-kingdoms", () => {
-    test("defi-kingdoms-mainnet:Pet Fed", async () => {
+describe("renzo", () => {
+    test("eth-mainnet:ShareWithdrawalQueued", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                chain_name: "defi-kingdoms-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x038746ca8d77f7df46d669da7108fb618afc927cbcb64615846e91286e2327a8",
+                    "0x398cc4c5dd16f5e6fda2a14186c85692ea94de99c200df3665841be1bf9f2af4",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Pet Fed");
+        const event = events.find(
+            ({ name }) => name === "ShareWithdrawalQueued"
+        );
         if (!event) {
             throw Error("Event not found");
         }
         expect(event?.details?.length).toEqual(4);
     });
+});
 
-    test("defi-kingdoms-mainnet:Auction Created", async () => {
+describe("renzo", () => {
+    test("eth-mainnet:WithdrawalQueued", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                chain_name: "defi-kingdoms-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
-                    "0xa716c7e699fb26703b74c5cdae4a1d4930ef31353594185a9e7b40d881c56a57",
+                    "0x398cc4c5dd16f5e6fda2a14186c85692ea94de99c200df3665841be1bf9f2af4",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Auction Created");
+        const event = events.find(({ name }) => name === "WithdrawalQueued");
         if (!event) {
             throw Error("Event not found");
-        }
-        if (event.nfts) {
-            expect(event.nfts?.length).toBeGreaterThan(0);
-        }
-        if (event.tokens) {
-            expect(event.tokens?.length).toBeGreaterThan(0);
         }
         expect(event?.details?.length).toEqual(5);
     });
+});
 
-    test("defi-kingdoms-mainnet:Auction Cancelled", async () => {
+describe("renzo", () => {
+    test("eth-mainnet:WithdrawalCompleted", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                chain_name: "defi-kingdoms-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
-                    "0x8a162e78fa5da11670555233052b31366c9784e78e18d849fe1edac06ad46c2c",
+                    "0xf9842f803f7373eed7b0ad96bf91ea80e85c82074cc2855ccb0ba3d2d778bda7",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Auction Cancelled");
+        const event = events.find(({ name }) => name === "WithdrawalCompleted");
         if (!event) {
             throw Error("Event not found");
         }
-        if (event.nfts) {
-            expect(event.nfts?.length).toBeGreaterThan(0);
-        }
-        expect(event?.details?.length).toEqual(2);
+        expect(event?.details?.length).toEqual(4);
     });
+});
 
-    test("defi-kingdoms-mainnet:Auction Successful", async () => {
+describe("renzo", () => {
+    test("eth-mainnet:Deposit", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
             .send({
-                chain_name: "defi-kingdoms-mainnet",
+                chain_name: "eth-mainnet",
                 tx_hash:
-                    "0xe313388c1d1f6e190abc93c30c48698d671da83ca0898646e3573a0c90d892db",
+                    "0xdfe1f29b8dfbdd3c6a0d8379e118225f936a4ea74c1e468048d1adbc18510cb0",
             });
         const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Auction Successful");
+        const event = events.find(({ name }) => name === "Deposit");
         if (!event) {
             throw Error("Event not found");
-        }
-        if (event.nfts) {
-            expect(event.nfts?.length).toBeGreaterThan(0);
-        }
-        if (event.tokens) {
-            expect(event.tokens?.length).toBeGreaterThan(0);
         }
         expect(event?.details?.length).toEqual(3);
+        expect(event.tokens?.length).toEqual(2);
     });
 });

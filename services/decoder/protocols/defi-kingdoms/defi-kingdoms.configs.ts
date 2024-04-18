@@ -7,6 +7,12 @@ const configs: Configs = [
         protocol_name: "defi-kingdoms",
         chain_name: "defi-kingdoms-mainnet",
     },
+    {
+        address: "0xc390faa4c7f66e4d62e59c231d5bed32ff77bef0",
+        is_factory: false,
+        protocol_name: "defi-kingdoms",
+        chain_name: "defi-kingdoms-mainnet",
+    },
 ];
 
 export default configs;
