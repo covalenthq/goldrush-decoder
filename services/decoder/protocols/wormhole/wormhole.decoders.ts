@@ -1,5 +1,6 @@
 import { GoldRushDecoder } from "../../decoder";
-import { EventDetails, type EventType } from "../../decoder.types";
+import type { EventDetails } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
