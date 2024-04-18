@@ -441,7 +441,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "ETH Distributed",
             protocol: {
@@ -492,7 +492,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawals Received",
             protocol: {
@@ -678,7 +678,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawal Requested",
             protocol: {
@@ -750,7 +750,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawal Claimed",
             protocol: {
@@ -797,7 +797,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.UPDATE,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Batch Metadata Update",
             protocol: {
@@ -877,7 +877,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawals Finalized",
             protocol: {

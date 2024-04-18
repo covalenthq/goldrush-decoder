@@ -57,7 +57,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.WITHDRAWAL,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "ShareWithdrawalQueued",
             protocol: {
@@ -121,7 +121,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.WITHDRAWAL,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "WithdrawalQueued",
             protocol: {
@@ -179,7 +179,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.WITHDRAWAL,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "WithdrawalCompleted",
             protocol: {
@@ -290,7 +290,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.DEPOSIT,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Deposit",
             protocol: {

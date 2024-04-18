@@ -108,7 +108,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.CREATE,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Pool Created",
             protocol: {
@@ -179,7 +179,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.REMOVE_LIQUIDITY,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Burn",
             protocol: {
@@ -255,7 +255,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.MINT,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Mint",
             protocol: {
@@ -401,7 +401,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.CLAIM_REWARDS,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Collect Fees",
             protocol: {
@@ -471,7 +471,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.FLASHLOAN,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Flash Loan",
             protocol: {
@@ -529,7 +529,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.REMOVE_LIQUIDITY,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Decrease Liquidity",
             protocol: {
@@ -587,7 +587,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.ADD_LIQUIDITY,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Increase Liquidity",
             protocol: {
@@ -645,7 +645,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.CLAIM_REWARDS,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Collect",
             protocol: {

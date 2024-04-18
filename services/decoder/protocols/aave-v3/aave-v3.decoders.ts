@@ -117,7 +117,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.BORROW,
             category: DECODED_EVENT_CATEGORY.LENDING,
             name: "Borrow",
             protocol: {
@@ -234,7 +234,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.FLASHLOAN,
             category: DECODED_EVENT_CATEGORY.LENDING,
             name: "Flash Loan",
             protocol: {
@@ -361,7 +361,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.LIQUIDATE,
             category: DECODED_EVENT_CATEGORY.LENDING,
             name: "Liquidation Call",
             protocol: {
@@ -461,7 +461,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.REPAY,
             category: DECODED_EVENT_CATEGORY.LENDING,
             name: "Repay",
             protocol: {
@@ -558,7 +558,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.DEPOSIT,
             category: DECODED_EVENT_CATEGORY.LENDING,
             name: "Supply",
             protocol: {
@@ -652,7 +652,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.WITHDRAW,
             category: DECODED_EVENT_CATEGORY.LENDING,
             name: "Withdraw",
             protocol: {

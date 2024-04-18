@@ -5,7 +5,7 @@ import { DECODED_ACTION, DECODED_EVENT_CATEGORY } from "../decoder.constants";
 
 GoldRushDecoder.native((tx): EventType => {
     return {
-        action: DECODED_ACTION.SWAPPED,
+        action: DECODED_ACTION.NATIVE_TRANSFER,
         category: DECODED_EVENT_CATEGORY.DEX,
         name: "Native Transfer",
         protocol: {
