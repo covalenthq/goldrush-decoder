@@ -85,7 +85,7 @@ GoldRushDecoder.fallback(
         ];
 
         const parsedData: EventType = {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.APPROVAL,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Approval",
             protocol: {

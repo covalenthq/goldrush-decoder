@@ -290,7 +290,7 @@ GoldRushDecoder.on(
         ];
 
         return {
-            action: DECODED_ACTION.TRANSFERRED,
+            action: DECODED_ACTION.DEPOSIT,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Deposit",
             protocol: {

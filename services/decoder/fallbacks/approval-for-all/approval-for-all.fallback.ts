@@ -29,7 +29,7 @@ GoldRushDecoder.fallback(
         };
 
         return {
-            action: DECODED_ACTION.SWAPPED,
+            action: DECODED_ACTION.APPROVAL,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Approval For All",
             protocol: {
