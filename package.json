@@ -14,7 +14,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@covalenthq/clear": "^1.0.2",
+        "@covalenthq/client-sdk": "^1.0.2",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "enquirer": "^2.4.1",

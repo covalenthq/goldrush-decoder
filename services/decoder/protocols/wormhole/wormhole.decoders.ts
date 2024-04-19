@@ -87,7 +87,7 @@ GoldRushDecoder.on(
         "moonbeam-mainnet",
         "optimism-mainnet",
         "base-mainnet",
-        "gnosis-mainnet"
+        "gnosis-mainnet",
     ],
     ETH_CORE_ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
