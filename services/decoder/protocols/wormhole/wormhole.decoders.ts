@@ -11,7 +11,19 @@ import ETH_CORE_ABI from "./abis/wormhole-eth-core.abi.json";
 
 GoldRushDecoder.on(
     "wormhole:TransferRedeemed",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "arbitrum-mainnet",
+        "bsc-mainnet",
+        "matic-mainnet",
+        "avalanche-mainnet",
+        "emerald-paratime-mainnet",
+        "aurora-mainnet",
+        "celo-mainnet",
+        "moonbeam-mainnet",
+        "optimism-mainnet",
+        "base-mainnet",
+    ],
     PORTAL_BRIDGE_ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
@@ -39,11 +51,11 @@ GoldRushDecoder.on(
             {
                 heading: "Emitter Address",
                 value: decoded.emitterAddress,
-                type: "text",
+                type: "address",
             },
             {
                 heading: "Sequence",
-                value: decoded.sequence.toString(),
+                value: decoded.sequence.toLocaleString(),
                 type: "text",
             },
         ];
@@ -63,7 +75,20 @@ GoldRushDecoder.on(
 
 GoldRushDecoder.on(
     "wormhole:LogMessagePublished",
-    ["eth-mainnet"],
+    [
+        "eth-mainnet",
+        "arbitrum-mainnet",
+        "bsc-mainnet",
+        "matic-mainnet",
+        "avalanche-mainnet",
+        "emerald-paratime-mainnet",
+        "aurora-mainnet",
+        "celo-mainnet",
+        "moonbeam-mainnet",
+        "optimism-mainnet",
+        "base-mainnet",
+        "gnosis-mainnet"
+    ],
     ETH_CORE_ABI as Abi,
     async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
@@ -88,21 +113,21 @@ GoldRushDecoder.on(
             {
                 heading: "Sender",
                 value: decoded.sender,
-                type: "text",
+                type: "address",
             },
             {
                 heading: "Consistency Level",
-                value: decoded.consistencyLevel.toString(),
+                value: decoded.consistencyLevel.toLocaleString(),
                 type: "text",
             },
             {
                 heading: "Sequence",
-                value: decoded.sequence.toString(),
+                value: decoded.sequence.toLocaleString(),
                 type: "text",
             },
             {
                 heading: "Nonce",
-                value: decoded.nonce.toString(),
+                value: decoded.nonce.toLocaleString(),
                 type: "text",
             },
             {
