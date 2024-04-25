@@ -22,6 +22,7 @@ export type DecodeTXHeaders = yup.InferType<typeof decodeTXHeadersSchema>;
 
 export const decodeTXQuerySchema = yup.object({
     raw_logs: yup.string().oneOf(["false", "true"]),
+    min_usd: yup.number().min(0),
 });
 
 export type DecodeTXQuery = yup.InferType<typeof decodeTXQuerySchema>;

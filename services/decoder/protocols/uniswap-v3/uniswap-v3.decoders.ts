@@ -9,7 +9,7 @@ import { decodeEventLog, type Abi } from "viem";
 import FactoryABI from "./abis/uniswap-v3.factory.abi.json";
 import PairABI from "./abis/uniswap-v3.pair.abi.json";
 import PositionManagerABI from "./abis/uniswap-v3.NonfungiblePositionManager.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 
 GoldRushDecoder.on(
     "uniswap-v3:PoolCreated",
@@ -70,7 +70,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: Token0 } =
             await covalent_client.PricingService.getTokenPrices(

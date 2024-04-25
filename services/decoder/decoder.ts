@@ -166,16 +166,14 @@ export class GoldRushDecoder {
         options: QueryOptions
     ) => {
         const covalent_client = new CovalentClient(covalent_api_key);
-        const events: EventType[] = [];
+        const events: (EventType | null)[] = [];
         if (tx.value) {
-            const nativeEvent = this.native_decoder(tx);
+            const nativeEvent = this.native_decoder(tx, options);
             events.push(nativeEvent);
         }
 
         const decodedEvents = await Promise.all(
             (tx.log_events ?? []).map((log_event) => {
-                // const a = {...(options.raw_logs?{raw_log:log_event}:{})};
-
                 const {
                     raw_log_topics: [topic0_hash],
                     sender_address,
@@ -215,6 +213,6 @@ export class GoldRushDecoder {
             })
         );
 
-        return events.concat(decodedEvents.filter(Boolean) as EventType[]);
+        return events.concat(decodedEvents).filter(Boolean) as EventType[];
     };
 }

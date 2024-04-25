@@ -60,6 +60,7 @@ export interface EventType {
 
 export interface QueryOptions {
     raw_logs?: boolean;
+    min_usd?: number;
 }
 
 export type DecodingFunction = (
@@ -68,9 +69,12 @@ export type DecodingFunction = (
     chain_name: Chain,
     covalent_client: CovalentClient,
     options: QueryOptions
-) => Promise<EventType>;
+) => Promise<EventType | null>;
 
-export type NativeDecodingFunction = (tx: Transaction) => EventType;
+export type NativeDecodingFunction = (
+    tx: Transaction,
+    options: QueryOptions
+) => EventType | null;
 
 export type DecoderConfig =
     | {

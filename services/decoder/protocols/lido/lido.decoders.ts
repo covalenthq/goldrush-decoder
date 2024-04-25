@@ -9,7 +9,7 @@ import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/lido.steth.abi.json";
 import WithdrawalABI from "./abis/lido.withdrawalQueue.abi.json";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 
 GoldRushDecoder.on(
     "lido:TransferShares",
@@ -177,7 +177,7 @@ GoldRushDecoder.on(
         const details: EventDetails = [
             {
                 heading: "Time Stamp",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.reportTimestamp) * 1000),
                     "descriptive"
                 ),
@@ -294,7 +294,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: StakingToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -388,7 +388,7 @@ GoldRushDecoder.on(
         const details: EventDetails = [
             {
                 heading: "Time Stamp",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.reportTimestamp) * 1000),
                     "descriptive"
                 ),
@@ -708,7 +708,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: StakingToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -933,7 +933,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Timestamp",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.timestamp) * 1000),
                     "descriptive"
                 ),

@@ -11,7 +11,7 @@ import {
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/blur.BlurExchange.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
@@ -118,7 +118,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Expiration Time",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.sell.expirationTime) * 1000),
                     "descriptive"
                 ),
@@ -126,7 +126,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Listing Time",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.sell.listingTime) * 1000),
                     "descriptive"
                 ),
@@ -154,7 +154,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
         const { data: tokenPriceData } =
             await covalent_client.PricingService.getTokenPrices(
                 chain_name,

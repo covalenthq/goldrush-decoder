@@ -8,7 +8,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import PetABI from "./abis/defi-kingdoms.pets.abi.json";
 import HERO_AUCTION_ABI from "./abis/defi-kingdoms.hero-auction.abi.json";
-import { TimestampParser, isNullAddress } from "../../../../utils/functions";
+import { timestampParser, isNullAddress } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
@@ -57,7 +57,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Hungry At",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.hungryAt) * 1000),
                     "descriptive"
                 ),
@@ -110,7 +110,7 @@ GoldRushDecoder.on(
             };
         };
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         // * INFO: Fetching Jewel Token Price from Avalanche Mainnet as it is a native token on Defi Kingdoms
 
@@ -355,7 +355,7 @@ GoldRushDecoder.on(
             };
         };
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: JewelToken } =
             await covalent_client.PricingService.getTokenPrices(

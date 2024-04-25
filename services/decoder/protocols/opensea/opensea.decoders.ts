@@ -11,7 +11,7 @@ import {
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
 import Seaport from "./abis/seaport-1.1.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
@@ -94,7 +94,7 @@ GoldRushDecoder.on(
             switch (itemType) {
                 case ITEM_TYPE.NATIVE:
                 case ITEM_TYPE.ERC20: {
-                    const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
+                    const date = timestampParser(block_signed_at, "YYYY-MM-DD");
                     const { data } =
                         await covalent_client.PricingService.getTokenPrices(
                             chain_name,

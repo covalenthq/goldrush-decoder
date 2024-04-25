@@ -8,7 +8,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import STRATEGY_MANAGER_ABI from "./abis/renzo.eigen-layer-strategy-manager.json";
 import RESTAKE_STRATEGY_ABI from "./abis/renzo.restake-manager-abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
@@ -259,7 +259,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: TokenData } =
             await covalent_client.PricingService.getTokenPrices(

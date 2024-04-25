@@ -7,7 +7,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import ERC20ABI from "./abis/transfer-erc20.abi.json";
 import ERC721ABI from "./abis/transfer-erc721.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { currencyToNumber, timestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.fallback(
@@ -19,7 +19,7 @@ GoldRushDecoder.fallback(
         chain_name,
         covalent_client,
         options
-    ): Promise<EventType> => {
+    ): Promise<EventType | null> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         let decoded:
@@ -94,7 +94,7 @@ GoldRushDecoder.fallback(
         };
 
         if (decoded.value) {
-            const date = TimestampParser(
+            const date = timestampParser(
                 log_event.block_signed_at,
                 "YYYY-MM-DD"
             );
@@ -109,22 +109,25 @@ GoldRushDecoder.fallback(
                     }
                 );
 
-            const pretty_quote =
+            const pretty_quote = prettifyCurrency(
                 data?.[0]?.items?.[0]?.price *
-                (Number(decoded.value) /
-                    Math.pow(
-                        10,
-                        data?.[0]?.items?.[0]?.contract_metadata
-                            ?.contract_decimals ?? 18
-                    ));
+                    (Number(decoded.value) /
+                        Math.pow(
+                            10,
+                            data?.[0]?.items?.[0]?.contract_metadata
+                                ?.contract_decimals ?? 18
+                        )) ?? 0
+            );
+
+            if (currencyToNumber(pretty_quote) < options.min_usd!) {
+                return null;
+            }
 
             parsedData.tokens = [
                 {
                     decimals: data?.[0]?.contract_decimals ?? 18,
                     heading: "Token Amount",
-                    pretty_quote: pretty_quote
-                        ? prettifyCurrency(pretty_quote)
-                        : "",
+                    pretty_quote: pretty_quote,
                     ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
                     ticker_symbol: data?.[0]?.contract_ticker_symbol,
                     value: decoded.value.toString(),

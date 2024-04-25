@@ -1,9 +1,13 @@
 import { GoldRushDecoder } from "../decoder";
 import { type EventType } from "../decoder.types";
-
+import { currencyToNumber } from "../../../utils/functions";
 import { DECODED_ACTION, DECODED_EVENT_CATEGORY } from "../decoder.constants";
 
-GoldRushDecoder.native((tx): EventType => {
+GoldRushDecoder.native((tx, options): EventType | null => {
+    if (currencyToNumber(tx.pretty_value_quote) < options.min_usd!) {
+        return null;
+    }
+
     return {
         action: DECODED_ACTION.NATIVE_TRANSFER,
         category: DECODED_EVENT_CATEGORY.DEX,

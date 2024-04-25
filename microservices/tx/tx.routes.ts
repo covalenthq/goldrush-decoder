@@ -28,6 +28,7 @@ const handleDecode = async (
             "x-covalent-api-key"
         ];
         const raw_logs = (req.query as DecodeTXQuery)["raw_logs"] === "true";
+        const min_usd = (req.query as DecodeTXQuery)["min_usd"] ?? 0;
         const { chain_name, tx_hash } = req.body as DecodeTXRequest;
         const tx = await fetchTxFromHash(
             chain_name as Chain,
@@ -48,6 +49,7 @@ const handleDecode = async (
             covalentApiKey,
             {
                 raw_logs,
+                min_usd,
             }
         );
         const parsedTx = JSON.parse(

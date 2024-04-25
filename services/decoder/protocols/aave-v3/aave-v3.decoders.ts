@@ -7,7 +7,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/aave-v3.abi.json";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 
 enum INTEREST_RATE_MODE {
     "None" = 0,
@@ -91,7 +91,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: BorrowToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -177,7 +177,7 @@ GoldRushDecoder.on(
             };
         };
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: FlashLoanToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -329,7 +329,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const [{ data: collateralToken }, { data: debtToken }] =
             await Promise.all([
@@ -456,7 +456,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: RepayToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -563,7 +563,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: SupplyToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -661,7 +661,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: RepayToken } =
             await covalent_client.PricingService.getTokenPrices(

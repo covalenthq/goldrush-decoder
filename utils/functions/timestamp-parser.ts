@@ -13,7 +13,7 @@ const months: string[] = [
     "December",
 ];
 
-export const TimestampParser = (
+export const timestampParser = (
     timestamp: Date,
     type: "descriptive" | "YYYY-MM-DD" | "relative"
 ): string => {
