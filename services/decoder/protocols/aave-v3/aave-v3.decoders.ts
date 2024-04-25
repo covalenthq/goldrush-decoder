@@ -28,7 +28,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -124,6 +130,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -143,7 +150,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -241,6 +254,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -260,7 +274,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -368,6 +388,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -387,7 +408,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -468,6 +495,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -487,7 +515,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -565,6 +599,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -584,7 +619,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -659,6 +700,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };

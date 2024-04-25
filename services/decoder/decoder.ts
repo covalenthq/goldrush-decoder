@@ -14,6 +14,7 @@ import {
     type DecoderConfig,
     type Fallbacks,
     type NativeDecodingFunction,
+    type QueryOptions,
 } from "./decoder.types";
 import { encodeEventTopics, type Abi } from "viem";
 
@@ -161,7 +162,8 @@ export class GoldRushDecoder {
     public static decode = async (
         chain_name: Chain,
         tx: Transaction,
-        covalent_api_key: string
+        covalent_api_key: string,
+        options: QueryOptions
     ) => {
         const covalent_client = new CovalentClient(covalent_api_key);
         const events: EventType[] = [];
@@ -171,12 +173,14 @@ export class GoldRushDecoder {
         }
 
         const decodedEvents = await Promise.all(
-            (tx.log_events ?? []).map((log) => {
+            (tx.log_events ?? []).map((log_event) => {
+                // const a = {...(options.raw_logs?{raw_log:log_event}:{})};
+
                 const {
                     raw_log_topics: [topic0_hash],
                     sender_address,
                     sender_factory_address,
-                } = log;
+                } = log_event;
                 const lowercaseChainName = chain_name.toLowerCase() as Chain;
                 const lowercaseSenderAddress = sender_address?.toLowerCase();
                 const lowercaseSenderFactoryAddress =
@@ -200,7 +204,13 @@ export class GoldRushDecoder {
                         : null;
 
                 return logFunction
-                    ? logFunction(log, tx, chain_name, covalent_client)
+                    ? logFunction(
+                          log_event,
+                          tx,
+                          chain_name,
+                          covalent_client,
+                          options
+                      )
                     : null;
             })
         );

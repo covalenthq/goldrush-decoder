@@ -10,7 +10,13 @@ import ABI from "./abis/approval-for-all.abi.json";
 GoldRushDecoder.fallback(
     "ApprovalForAll",
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
             log_event;
 
@@ -36,6 +42,7 @@ GoldRushDecoder.fallback(
                 logo: sender_logo_url as string,
                 name: sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: [
                 {
                     heading: "Owner",

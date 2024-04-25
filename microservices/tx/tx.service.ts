@@ -4,6 +4,7 @@ import {
     type Chain,
     type Transaction,
 } from "@covalenthq/client-sdk";
+import { type QueryOptions } from "../../services/decoder/decoder.types";
 
 export const fetchTxFromHash = async (
     chain_name: Chain,
@@ -38,8 +39,14 @@ export const fetchTxFromHash = async (
 export const decodeLogsFromTx = async (
     chain_name: Chain,
     tx: Transaction,
-    covalentApiKey: string
+    covalentApiKey: string,
+    options: QueryOptions
 ) => {
-    const events = await GoldRushDecoder.decode(chain_name, tx, covalentApiKey);
+    const events = await GoldRushDecoder.decode(
+        chain_name,
+        tx,
+        covalentApiKey,
+        options
+    );
     return events;
 };

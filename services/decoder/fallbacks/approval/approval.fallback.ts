@@ -13,7 +13,13 @@ import { prettifyCurrency } from "@covalenthq/client-sdk";
 GoldRushDecoder.fallback(
     "Approval",
     ERC20ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const {
             block_signed_at,
             raw_log_data,
@@ -92,6 +98,7 @@ GoldRushDecoder.fallback(
                 logo: sender_logo_url as string,
                 name: sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: details,
         };
 

@@ -55,13 +55,19 @@ export interface EventType {
     tokens?: EventTokens;
     nfts?: EventNFTs;
     details?: EventDetails;
+    raw_log?: LogEvent;
+}
+
+export interface QueryOptions {
+    raw_logs?: boolean;
 }
 
 export type DecodingFunction = (
     log_event: LogEvent,
     tx: Transaction,
     chain_name: Chain,
-    covalent_client: CovalentClient
+    covalent_client: CovalentClient,
+    options: QueryOptions
 ) => Promise<EventType>;
 
 export type NativeDecodingFunction = (tx: Transaction) => EventType;

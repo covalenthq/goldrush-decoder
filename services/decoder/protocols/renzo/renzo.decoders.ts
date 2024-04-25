@@ -15,7 +15,13 @@ GoldRushDecoder.on(
     "renzo:ShareWithdrawalQueued",
     ["eth-mainnet"],
     STRATEGY_MANAGER_ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -64,6 +70,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -73,7 +80,13 @@ GoldRushDecoder.on(
     "renzo:WithdrawalQueued",
     ["eth-mainnet"],
     STRATEGY_MANAGER_ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -128,6 +141,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -137,7 +151,13 @@ GoldRushDecoder.on(
     "renzo:WithdrawalCompleted",
     ["eth-mainnet"],
     STRATEGY_MANAGER_ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -186,6 +206,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -195,7 +216,13 @@ GoldRushDecoder.on(
     "renzo:Deposit",
     ["eth-mainnet"],
     RESTAKE_STRATEGY_ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -297,6 +324,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };

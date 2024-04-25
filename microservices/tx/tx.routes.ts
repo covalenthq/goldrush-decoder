@@ -7,9 +7,11 @@ import {
 import { validateQuery } from "../../middlewares";
 import {
     type DecodeTXRequest,
-    decodeTXRequestSchema,
+    decodeTXBodySchema,
     decodeTXHeadersSchema,
     type DecodeTXHeaders,
+    decodeTXQuerySchema,
+    type DecodeTXQuery,
 } from "./tx.schema";
 import { decodeLogsFromTx, fetchTxFromHash } from "./tx.service";
 import { type Chain } from "@covalenthq/client-sdk";
@@ -25,6 +27,7 @@ const handleDecode = async (
         const covalentApiKey = (req.headers as DecodeTXHeaders)[
             "x-covalent-api-key"
         ];
+        const raw_logs = (req.query as DecodeTXQuery)["raw_logs"] === "true";
         const { chain_name, tx_hash } = req.body as DecodeTXRequest;
         const tx = await fetchTxFromHash(
             chain_name as Chain,
@@ -42,7 +45,10 @@ const handleDecode = async (
         const events = await decodeLogsFromTx(
             chain_name as Chain,
             tx,
-            covalentApiKey
+            covalentApiKey,
+            {
+                raw_logs,
+            }
         );
         const parsedTx = JSON.parse(
             JSON.stringify(tx_metadata, (_key, value) => {
@@ -62,6 +68,7 @@ const handleDecode = async (
 txRouter.post(
     "/decode",
     validateQuery("headers", decodeTXHeadersSchema),
-    validateQuery("body", decodeTXRequestSchema),
+    validateQuery("query", decodeTXQuerySchema),
+    validateQuery("body", decodeTXBodySchema),
     handleDecode
 );
