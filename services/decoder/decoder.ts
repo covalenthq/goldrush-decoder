@@ -172,7 +172,7 @@ export class GoldRushDecoder {
             const nativeEvent = this.native_decoder(tx, options);
             events.push(nativeEvent);
         }
-        const logChunks = chunkify(tx.log_events ?? [], 500);
+        const logChunks = chunkify(tx.log_events ?? [], 100);
         const decodedEvents: EventType[] = [];
         for (const logChunk of logChunks) {
             const decodedChunk = await Promise.all(
@@ -210,7 +210,6 @@ export class GoldRushDecoder {
             );
             decodedEvents.concat(decodedChunk.filter(Boolean) as EventType[]);
         }
-        console.log(events.length + decodedEvents.length);
         return events.concat(decodedEvents);
     };
 }
