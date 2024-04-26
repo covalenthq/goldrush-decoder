@@ -7,13 +7,19 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import ERC20ABI from "./abis/approval-erc20.abi.json";
 import ERC721ABI from "./abis/approval-erc721.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { currencyToNumber, timestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.fallback(
     "Approval",
     ERC20ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType | null> => {
         const {
             block_signed_at,
             raw_log_data,
@@ -92,6 +98,7 @@ GoldRushDecoder.fallback(
                 logo: sender_logo_url as string,
                 name: sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: details,
         };
 
@@ -107,7 +114,7 @@ GoldRushDecoder.fallback(
                     type: "text",
                 });
             } else {
-                const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
+                const date = timestampParser(block_signed_at, "YYYY-MM-DD");
                 const { data } =
                     await covalent_client.PricingService.getTokenPrices(
                         chain_name,
@@ -119,6 +126,20 @@ GoldRushDecoder.fallback(
                         }
                     );
 
+                const pretty_quote = prettifyCurrency(
+                    data?.[0]?.items?.[0]?.price *
+                        (Number(decoded.value) /
+                            Math.pow(
+                                10,
+                                data?.[0]?.items?.[0]?.contract_metadata
+                                    ?.contract_decimals ?? 18
+                            ))
+                );
+
+                if (currencyToNumber(pretty_quote) < options.min_usd!) {
+                    return null;
+                }
+
                 parsedData.tokens = [
                     {
                         heading: "Value",
@@ -126,15 +147,7 @@ GoldRushDecoder.fallback(
                         ticker_symbol: sender_contract_ticker_symbol,
                         ticker_logo: sender_logo_url,
                         decimals: sender_contract_decimals ?? 18,
-                        pretty_quote: prettifyCurrency(
-                            data?.[0]?.items?.[0]?.price *
-                                (Number(decoded.value) /
-                                    Math.pow(
-                                        10,
-                                        data?.[0]?.items?.[0]?.contract_metadata
-                                            ?.contract_decimals ?? 18
-                                    ))
-                        ),
+                        pretty_quote: pretty_quote,
                     },
                 ];
             }

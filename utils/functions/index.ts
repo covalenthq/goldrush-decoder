@@ -1,3 +1,4 @@
+export { currencyToNumber } from "./currency-to-number";
 export { slugify } from "./slugify";
-export { TimestampParser } from "./timestamp-parser";
+export { timestampParser } from "./timestamp-parser";
 export { isNullAddress } from "./is-null-address";

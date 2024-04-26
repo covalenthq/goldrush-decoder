@@ -8,7 +8,7 @@ import cors from "cors";
 import { config as dotenvConfig } from "dotenv";
 import { GoldRushDecoder } from "../services";
 import { txRouter } from "../microservices/tx/tx.routes";
-import { TimestampParser } from "../utils/functions";
+import { timestampParser } from "../utils/functions";
 
 dotenvConfig();
 
@@ -36,7 +36,7 @@ app.use(
         const now = new Date();
         console.error("Server Error");
         console.error(
-            `${now.toISOString()}: ${TimestampParser(now, "descriptive")}`
+            `${now.toISOString()}: ${timestampParser(now, "descriptive")}`
         );
         console.error(err);
         if (err.errorCode) {

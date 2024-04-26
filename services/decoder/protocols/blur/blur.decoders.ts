@@ -11,14 +11,20 @@ import {
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/blur.BlurExchange.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
     "blur:OrdersMatched",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
         enum SIDE {
@@ -112,7 +118,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Expiration Time",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.sell.expirationTime) * 1000),
                     "descriptive"
                 ),
@@ -120,7 +126,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Listing Time",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.sell.listingTime) * 1000),
                     "descriptive"
                 ),
@@ -148,7 +154,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
         const { data: tokenPriceData } =
             await covalent_client.PricingService.getTokenPrices(
                 chain_name,
@@ -215,6 +221,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: log_event.sender_name as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: details,
             nfts: nfts,
             tokens: tokens,

@@ -11,7 +11,13 @@ GoldRushDecoder.on(
     "4337-entry-point:UserOperationEvent",
     ["matic-mainnet", "avalanche-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics, sender_contract_decimals } =
             log_event;
 
@@ -41,6 +47,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "4337 Entry Point",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: [
                 {
                     heading: "Gas Cost",

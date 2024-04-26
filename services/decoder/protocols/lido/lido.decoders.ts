@@ -9,13 +9,19 @@ import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/lido.steth.abi.json";
 import WithdrawalABI from "./abis/lido.withdrawalQueue.abi.json";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 
 GoldRushDecoder.on(
     "lido:TransferShares",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -58,6 +64,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -67,7 +74,13 @@ GoldRushDecoder.on(
     "lido:Submitted",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -123,6 +136,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -133,7 +147,13 @@ GoldRushDecoder.on(
     "lido:TokenRebased",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -157,7 +177,7 @@ GoldRushDecoder.on(
         const details: EventDetails = [
             {
                 heading: "Time Stamp",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.reportTimestamp) * 1000),
                     "descriptive"
                 ),
@@ -226,6 +246,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -236,7 +257,13 @@ GoldRushDecoder.on(
     "lido:SharesBurnt",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -267,7 +294,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: StakingToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -321,6 +348,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -331,7 +359,13 @@ GoldRushDecoder.on(
     "lido:ETHDistributed",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -354,7 +388,7 @@ GoldRushDecoder.on(
         const details: EventDetails = [
             {
                 heading: "Time Stamp",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.reportTimestamp) * 1000),
                     "descriptive"
                 ),
@@ -448,6 +482,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -458,7 +493,13 @@ GoldRushDecoder.on(
     "lido:WithdrawalsReceived",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -499,6 +540,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             tokens,
         };
     }
@@ -508,7 +550,13 @@ GoldRushDecoder.on(
     "lido:ELRewardsReceived",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -549,6 +597,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             tokens,
         };
     }
@@ -558,7 +607,13 @@ GoldRushDecoder.on(
     "lido:CLValidatorsUpdated",
     ["eth-mainnet"],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -595,6 +650,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -604,7 +660,13 @@ GoldRushDecoder.on(
     "lido:WithdrawalRequested",
     ["eth-mainnet"],
     WithdrawalABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -646,7 +708,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: StakingToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -685,6 +747,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -695,7 +758,13 @@ GoldRushDecoder.on(
     "lido:WithdrawalClaimed",
     ["eth-mainnet"],
     WithdrawalABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -757,6 +826,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -767,7 +837,13 @@ GoldRushDecoder.on(
     "lido:BatchMetadataUpdate",
     ["eth-mainnet"],
     WithdrawalABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -804,6 +880,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -813,7 +890,13 @@ GoldRushDecoder.on(
     "lido:WithdrawalsFinalized",
     ["eth-mainnet"],
     WithdrawalABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -850,7 +933,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Timestamp",
-                value: TimestampParser(
+                value: timestampParser(
                     new Date(Number(decoded.timestamp) * 1000),
                     "descriptive"
                 ),
@@ -884,6 +967,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Lido" as string,
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };

@@ -9,13 +9,19 @@ import { decodeEventLog, type Abi } from "viem";
 import FactoryABI from "./abis/uniswap-v3.factory.abi.json";
 import PairABI from "./abis/uniswap-v3.pair.abi.json";
 import PositionManagerABI from "./abis/uniswap-v3.NonfungiblePositionManager.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 
 GoldRushDecoder.on(
     "uniswap-v3:PoolCreated",
     ["eth-mainnet"],
     FactoryABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -64,7 +70,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: Token0 } =
             await covalent_client.PricingService.getTokenPrices(
@@ -115,6 +121,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -125,7 +132,13 @@ GoldRushDecoder.on(
     "uniswap-v3:Burn",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -186,6 +199,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -195,7 +209,13 @@ GoldRushDecoder.on(
     "uniswap-v3:Mint",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -262,6 +282,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -271,7 +292,13 @@ GoldRushDecoder.on(
     "uniswap-v3:Swap",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -338,6 +365,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -347,7 +375,13 @@ GoldRushDecoder.on(
     "uniswap-v3:Collect",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -408,6 +442,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -417,7 +452,13 @@ GoldRushDecoder.on(
     "uniswap-v3:Flash",
     ["eth-mainnet"],
     PairABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -478,6 +519,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -487,7 +529,13 @@ GoldRushDecoder.on(
     "uniswap-v3:DecreaseLiquidity",
     ["eth-mainnet"],
     PositionManagerABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -536,6 +584,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -545,7 +594,13 @@ GoldRushDecoder.on(
     "uniswap-v3:IncreaseLiquidity",
     ["eth-mainnet"],
     PositionManagerABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -594,6 +649,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }
@@ -603,7 +659,13 @@ GoldRushDecoder.on(
     "uniswap-v3:Collect",
     ["eth-mainnet"],
     PositionManagerABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -652,6 +714,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Uniswap V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
         };
     }

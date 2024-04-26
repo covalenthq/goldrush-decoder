@@ -11,14 +11,20 @@ import {
 } from "../../decoder.constants";
 import { decodeEventLog, type Abi } from "viem";
 import Seaport from "./abis/seaport-1.1.abi.json";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
     "opensea:OrderFulfilled",
     ["eth-mainnet", "matic-mainnet"],
     Seaport as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
         enum ITEM_TYPE {
@@ -88,7 +94,7 @@ GoldRushDecoder.on(
             switch (itemType) {
                 case ITEM_TYPE.NATIVE:
                 case ITEM_TYPE.ERC20: {
-                    const date = TimestampParser(block_signed_at, "YYYY-MM-DD");
+                    const date = timestampParser(block_signed_at, "YYYY-MM-DD");
                     const { data } =
                         await covalent_client.PricingService.getTokenPrices(
                             chain_name,
@@ -181,6 +187,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Opensea",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: details,
             nfts: nfts,
             tokens: tokens,

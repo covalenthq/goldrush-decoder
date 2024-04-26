@@ -7,7 +7,7 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import ABI from "./abis/aave-v3.abi.json";
 import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { TimestampParser } from "../../../../utils/functions";
+import { timestampParser } from "../../../../utils/functions";
 
 enum INTEREST_RATE_MODE {
     "None" = 0,
@@ -28,7 +28,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -85,7 +91,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: BorrowToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -124,6 +130,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -143,7 +150,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -164,7 +177,7 @@ GoldRushDecoder.on(
             };
         };
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: FlashLoanToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -241,6 +254,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -260,7 +274,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -309,7 +329,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const [{ data: collateralToken }, { data: debtToken }] =
             await Promise.all([
@@ -368,6 +388,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -387,7 +408,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -429,7 +456,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: RepayToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -468,6 +495,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -487,7 +515,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -529,7 +563,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: SupplyToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -565,6 +599,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
@@ -584,7 +619,13 @@ GoldRushDecoder.on(
         "bsc-mainnet",
     ],
     ABI as Abi,
-    async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+    async (
+        log_event,
+        tx,
+        chain_name,
+        covalent_client,
+        options
+    ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
@@ -620,7 +661,7 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = TimestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: RepayToken } =
             await covalent_client.PricingService.getTokenPrices(
@@ -659,6 +700,7 @@ GoldRushDecoder.on(
                 logo: log_event.sender_logo_url as string,
                 name: "Aave V3",
             },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             tokens,
         };
