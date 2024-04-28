@@ -198,11 +198,11 @@ export class GoldRushDecoder {
                         ]?.[lowercaseTopic0Hash];
                     const fallback_index = this.fallbacks[lowercaseTopic0Hash];
                     const logFunction =
-                        decoding_index !== undefined
-                            ? this.decoding_functions[decoding_index]
-                            : fallback_index !== undefined
-                            ? this.fallback_functions[fallback_index]
-                            : null;
+                        (decoding_index !== undefined &&
+                            this.decoding_functions[decoding_index]) ||
+                        (fallback_index !== undefined &&
+                            this.fallback_functions[fallback_index]) ||
+                        null;
                     return logFunction
                         ? logFunction(
                               log_event,
