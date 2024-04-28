@@ -165,15 +165,14 @@ export class GoldRushDecoder {
         tx: Transaction,
         covalent_api_key: string,
         options: QueryOptions
-    ) => {
+    ): Promise<EventType[]> => {
         const covalent_client = new CovalentClient(covalent_api_key);
-        const events: (EventType | null)[] = [];
+        let events: (EventType | null)[] = [];
         if (tx.value) {
             const nativeEvent = this.native_decoder(tx, options);
             events.push(nativeEvent);
         }
         const logChunks = chunkify(tx.log_events ?? [], 100);
-        const decodedEvents: EventType[] = [];
         for (const logChunk of logChunks) {
             const decodedChunk = await Promise.all(
                 logChunk.map((log_event) => {
@@ -214,8 +213,8 @@ export class GoldRushDecoder {
                         : null;
                 })
             );
-            decodedEvents.concat(decodedChunk.filter(Boolean) as EventType[]);
+            events = [...events, ...decodedChunk];
         }
-        return events.concat(decodedEvents);
+        return events.filter(Boolean) as EventType[];
     };
 }
