@@ -7,6 +7,12 @@ const configs: Configs = [
         is_factory: false,
         chain_name: "moonbeam-mainnet",
     },
+    {
+        protocol_name: "covalent-network",
+        address: "0x7487b04899c2572a223a8c6ec9ba919e27bbcd36",
+        is_factory: false,
+        chain_name: "moonbeam-mainnet",
+    },
 ];
 
 export default configs;
