@@ -17,10 +17,10 @@ export const timestampParser = (
     timestamp: Date,
     type: "descriptive" | "YYYY-MM-DD" | "relative"
 ): string => {
+    const _unix: Date = new Date(timestamp);
+
     switch (type) {
         case "descriptive": {
-            const _unix: Date = new Date(timestamp);
-
             const _minutes = _unix.getMinutes();
             const _hours = _unix.getHours();
             const _seconds = _unix.getSeconds();
@@ -49,17 +49,14 @@ export const timestampParser = (
 
         case "relative": {
             const currentTime = new Date();
-            const pastTime = new Date(timestamp);
+            const timeDifference = currentTime.getTime() - _unix.getTime();
 
-            const yearsDifference =
-                currentTime.getFullYear() - pastTime.getFullYear();
-            const monthsDifference =
-                currentTime.getMonth() - pastTime.getMonth();
-            const daysDifference = currentTime.getDate() - pastTime.getDate();
-            const hoursDifference =
-                currentTime.getHours() - pastTime.getHours();
-            const minutesDifference =
-                currentTime.getMinutes() - pastTime.getMinutes();
+            const secondsDifference = Math.floor(timeDifference / 1000);
+            const minutesDifference = Math.floor(secondsDifference / 60);
+            const hoursDifference = Math.floor(minutesDifference / 60);
+            const daysDifference = Math.floor(hoursDifference / 24);
+            const monthsDifference = Math.floor(daysDifference / 30);
+            const yearsDifference = Math.floor(monthsDifference / 12);
 
             if (yearsDifference > 0) {
                 return `${yearsDifference} year${
