@@ -57,7 +57,7 @@ describe("covalent-network", () => {
             .send({
                 chain_name: "moonbeam-mainnet",
                 tx_hash:
-                    "0x0f165e83c3f353ee14bb78c01f88a0620aa7b4c9de24bb69ba1653ad90fda93d",
+                    "0x90a20c7f7d1bfbda38c1532131232ed056cb9ef49ccba8b28498974dd837eed1",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "Reward Redeemed");
