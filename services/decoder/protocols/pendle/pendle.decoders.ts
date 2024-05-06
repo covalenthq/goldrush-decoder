@@ -1,5 +1,6 @@
 import { GoldRushDecoder } from "../../decoder";
-import { EventDetails, EventTokens, type EventType } from "../../decoder.types";
+import type { EventDetails, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
@@ -513,7 +514,10 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Expiry",
-                value: timestampParser(new Date(Number(decoded.expiry) * 1000), "descriptive"),
+                value: timestampParser(
+                    new Date(Number(decoded.expiry) * 1000),
+                    "descriptive"
+                ),
                 type: "text",
             },
         ];
