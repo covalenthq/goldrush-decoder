@@ -39,21 +39,79 @@ GoldRushDecoder.on(
             };
         };
 
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: FoodToken } =
+            await covalent_client.PricingService.getTokenPrices(
+                "defi-kingdoms-mainnet",
+                "USD",
+                Number(decoded.foodType) == 1
+                    ? "0x8Df3fFa5a677ba9737CE8Afcb8dd15Bd74085adD"
+                    : "0xAcDa84fAb3d3cdB38078b04901a26c103C37E7F4",
+                {
+                    from: date,
+                    to: date,
+                }
+            );
+
+        const { data: PetNFT } =
+            await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+                chain_name,
+                // * INFO: Hero NFT Contract Address
+                "0x1990F87d6BC9D9385917E3EDa0A7674411C3Cd7F",
+                decoded.petId.toString(),
+                {
+                    withUncached: true,
+                }
+            );
+    
+        const tokens: EventTokens = [
+            {
+                decimals: FoodToken?.[0]?.contract_decimals,
+                heading: "Food Type",
+                value: "1",
+                pretty_quote: prettifyCurrency(
+                    FoodToken?.[0]?.prices?.[0]?.price *
+                        (Number(decoded.foodType) /
+                            Math.pow(
+                                10,
+                                FoodToken?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo: FoodToken?.[0]?.logo_urls?.token_logo_url,
+                ticker_symbol: FoodToken?.[0]?.contract_ticker_symbol,
+            },
+        ];
+
+        const nfts: EventNFTs = [
+            {
+                heading: `Pet ID: ${decoded.petId.toString()}`,
+                collection_address: PetNFT?.items?.[0]?.contract_address,
+                collection_name:
+                    PetNFT?.items?.[0]?.nft_data?.external_data?.name || null,
+                token_identifier: decoded.petId.toString(),
+                images: {
+                    default:
+                        PetNFT?.items?.[0]?.nft_data?.external_data?.image ||
+                        null,
+                    256:
+                        PetNFT?.items?.[0]?.nft_data?.external_data
+                            ?.image_256 || null,
+                    512:
+                        PetNFT?.items?.[0]?.nft_data?.external_data
+                            ?.image_512 || null,
+                    1024:
+                        PetNFT?.items?.[0]?.nft_data?.external_data
+                            ?.image_1024 || null,
+                },
+            },
+        ];
+
         const details: EventDetails = [
             {
                 heading: "Fed By",
                 value: decoded.fedBy,
                 type: "address",
-            },
-            {
-                heading: "Pet ID",
-                value: decoded.petId.toString(),
-                type: "text",
-            },
-            {
-                heading: "Food Type",
-                value: decoded.foodType.toString(),
-                type: "text",
             },
             {
                 heading: "Hungry At",
@@ -75,6 +133,8 @@ GoldRushDecoder.on(
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
+            nfts,
+            tokens
         };
     }
 );
