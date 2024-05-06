@@ -513,7 +513,7 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Expiry",
-                value: decoded.expiry.toString(),
+                value: timestampParser(new Date(Number(decoded.expiry) * 1000), "descriptive"),
                 type: "text",
             },
         ];
