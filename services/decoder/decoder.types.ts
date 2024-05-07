@@ -19,7 +19,7 @@ export type Configs = {
 export type EventDetails = {
     heading: string;
     value: string;
-    type: "address" | "text" | "timestamp";
+    type: "address" | "text";
 }[];
 
 export type EventNFTs = {
