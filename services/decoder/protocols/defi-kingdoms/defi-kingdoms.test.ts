@@ -17,7 +17,7 @@ describe("defi-kingdoms", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        if(event.nfts) {
+        if (event.nfts) {
             expect(event.nfts?.length).toBeGreaterThan(0);
         }
         expect(event?.details?.length).toEqual(3);
