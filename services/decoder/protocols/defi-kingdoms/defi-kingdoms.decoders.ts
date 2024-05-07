@@ -41,19 +41,6 @@ GoldRushDecoder.on(
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: FoodToken } =
-            await covalent_client.PricingService.getTokenPrices(
-                "defi-kingdoms-mainnet",
-                "USD",
-                Number(decoded.foodType) == 1
-                    ? "0x8Df3fFa5a677ba9737CE8Afcb8dd15Bd74085adD"
-                    : "0xAcDa84fAb3d3cdB38078b04901a26c103C37E7F4",
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const { data: PetNFT } =
             await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
@@ -64,24 +51,6 @@ GoldRushDecoder.on(
                     withUncached: true,
                 }
             );
-    
-        const tokens: EventTokens = [
-            {
-                decimals: FoodToken?.[0]?.contract_decimals,
-                heading: "Food Type",
-                value: "1",
-                pretty_quote: prettifyCurrency(
-                    FoodToken?.[0]?.prices?.[0]?.price *
-                        (Number(decoded.foodType) /
-                            Math.pow(
-                                10,
-                                FoodToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: FoodToken?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: FoodToken?.[0]?.contract_ticker_symbol,
-            },
-        ];
 
         const nfts: EventNFTs = [
             {
@@ -114,6 +83,14 @@ GoldRushDecoder.on(
                 type: "address",
             },
             {
+                heading: "Food Type",
+                value:
+                    Number(decoded.foodType) === 1
+                        ? "Premium Pet Treat"
+                        : "Regular Pet Treat",
+                type: "text",
+            },
+            {
                 heading: "Hungry At",
                 value: timestampParser(
                     new Date(Number(decoded.hungryAt) * 1000),
@@ -134,7 +111,6 @@ GoldRushDecoder.on(
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
             nfts,
-            tokens
         };
     }
 );

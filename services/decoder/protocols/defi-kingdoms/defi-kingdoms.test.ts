@@ -17,7 +17,10 @@ describe("defi-kingdoms", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event?.details?.length).toEqual(4);
+        if(event.nfts) {
+            expect(event.nfts?.length).toBeGreaterThan(0);
+        }
+        expect(event?.details?.length).toEqual(3);
     });
 
     test("defi-kingdoms-mainnet:Auction Created", async () => {
