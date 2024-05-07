@@ -39,6 +39,43 @@ GoldRushDecoder.on(
             };
         };
 
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: PetNFT } =
+            await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+                chain_name,
+                // * INFO: Hero NFT Contract Address
+                "0x1990F87d6BC9D9385917E3EDa0A7674411C3Cd7F",
+                decoded.petId.toString(),
+                {
+                    withUncached: true,
+                }
+            );
+
+        const nfts: EventNFTs = [
+            {
+                heading: `Pet ID: ${decoded.petId.toString()}`,
+                collection_address: PetNFT?.items?.[0]?.contract_address,
+                collection_name:
+                    PetNFT?.items?.[0]?.nft_data?.external_data?.name || null,
+                token_identifier: decoded.petId.toString(),
+                images: {
+                    default:
+                        PetNFT?.items?.[0]?.nft_data?.external_data?.image ||
+                        null,
+                    256:
+                        PetNFT?.items?.[0]?.nft_data?.external_data
+                            ?.image_256 || null,
+                    512:
+                        PetNFT?.items?.[0]?.nft_data?.external_data
+                            ?.image_512 || null,
+                    1024:
+                        PetNFT?.items?.[0]?.nft_data?.external_data
+                            ?.image_1024 || null,
+                },
+            },
+        ];
+
         const details: EventDetails = [
             {
                 heading: "Fed By",
@@ -46,13 +83,11 @@ GoldRushDecoder.on(
                 type: "address",
             },
             {
-                heading: "Pet ID",
-                value: decoded.petId.toString(),
-                type: "text",
-            },
-            {
                 heading: "Food Type",
-                value: decoded.foodType.toString(),
+                value:
+                    Number(decoded.foodType) === 1
+                        ? "Premium Pet Treat"
+                        : "Regular Pet Treat",
                 type: "text",
             },
             {
@@ -75,6 +110,7 @@ GoldRushDecoder.on(
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
+            nfts,
         };
     }
 );
