@@ -36,4 +36,7 @@ export enum DECODED_ACTION {
     CLAIM_REWARDS = "Claim Rewards",
     GAME_ACTION = "Game Action",
     CREATE = "Create Pool",
+    INIT_ROUTER = "Init Router",
+    ADD_ROUTER = "Add Router",
+    REMOVE_ROUTER = "Remove Router",
 }
