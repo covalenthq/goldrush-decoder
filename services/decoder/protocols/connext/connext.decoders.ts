@@ -1,5 +1,5 @@
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails } from "../../decoder.types";
+import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
@@ -8,6 +8,9 @@ import {
 import { decodeEventLog, type Abi } from "viem";
 import ROUTER_ABI from "./abis/connext-router.abi.json";
 import CALLER_ABI from "./abis/connext-call.abi.json";
+import { DOMAIN_ID_TO_CHAIN_ID } from "./constants/domain-mapping";
+import { timestampParser } from "../../../../utils/functions";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
 
 GoldRushDecoder.on(
     "connext:RouterLiquidityAdded",
@@ -517,7 +520,7 @@ GoldRushDecoder.on(
                     canonicalDomain: bigint;
                     to: string;
                     delegate: string;
-                    receiveLocal: string;
+                    receiveLocal: boolean;
                     callData: string;
                     slippage: bigint;
                     originSender: string;
@@ -532,6 +535,52 @@ GoldRushDecoder.on(
                 messageBody: string;
             };
         };
+
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: TokenData } =
+            await covalent_client.PricingService.getTokenPrices(
+                chain_name,
+                "USD",
+                decoded.asset,
+                {
+                    from: date,
+                    to: date,
+                }
+            );
+
+        const tokens: EventTokens = [
+            {
+                decimals: TokenData?.[0]?.contract_decimals,
+                heading: "Bridged Amount",
+                value: String(decoded.params.bridgedAmt),
+                pretty_quote: prettifyCurrency(
+                    TokenData?.[0]?.prices?.[0]?.price *
+                        (Number(decoded.params.bridgedAmt) /
+                            Math.pow(
+                                10,
+                                TokenData?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
+                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
+            },
+            {
+                decimals: TokenData?.[0]?.contract_decimals,
+                heading: "Amount",
+                value: String(decoded.amount),
+                pretty_quote: prettifyCurrency(
+                    TokenData?.[0]?.prices?.[0]?.price *
+                        (Number(decoded.amount) /
+                            Math.pow(
+                                10,
+                                TokenData?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
+                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
+            },
+        ];
 
         const details: EventDetails = [
             {
@@ -551,12 +600,16 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Origin Domain",
-                value: decoded.params.originDomain.toString(),
+                value: DOMAIN_ID_TO_CHAIN_ID[
+                    Number(decoded.params.originDomain)
+                ],
                 type: "text",
             },
             {
                 heading: "Destination Domain",
-                value: decoded.params.destinationDomain.toString(),
+                value: DOMAIN_ID_TO_CHAIN_ID[
+                    Number(decoded.params.destinationDomain)
+                ],
                 type: "text",
             },
             {
@@ -576,8 +629,8 @@ GoldRushDecoder.on(
             },
             {
                 heading: "Receive Local",
-                value: decoded.params.receiveLocal,
-                type: "address",
+                value: decoded.params.receiveLocal === true ? "True" : "False",
+                type: "text",
             },
             {
                 heading: "Call Data",
@@ -595,11 +648,6 @@ GoldRushDecoder.on(
                 type: "address",
             },
             {
-                heading: "Bridged Amount",
-                value: decoded.params.bridgedAmt.toString(),
-                type: "text",
-            },
-            {
                 heading: "Normalized In",
                 value: decoded.params.normalizedIn.toString(),
                 type: "text",
@@ -612,12 +660,7 @@ GoldRushDecoder.on(
             {
                 heading: "Asset",
                 value: decoded.asset,
-                type: "text",
-            },
-            {
-                heading: "Amount",
-                value: decoded.amount.toString(),
-                type: "text",
+                type: "address",
             },
             {
                 heading: "Local",
@@ -641,6 +684,7 @@ GoldRushDecoder.on(
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
+            tokens,
         };
     }
 );
@@ -732,16 +776,42 @@ GoldRushDecoder.on(
             };
         };
 
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: TokenData } =
+            await covalent_client.PricingService.getTokenPrices(
+                chain_name,
+                "USD",
+                decoded.asset,
+                {
+                    from: date,
+                    to: date,
+                }
+            );
+
+        const tokens: EventTokens = [
+            {
+                decimals: TokenData?.[0]?.contract_decimals,
+                heading: "Increase",
+                value: String(decoded.increase),
+                pretty_quote: prettifyCurrency(
+                    TokenData?.[0]?.prices?.[0]?.price *
+                        (Number(decoded.increase) /
+                            Math.pow(
+                                10,
+                                TokenData?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
+                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
+            },
+        ];
+
         const details: EventDetails = [
             {
                 heading: "Transfer ID",
                 value: decoded.transferId,
                 type: "address",
-            },
-            {
-                heading: "Increase",
-                value: decoded.increase.toString(),
-                type: "text",
             },
             {
                 heading: "Asset",

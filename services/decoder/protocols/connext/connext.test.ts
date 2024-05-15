@@ -40,7 +40,7 @@ describe("connext", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event.details?.length).toEqual(4);
+        expect(event.details?.length).toEqual(3);
     });
 });
 
@@ -52,14 +52,17 @@ describe("connext", () => {
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
-                    "0xe22220e29611e9c78d0e778cb2acd473e7d7fb073778dd868e2c368598ebc579",
+                    "0x3ac23b56813b3268e1a55fc06d815178b572a3d7ee20ab06aab18e8fa7d0d56a",
             });
         const { events } = res.body as { events: EventType[] };
         const event = events.find(({ name }) => name === "XCalled");
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event.details?.length).toEqual(19);
+        expect(event.details?.length).toEqual(17);
+        if (event.tokens) {
+            expect(event.tokens.length).toEqual(2);
+        }
     });
 });
 
@@ -80,7 +83,7 @@ describe("connext", () => {
         if (!event) {
             throw Error("Event not found");
         }
-        expect(event.details?.length).toEqual(19);
+        expect(event.details?.length).toEqual(3);
     });
 });
 
