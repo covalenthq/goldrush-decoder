@@ -39,8 +39,6 @@ GoldRushDecoder.on(
             };
         };
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
         const { data: PetNFT } =
             await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
