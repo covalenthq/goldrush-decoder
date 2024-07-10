@@ -4,7 +4,10 @@ import { currencyToNumber } from "../../../utils/functions";
 import { DECODED_ACTION, DECODED_EVENT_CATEGORY } from "../decoder.constants";
 
 GoldRushDecoder.native((tx, options): EventType | null => {
-    if (currencyToNumber(tx.pretty_value_quote) < options.min_usd!) {
+    if (
+        tx.pretty_value_quote &&
+        currencyToNumber(tx.pretty_value_quote) < options.min_usd!
+    ) {
         return null;
     }
 
