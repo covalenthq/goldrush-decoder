@@ -1,20 +1,20 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails, EventTokens } from "../../decoder.types";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ABI from "./abis/lido.steth.abi.json";
-import WithdrawalABI from "./abis/lido.withdrawalQueue.abi.json";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { timestampParser } from "../../../../utils/functions";
+import type { EventDetails, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
+import { stethABI } from "./abis/steth.abi";
+import { withdrawalQueueABI } from "./abis/withdrawal-queue.abi";
 
 GoldRushDecoder.on(
     "lido:TransferShares",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -25,18 +25,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "TransferShares",
-        }) as {
-            eventName: "TransferShares";
-            args: {
-                from: string;
-                to: string;
-                sharesValue: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -73,7 +66,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:Submitted",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -84,18 +77,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Submitted",
-        }) as {
-            eventName: "Submitted";
-            args: {
-                sender: string;
-                amount: bigint;
-                referral: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -146,7 +132,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:TokenRebased",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -157,22 +143,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "TokenRebased",
-        }) as {
-            eventName: "TokenRebased";
-            args: {
-                reportTimestamp: bigint;
-                timeElapsed: bigint;
-                preTotalShares: bigint;
-                preTotalEther: bigint;
-                postTotalShares: bigint;
-                postTotalEther: bigint;
-                sharesMintedAsFees: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -256,7 +231,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:SharesBurnt",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -267,19 +242,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "SharesBurnt",
-        }) as {
-            eventName: "SharesBurnt";
-            args: {
-                account: string;
-                preRebaseTokenAmount: bigint;
-                postRebaseTokenAmount: bigint;
-                sharesAmount: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -358,7 +325,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:ETHDistributed",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -369,21 +336,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "ETHDistributed",
-        }) as {
-            eventName: "ETHDistributed";
-            args: {
-                reportTimestamp: bigint;
-                preCLBalance: bigint;
-                postCLBalance: bigint;
-                withdrawalsWithdrawn: bigint;
-                executionLayerRewardsWithdrawn: bigint;
-                postBufferedEther: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -492,7 +449,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:WithdrawalsReceived",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -503,16 +460,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "WithdrawalsReceived",
-        }) as {
-            eventName: "WithdrawalsReceived";
-            args: {
-                amount: bigint;
-            };
-        };
+        });
 
         const tokens: EventTokens = [
             {
@@ -549,7 +501,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:ELRewardsReceived",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -560,16 +512,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "ELRewardsReceived",
-        }) as {
-            eventName: "ELRewardsReceived";
-            args: {
-                amount: bigint;
-            };
-        };
+        });
 
         const tokens: EventTokens = [
             {
@@ -606,7 +553,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:CLValidatorsUpdated",
     ["eth-mainnet"],
-    ABI as Abi,
+    stethABI as Abi,
     async (
         log_event,
         tx,
@@ -617,17 +564,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: stethABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "CLValidatorsUpdated",
-        }) as {
-            eventName: "CLValidatorsUpdated";
-            args: {
-                preCLValidators: bigint;
-                postCLValidators: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -659,7 +600,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:WithdrawalRequested",
     ["eth-mainnet"],
-    WithdrawalABI as Abi,
+    withdrawalQueueABI as Abi,
     async (
         log_event,
         tx,
@@ -670,20 +611,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: WithdrawalABI,
+            abi: withdrawalQueueABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "WithdrawalRequested",
-        }) as {
-            eventName: "WithdrawalRequested";
-            args: {
-                requestId: bigint;
-                requestor: string;
-                owner: string;
-                amountOfStETH: bigint;
-                amountOfShares: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -757,7 +689,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:WithdrawalClaimed",
     ["eth-mainnet"],
-    WithdrawalABI as Abi,
+    withdrawalQueueABI as Abi,
     async (
         log_event,
         tx,
@@ -768,19 +700,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: WithdrawalABI,
+            abi: withdrawalQueueABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "WithdrawalClaimed",
-        }) as {
-            eventName: "WithdrawalClaimed";
-            args: {
-                requestId: bigint;
-                owner: string;
-                receiver: string;
-                amountOfETH: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -836,7 +760,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:BatchMetadataUpdate",
     ["eth-mainnet"],
-    WithdrawalABI as Abi,
+    withdrawalQueueABI as Abi,
     async (
         log_event,
         tx,
@@ -847,17 +771,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: WithdrawalABI,
+            abi: withdrawalQueueABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "BatchMetadataUpdate",
-        }) as {
-            eventName: "BatchMetadataUpdate";
-            args: {
-                _fromTokenId: bigint;
-                _toTokenId: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -889,7 +807,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "lido:WithdrawalsFinalized",
     ["eth-mainnet"],
-    WithdrawalABI as Abi,
+    withdrawalQueueABI as Abi,
     async (
         log_event,
         tx,
@@ -900,20 +818,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: WithdrawalABI,
+            abi: withdrawalQueueABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "WithdrawalsFinalized",
-        }) as {
-            eventName: "WithdrawalsFinalized";
-            args: {
-                from: bigint;
-                to: bigint;
-                amountOfETHLocked: bigint;
-                sharesToBurn: bigint;
-                timestamp: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {

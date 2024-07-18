@@ -1,24 +1,24 @@
-import { GoldRushDecoder } from "../../decoder";
-import {
-    type EventTokens,
-    type EventDetails,
-    type EventType,
-} from "../../decoder.types";
-import {
-    DECODED_ACTION,
-    DECODED_EVENT_CATEGORY,
-} from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import SimpleSwapABI from "./abis/paraswap-v5.simple-swap.abi.json";
 import {
     calculatePrettyBalance,
     prettifyCurrency,
 } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { GoldRushDecoder } from "../../decoder";
+import {
+    DECODED_ACTION,
+    DECODED_EVENT_CATEGORY,
+} from "../../decoder.constants";
+import {
+    type EventDetails,
+    type EventTokens,
+    type EventType,
+} from "../../decoder.types";
+import { simpleSwapABI } from "./abis/simple-swap.abi";
 
 GoldRushDecoder.on(
     "paraswap-v5:SwappedV3",
     ["eth-mainnet", "matic-mainnet", "avalanche-mainnet"],
-    SimpleSwapABI as Abi,
+    simpleSwapABI as Abi,
     async (
         log_event,
         tx,
@@ -29,25 +29,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: SimpleSwapABI,
+            abi: simpleSwapABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "SwappedV3",
-        }) as {
-            eventName: "SwappedV3";
-            args: {
-                beneficiary: string;
-                srcToken: string;
-                destToken: string;
-                uuid: string;
-                partner: string;
-                feePercent: bigint;
-                initiator: string;
-                srcAmount: bigint;
-                receivedAmount: bigint;
-                expectedAmount: bigint;
-            };
-        };
+        });
 
         const [{ data: srcToken }, { data: destToken }] = await Promise.all(
             [decoded.srcToken, decoded.destToken].map((address) => {

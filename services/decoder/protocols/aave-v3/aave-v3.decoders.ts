@@ -1,13 +1,13 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails, EventTokens, EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ABI from "./abis/aave-v3.abi.json";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { timestampParser } from "../../../../utils/functions";
+import type { EventDetails, EventTokens, EventType } from "../../decoder.types";
+import { aaveV3ABI } from "./abis/aave-v3.abi";
 
 enum INTEREST_RATE_MODE {
     "None" = 0,
@@ -27,7 +27,7 @@ GoldRushDecoder.on(
         "base-mainnet",
         "bsc-mainnet",
     ],
-    ABI as Abi,
+    aaveV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -38,22 +38,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: aaveV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Borrow",
-        }) as {
-            eventName: "Borrow";
-            args: {
-                reserve: string;
-                user: string;
-                onBehalfOf: string;
-                amount: bigint;
-                interestRateMode: INTEREST_RATE_MODE;
-                borrowRate: bigint;
-                referralCode: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -149,7 +138,7 @@ GoldRushDecoder.on(
         "base-mainnet",
         "bsc-mainnet",
     ],
-    ABI as Abi,
+    aaveV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -160,22 +149,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: aaveV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "FlashLoan",
-        }) as {
-            eventName: "FlashLoan";
-            args: {
-                target: string;
-                initiator: string;
-                asset: string;
-                amount: bigint;
-                interestRateMode: INTEREST_RATE_MODE;
-                premium: bigint;
-                referralCode: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -273,7 +251,7 @@ GoldRushDecoder.on(
         "base-mainnet",
         "bsc-mainnet",
     ],
-    ABI as Abi,
+    aaveV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -284,22 +262,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: aaveV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "LiquidationCall",
-        }) as {
-            eventName: "LiquidationCall";
-            args: {
-                collateralAsset: string;
-                debtAsset: string;
-                user: string;
-                debtToCover: bigint;
-                liquidatedCollateralAmount: bigint;
-                liquidator: string;
-                receiveAToken: boolean;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -407,7 +374,7 @@ GoldRushDecoder.on(
         "base-mainnet",
         "bsc-mainnet",
     ],
-    ABI as Abi,
+    aaveV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -418,20 +385,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: aaveV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Repay",
-        }) as {
-            eventName: "Repay";
-            args: {
-                reserve: string;
-                user: string;
-                repayer: string;
-                amount: bigint;
-                useATokens: boolean;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -514,7 +472,7 @@ GoldRushDecoder.on(
         "base-mainnet",
         "bsc-mainnet",
     ],
-    ABI as Abi,
+    aaveV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -525,20 +483,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: aaveV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Supply",
-        }) as {
-            eventName: "Supply";
-            args: {
-                reserve: string;
-                user: string;
-                onBehalfOf: string;
-                amount: bigint;
-                referralCode: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -618,7 +567,7 @@ GoldRushDecoder.on(
         "base-mainnet",
         "bsc-mainnet",
     ],
-    ABI as Abi,
+    aaveV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -629,19 +578,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: aaveV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Withdraw",
-        }) as {
-            eventName: "Withdraw";
-            args: {
-                reserve: string;
-                user: string;
-                to: string;
-                amount: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {

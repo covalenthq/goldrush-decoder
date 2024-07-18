@@ -1,0 +1,27 @@
+export const approvalForAllABI = [
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "owner",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "operator",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "bool",
+                name: "approved",
+                type: "bool",
+            },
+        ],
+        name: "ApprovalForAll",
+        type: "event",
+    },
+] as const;

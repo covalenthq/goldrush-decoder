@@ -1,15 +1,15 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails, EventTokens } from "../../decoder.types";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ROUTER_V3_ABI from "./abis/pendle-router-v3.abi.json";
-import VEPENDLE_ABI from "./abis/vePendle.abi.json";
-import { timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import type { EventDetails, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
+import { pendleRouterV3ABI } from "./abis/pendle-router-v3.abi";
+import { vePendleABI } from "./abis/ve-pendle.abi";
 const PT_TOKEN_ADDRESS = "0xc69Ad9baB1dEE23F4605a82b3354F8E40d1E5966";
 const SY_TOKEN_ADDRESS = "0xAC0047886a985071476a1186bE89222659970d65";
 const YT_TOKEN_ADDRESS = "0xfb35Fd0095dD1096b1Ca49AD44d8C5812A201677";
@@ -18,7 +18,7 @@ const PENDLE_TOKEN_ADDRESS = "0x808507121B80c02388fAd14726482e061B8da827";
 GoldRushDecoder.on(
     "pendle:SwapPtAndToken",
     ["eth-mainnet"],
-    ROUTER_V3_ABI as Abi,
+    pendleRouterV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -29,22 +29,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_V3_ABI,
+            abi: pendleRouterV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "SwapPtAndToken",
-        }) as {
-            eventName: "SwapPtAndToken";
-            args: {
-                caller: string;
-                market: string;
-                token: string;
-                receiver: string;
-                netPtToAccount: bigint;
-                netTokenToAccount: bigint;
-                netSyInterm: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -175,7 +164,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "pendle:SwapYtAndSy",
     ["eth-mainnet"],
-    ROUTER_V3_ABI as Abi,
+    pendleRouterV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -186,20 +175,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_V3_ABI,
+            abi: pendleRouterV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "SwapYtAndSy",
-        }) as {
-            eventName: "SwapYtAndSy";
-            args: {
-                caller: string;
-                market: string;
-                receiver: string;
-                netYtToAccount: bigint;
-                netSyToAccount: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -294,7 +274,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "pendle:SwapYtAndToken",
     ["eth-mainnet"],
-    ROUTER_V3_ABI as Abi,
+    pendleRouterV3ABI as Abi,
     async (
         log_event,
         tx,
@@ -305,22 +285,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_V3_ABI,
+            abi: pendleRouterV3ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "SwapYtAndToken",
-        }) as {
-            eventName: "SwapYtAndToken";
-            args: {
-                caller: string;
-                market: string;
-                token: string;
-                receiver: string;
-                netYtToAccount: bigint;
-                netTokenToAccount: bigint;
-                netSyInterm: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -451,7 +420,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "pendle:NewLockPosition",
     ["eth-mainnet"],
-    VEPENDLE_ABI as Abi,
+    vePendleABI as Abi,
     async (
         log_event,
         tx,
@@ -462,18 +431,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: VEPENDLE_ABI,
+            abi: vePendleABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "NewLockPosition",
-        }) as {
-            eventName: "NewLockPosition";
-            args: {
-                user: string;
-                amount: bigint;
-                expiry: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -540,7 +502,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "pendle:BroadcastUserPosition",
     ["eth-mainnet"],
-    VEPENDLE_ABI as Abi,
+    vePendleABI as Abi,
     async (
         log_event,
         tx,
@@ -551,17 +513,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: VEPENDLE_ABI,
+            abi: vePendleABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "BroadcastUserPosition",
-        }) as {
-            eventName: "BroadcastUserPosition";
-            args: {
-                user: string;
-                chainIds: Array<bigint>;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -593,7 +549,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "pendle:BroadcastTotalSupply",
     ["eth-mainnet"],
-    VEPENDLE_ABI as Abi,
+    vePendleABI as Abi,
     async (
         log_event,
         tx,
@@ -604,20 +560,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: VEPENDLE_ABI,
+            abi: vePendleABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "BroadcastTotalSupply",
-        }) as {
-            eventName: "BroadcastTotalSupply";
-            args: {
-                newTotalSupply: {
-                    bias: bigint;
-                    slope: bigint;
-                };
-                chainIds: Array<bigint>;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {

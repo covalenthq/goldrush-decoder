@@ -1,18 +1,18 @@
 import { prettifyCurrency, type Token } from "@covalenthq/client-sdk";
 import { type Abi, decodeEventLog } from "viem";
 import { GoldRushDecoder } from "../../decoder";
-import { type EventType } from "../../decoder.types";
-import PairABI from "./abis/uniswap-v2.pair.abi.json";
-import FactoryABI from "./abis/uniswap-v2.factory.abi.json";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
+import { type EventDetails, type EventType } from "../../decoder.types";
+import { factoryABI } from "./abis/factory.abi";
+import { pairABI } from "./abis/pair.abi";
 
 GoldRushDecoder.on(
     "uniswap-v2:Swap",
     ["eth-mainnet", "defi-kingdoms-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -27,21 +27,11 @@ GoldRushDecoder.on(
         } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Swap",
-        }) as {
-            eventName: "Swap";
-            args: {
-                sender: string;
-                amount0In: bigint;
-                amount1In: bigint;
-                amount0Out: bigint;
-                amount1Out: bigint;
-                to: string;
-            };
-        };
+        });
 
         let inputToken: Token | null = null,
             outputToken: Token | null = null,
@@ -135,7 +125,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v2:Mint",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -150,18 +140,11 @@ GoldRushDecoder.on(
         } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Mint",
-        }) as {
-            eventName: "Mint";
-            args: {
-                sender: string;
-                amount0: bigint;
-                amount1: bigint;
-            };
-        };
+        });
 
         const { data } = await covalent_client.XykService.getPoolByAddress(
             chain_name,
@@ -240,7 +223,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v2:Burn",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -255,19 +238,11 @@ GoldRushDecoder.on(
         } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as "0x${string}",
             eventName: "Burn",
-        }) as {
-            eventName: "Burn";
-            args: {
-                sender: string;
-                amount0: bigint;
-                amount1: bigint;
-                to: string;
-            };
-        };
+        });
 
         const { data } = await covalent_client.XykService.getPoolByAddress(
             chain_name,
@@ -351,7 +326,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v2:Sync",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -366,17 +341,11 @@ GoldRushDecoder.on(
         } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as "0x${string}",
             eventName: "Sync",
-        }) as {
-            eventName: "Sync";
-            args: {
-                reserve0: bigint;
-                reserve1: bigint;
-            };
-        };
+        });
 
         const { data } = await covalent_client.XykService.getPoolByAddress(
             chain_name,
@@ -448,7 +417,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v2:PairCreated",
     ["eth-mainnet"],
-    FactoryABI as Abi,
+    factoryABI as Abi,
     async (
         log_event,
         tx,
@@ -459,37 +428,23 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: FactoryABI,
+            abi: factoryABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "PairCreated",
             strict: false,
-        }) as {
-            eventName: "PairCreated";
-            args: {
-                token0: string;
-                token1: string;
-                pair: string;
-                allPairsLength: bigint;
-            };
-        };
+        });
 
-        const { data } = await covalent_client.XykService.getPoolByAddress(
-            chain_name,
-            "uniswap_v2",
-            decoded.pair
-        );
+        const details: EventDetails = [];
 
-        return {
-            action: DECODED_ACTION.CREATE,
-            category: DECODED_EVENT_CATEGORY.DEX,
-            name: "Pair Created",
-            protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
-            },
-            ...(options.raw_logs ? { raw_log: log_event } : {}),
-            details: [
+        if (decoded.pair) {
+            const { data } = await covalent_client.XykService.getPoolByAddress(
+                chain_name,
+                "uniswap_v2",
+                decoded.pair
+            );
+
+            details.push(
                 {
                     heading: "Token 0 Name",
                     value: data?.items?.[0]?.token_0?.contract_name || "",
@@ -540,8 +495,20 @@ GoldRushDecoder.on(
                     heading: "Pair Address",
                     value: decoded.pair,
                     type: "address",
-                },
-            ],
+                }
+            );
+        }
+
+        return {
+            action: DECODED_ACTION.CREATE,
+            category: DECODED_EVENT_CATEGORY.DEX,
+            name: "Pair Created",
+            protocol: {
+                logo: log_event.sender_logo_url as string,
+                name: log_event.sender_name as string,
+            },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
+            details,
         };
     }
 );

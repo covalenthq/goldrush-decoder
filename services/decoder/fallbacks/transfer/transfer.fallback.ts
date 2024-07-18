@@ -1,18 +1,18 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { currencyToNumber, timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import { type EventDetails, type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ERC20ABI from "./abis/transfer-erc20.abi.json";
-import ERC721ABI from "./abis/transfer-erc721.abi.json";
-import { currencyToNumber, timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { type EventDetails, type EventType } from "../../decoder.types";
+import { transferERC20ABI } from "./abis/transfer-erc20.abi";
+import { transferERC721ABI } from "./abis/transfer-erc721.abi";
 
 GoldRushDecoder.fallback(
     "Transfer",
-    ERC20ABI as Abi,
+    transferERC20ABI as Abi,
     async (
         log_event,
         tx,
@@ -38,33 +38,19 @@ GoldRushDecoder.fallback(
 
         try {
             const { args } = decodeEventLog({
-                abi: ERC20ABI,
+                abi: transferERC20ABI,
                 topics: raw_log_topics as [],
                 data: raw_log_data as `0x${string}`,
                 eventName: "Transfer",
-            }) as {
-                eventName: "Transfer";
-                args: {
-                    from: string;
-                    to: string;
-                    value: bigint;
-                };
-            };
+            });
             decoded = args;
         } catch (error) {
             const { args } = decodeEventLog({
-                abi: ERC721ABI,
+                abi: transferERC721ABI,
                 topics: raw_log_topics as [],
                 data: raw_log_data as `0x${string}`,
                 eventName: "Transfer",
-            }) as {
-                eventName: "Transfer";
-                args: {
-                    from: string;
-                    to: string;
-                    tokenId: bigint;
-                };
-            };
+            });
             decoded = args;
         }
 

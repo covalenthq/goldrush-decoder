@@ -1,13 +1,13 @@
+import { decodeEventLog, type Abi } from "viem";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails } from "../../decoder.types";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import PORTAL_BRIDGE_ABI from "./abis/wormhole-portal-bridge.abi.json";
-import ETH_CORE_ABI from "./abis/wormhole-eth-core.abi.json";
+import type { EventDetails } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
+import { bridgeImplementationABI } from "./abis/bridge-implementation.abi";
+import { wormholeImplementationABI } from "./abis/wormhole-implementation.abi";
 
 GoldRushDecoder.on(
     "wormhole:TransferRedeemed",
@@ -24,7 +24,7 @@ GoldRushDecoder.on(
         "optimism-mainnet",
         "base-mainnet",
     ],
-    PORTAL_BRIDGE_ABI as Abi,
+    bridgeImplementationABI as Abi,
     async (
         log_event,
         tx,
@@ -35,23 +35,16 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PORTAL_BRIDGE_ABI,
+            abi: bridgeImplementationABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "TransferRedeemed",
-        }) as {
-            eventName: "TransferRedeemed";
-            args: {
-                emitterChainId: string;
-                emitterAddress: string;
-                sequence: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
                 heading: "Emitter Chain ID",
-                value: decoded.emitterChainId,
+                value: decoded.emitterChainId.toLocaleString(),
                 type: "text",
             },
             {
@@ -96,7 +89,7 @@ GoldRushDecoder.on(
         "base-mainnet",
         "gnosis-mainnet",
     ],
-    ETH_CORE_ABI as Abi,
+    wormholeImplementationABI as Abi,
     async (
         log_event,
         tx,
@@ -107,20 +100,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ETH_CORE_ABI,
+            abi: wormholeImplementationABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "LogMessagePublished",
-        }) as {
-            eventName: "LogMessagePublished";
-            args: {
-                sender: string;
-                consistencyLevel: bigint;
-                sequence: bigint;
-                nonce: bigint;
-                payload: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {

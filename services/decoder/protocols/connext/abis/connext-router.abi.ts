@@ -1,0 +1,739 @@
+export const connextRouterABI = [
+    {
+        inputs: [],
+        name: "AssetLogic__handleIncomingAsset_feeOnTransferNotSupported",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "AssetLogic__handleIncomingAsset_nativeAssetNotSupported",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "AssetLogic__handleOutgoingAsset_notNative",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__getAdoptedAsset_assetNotFound",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__getApprovedCanonicalId_notAllowlisted",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__nonReentrant_reentrantCall",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__nonXCallReentrant_reentrantCall",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__onlyOwnerOrAdmin_notOwnerOrAdmin",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__onlyOwnerOrRouter_notOwnerOrRouter",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__onlyOwnerOrWatcher_notOwnerOrWatcher",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__onlyOwner_notOwner",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__onlyProposed_notProposedOwner",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "BaseConnextFacet__whenNotPaused_paused",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__acceptProposedRouterOwner_badCaller",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__acceptProposedRouterOwner_notElapsed",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__addLiquidityForRouter_amountIsZero",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__addLiquidityForRouter_badRouter",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__addLiquidityForRouter_capReached",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__addLiquidityForRouter_routerEmpty",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__approveRouterForPortal_alreadyApproved",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__approveRouterForPortal_notAdded",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__approveRouter_alreadyAdded",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__approveRouter_routerEmpty",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__initializeRouter_configNotEmpty",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__onlyRouterOwner_notRouterOwner",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__proposeRouterOwner_badRouter",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__proposeRouterOwner_notNewOwner",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__removeRouterLiquidityFor_notOwner",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__removeRouterLiquidity_amountIsZero",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__removeRouterLiquidity_insufficientFunds",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__removeRouterLiquidity_recipientEmpty",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__setLiquidityFeeNumerator_tooLarge",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__setLiquidityFeeNumerator_tooSmall",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__setMaxRoutersPerTransfer_invalidMaxRoutersPerTransfer",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__setRouterOwner_noChange",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__setRouterRecipient_notNewRecipient",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__unapproveRouterForPortal_notApproved",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__unapproveRouter_notAdded",
+        type: "error",
+    },
+    {
+        inputs: [],
+        name: "RoutersFacet__unapproveRouter_routerEmpty",
+        type: "error",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "liquidityFeeNumerator",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "LiquidityFeeNumeratorUpdated",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "maxRoutersPerTransfer",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "MaxRoutersPerTransferUpdated",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "RouterAdded",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "RouterApprovedForPortal",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+        ],
+        name: "RouterInitialized",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "local",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "bytes32",
+                name: "key",
+                type: "bytes32",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "RouterLiquidityAdded",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "to",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "local",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "bytes32",
+                name: "key",
+                type: "bytes32",
+            },
+            {
+                indexed: false,
+                internalType: "uint256",
+                name: "amount",
+                type: "uint256",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "RouterLiquidityRemoved",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "prevOwner",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "newOwner",
+                type: "address",
+            },
+        ],
+        name: "RouterOwnerAccepted",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "prevProposed",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "newProposed",
+                type: "address",
+            },
+        ],
+        name: "RouterOwnerProposed",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "prevRecipient",
+                type: "address",
+            },
+            {
+                indexed: true,
+                internalType: "address",
+                name: "newRecipient",
+                type: "address",
+            },
+        ],
+        name: "RouterRecipientSet",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "RouterRemoved",
+        type: "event",
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: "address",
+                name: "router",
+                type: "address",
+            },
+            {
+                indexed: false,
+                internalType: "address",
+                name: "caller",
+                type: "address",
+            },
+        ],
+        name: "RouterUnapprovedForPortal",
+        type: "event",
+    },
+    {
+        inputs: [],
+        name: "LIQUIDITY_FEE_DENOMINATOR",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "pure",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "LIQUIDITY_FEE_NUMERATOR",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "acceptProposedRouterOwner",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "uint256", name: "_amount", type: "uint256" },
+            { internalType: "address", name: "_local", type: "address" },
+        ],
+        name: "addRouterLiquidity",
+        outputs: [],
+        stateMutability: "payable",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "uint256", name: "_amount", type: "uint256" },
+            { internalType: "address", name: "_local", type: "address" },
+            { internalType: "address", name: "_router", type: "address" },
+        ],
+        name: "addRouterLiquidityFor",
+        outputs: [],
+        stateMutability: "payable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "approveRouter",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "approveRouterForPortal",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "getProposedRouterOwner",
+        outputs: [{ internalType: "address", name: "", type: "address" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "getProposedRouterOwnerTimestamp",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "getRouterApproval",
+        outputs: [{ internalType: "bool", name: "", type: "bool" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "getRouterApprovalForPortal",
+        outputs: [{ internalType: "bool", name: "", type: "bool" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "getRouterOwner",
+        outputs: [{ internalType: "address", name: "", type: "address" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "getRouterRecipient",
+        outputs: [{ internalType: "address", name: "", type: "address" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "address", name: "_owner", type: "address" },
+            {
+                internalType: "address",
+                name: "_recipient",
+                type: "address",
+            },
+        ],
+        name: "initializeRouter",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [],
+        name: "maxRoutersPerTransfer",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "address", name: "_router", type: "address" },
+            {
+                internalType: "address",
+                name: "_proposed",
+                type: "address",
+            },
+        ],
+        name: "proposeRouterOwner",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                components: [
+                    {
+                        internalType: "uint32",
+                        name: "domain",
+                        type: "uint32",
+                    },
+                    {
+                        internalType: "bytes32",
+                        name: "id",
+                        type: "bytes32",
+                    },
+                ],
+                internalType: "struct TokenId",
+                name: "_canonical",
+                type: "tuple",
+            },
+            { internalType: "uint256", name: "_amount", type: "uint256" },
+            {
+                internalType: "address payable",
+                name: "_to",
+                type: "address",
+            },
+        ],
+        name: "removeRouterLiquidity",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                components: [
+                    {
+                        internalType: "uint32",
+                        name: "domain",
+                        type: "uint32",
+                    },
+                    {
+                        internalType: "bytes32",
+                        name: "id",
+                        type: "bytes32",
+                    },
+                ],
+                internalType: "struct TokenId",
+                name: "_canonical",
+                type: "tuple",
+            },
+            { internalType: "uint256", name: "_amount", type: "uint256" },
+            {
+                internalType: "address payable",
+                name: "_to",
+                type: "address",
+            },
+            { internalType: "address", name: "_router", type: "address" },
+        ],
+        name: "removeRouterLiquidityFor",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "address", name: "_router", type: "address" },
+            { internalType: "address", name: "_asset", type: "address" },
+        ],
+        name: "routerBalances",
+        outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+        stateMutability: "view",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "_numerator",
+                type: "uint256",
+            },
+        ],
+        name: "setLiquidityFeeNumerator",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            {
+                internalType: "uint256",
+                name: "_newMaxRouters",
+                type: "uint256",
+            },
+        ],
+        name: "setMaxRoutersPerTransfer",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [
+            { internalType: "address", name: "_router", type: "address" },
+            {
+                internalType: "address",
+                name: "_recipient",
+                type: "address",
+            },
+        ],
+        name: "setRouterRecipient",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "unapproveRouter",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+    {
+        inputs: [{ internalType: "address", name: "_router", type: "address" }],
+        name: "unapproveRouterForPortal",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+    },
+] as const;

@@ -1,15 +1,15 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails, EventTokens } from "../../decoder.types";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ROUTER_ABI from "./abis/connext-router.abi.json";
-import CALLER_ABI from "./abis/connext-call.abi.json";
-import { timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import type { EventDetails, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
+import { connextCallABI } from "./abis/connext-call.abi";
+import { connextRouterABI } from "./abis/connext-router.abi";
 
 const DOMAIN_ID_TO_CHAIN_ID: { [domain_id: number]: string } = {
     6648936: "Ethereum Mainnet",
@@ -26,7 +26,7 @@ const DOMAIN_ID_TO_CHAIN_ID: { [domain_id: number]: string } = {
 GoldRushDecoder.on(
     "connext:RouterLiquidityAdded",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -37,20 +37,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterLiquidityAdded",
-        }) as {
-            eventName: "RouterLiquidityAdded";
-            args: {
-                router: string;
-                local: string;
-                key: string;
-                amount: bigint;
-                caller: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -97,7 +88,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:RouterAdded",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -108,17 +99,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterAdded",
-        }) as {
-            eventName: "RouterAdded";
-            args: {
-                router: string;
-                caller: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -150,7 +135,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:RouterRemoved",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -161,17 +146,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterRemoved",
-        }) as {
-            eventName: "RouterRemoved";
-            args: {
-                router: string;
-                caller: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -203,7 +182,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:RouterRecipientSet",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -214,18 +193,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterRecipientSet",
-        }) as {
-            eventName: "RouterRecipientSet";
-            args: {
-                router: string;
-                prevRecipient: string;
-                newRecipient: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -262,7 +234,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:RouterInitialized",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -273,16 +245,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterInitialized",
-        }) as {
-            eventName: "RouterInitialized";
-            args: {
-                router: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -309,7 +276,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:RouterOwnerAccepted",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -320,18 +287,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterOwnerAccepted",
-        }) as {
-            eventName: "RouterOwnerAccepted";
-            args: {
-                router: string;
-                prevOwner: string;
-                newOwner: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -368,7 +328,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:RouterOwnerProposed",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -379,18 +339,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterOwnerProposed",
-        }) as {
-            eventName: "RouterOwnerProposed";
-            args: {
-                router: string;
-                prevProposed: string;
-                newProposed: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -427,7 +380,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:RouterLiquidityRemoved",
     ["eth-mainnet"],
-    ROUTER_ABI as Abi,
+    connextRouterABI as Abi,
     async (
         log_event,
         tx,
@@ -438,21 +391,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ROUTER_ABI,
+            abi: connextRouterABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RouterLiquidityRemoved",
-        }) as {
-            eventName: "RouterLiquidityRemoved";
-            args: {
-                router: string;
-                to: string;
-                local: string;
-                key: string;
-                amount: bigint;
-                caller: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -504,7 +447,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:XCalled",
     ["eth-mainnet"],
-    CALLER_ABI as Abi,
+    connextCallABI as Abi,
     async (
         log_event,
         tx,
@@ -515,37 +458,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: CALLER_ABI,
+            abi: connextCallABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "XCalled",
-        }) as {
-            eventName: "XCalled";
-            args: {
-                transferId: string;
-                nonce: bigint;
-                messageHash: string;
-                params: {
-                    originDomain: bigint;
-                    destinationDomain: bigint;
-                    canonicalDomain: bigint;
-                    to: string;
-                    delegate: string;
-                    receiveLocal: boolean;
-                    callData: string;
-                    slippage: bigint;
-                    originSender: string;
-                    bridgedAmt: bigint;
-                    normalizedIn: bigint;
-                    nonce: bigint;
-                    canonicalId: string;
-                };
-                asset: string;
-                amount: bigint;
-                local: string;
-                messageBody: string;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -703,7 +620,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:ExternalCalldataExecuted",
     ["eth-mainnet"],
-    CALLER_ABI as Abi,
+    connextCallABI as Abi,
     async (
         log_event,
         tx,
@@ -714,19 +631,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: CALLER_ABI,
+            abi: connextCallABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "ExternalCalldataExecuted",
-        }) as {
-            eventName: "ExternalCalldataExecuted";
-            args: {
-                transferId: string;
-                success: boolean;
-                returnData: string;
-            };
-        };
-
+        });
         const details: EventDetails = [
             {
                 heading: "Transfer ID",
@@ -762,7 +671,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:TransferRelayerFeesIncreased",
     ["eth-mainnet"],
-    CALLER_ABI as Abi,
+    connextCallABI as Abi,
     async (
         log_event,
         tx,
@@ -773,19 +682,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: CALLER_ABI,
+            abi: connextCallABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "TransferRelayerFeesIncreased",
-        }) as {
-            eventName: "TransferRelayerFeesIncreased";
-            args: {
-                transferId: string;
-                increase: bigint;
-                asset: string;
-                caller: string;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -846,6 +747,7 @@ GoldRushDecoder.on(
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
+            tokens,
         };
     }
 );
@@ -853,7 +755,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "connext:SlippageUpdated",
     ["eth-mainnet"],
-    CALLER_ABI as Abi,
+    connextCallABI as Abi,
     async (
         log_event,
         tx,
@@ -864,17 +766,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: CALLER_ABI,
+            abi: connextCallABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "SlippageUpdated",
-        }) as {
-            eventName: "SlippageUpdated";
-            args: {
-                transferId: string;
-                slippage: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {

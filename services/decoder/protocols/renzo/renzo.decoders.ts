@@ -1,20 +1,20 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails, EventTokens } from "../../decoder.types";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import STRATEGY_MANAGER_ABI from "./abis/renzo.eigen-layer-strategy-manager.json";
-import RESTAKE_STRATEGY_ABI from "./abis/renzo.restake-manager-abi.json";
-import { timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import type { EventDetails, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
+import { eigenLayerStrategyManagerABI } from "./abis/eigen-layer-strategy-manager.abi";
+import { restakeManagerABI } from "./abis/restake-manager.abi";
 
 GoldRushDecoder.on(
     "renzo:ShareWithdrawalQueued",
     ["eth-mainnet"],
-    STRATEGY_MANAGER_ABI as Abi,
+    eigenLayerStrategyManagerABI as Abi,
     async (
         log_event,
         tx,
@@ -25,19 +25,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: STRATEGY_MANAGER_ABI,
+            abi: eigenLayerStrategyManagerABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "ShareWithdrawalQueued",
-        }) as {
-            eventName: "ShareWithdrawalQueued";
-            args: {
-                depositor: string;
-                nonce: bigint;
-                strategy: string;
-                shares: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -79,7 +71,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "renzo:WithdrawalQueued",
     ["eth-mainnet"],
-    STRATEGY_MANAGER_ABI as Abi,
+    eigenLayerStrategyManagerABI as Abi,
     async (
         log_event,
         tx,
@@ -90,20 +82,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: STRATEGY_MANAGER_ABI,
+            abi: eigenLayerStrategyManagerABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "WithdrawalQueued",
-        }) as {
-            eventName: "WithdrawalQueued";
-            args: {
-                depositor: string;
-                nonce: bigint;
-                withdrawer: string;
-                delegatedAddress: string;
-                withdrawalRoot: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -150,7 +133,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "renzo:WithdrawalCompleted",
     ["eth-mainnet"],
-    STRATEGY_MANAGER_ABI as Abi,
+    eigenLayerStrategyManagerABI as Abi,
     async (
         log_event,
         tx,
@@ -161,19 +144,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: STRATEGY_MANAGER_ABI,
+            abi: eigenLayerStrategyManagerABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "WithdrawalCompleted",
-        }) as {
-            eventName: "WithdrawalCompleted";
-            args: {
-                depositor: string;
-                nonce: bigint;
-                withdrawer: string;
-                withdrawalRoot: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -215,7 +190,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "renzo:Deposit",
     ["eth-mainnet"],
-    RESTAKE_STRATEGY_ABI as Abi,
+    restakeManagerABI as Abi,
     async (
         log_event,
         tx,
@@ -226,20 +201,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: RESTAKE_STRATEGY_ABI,
+            abi: restakeManagerABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Deposit",
-        }) as {
-            eventName: "Deposit";
-            args: {
-                depositor: string;
-                token: string;
-                amount: bigint;
-                ezETHMinted: bigint;
-                referralId: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {

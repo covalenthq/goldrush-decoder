@@ -1,18 +1,18 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { currencyToNumber, timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import { type EventDetails, type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ERC20ABI from "./abis/approval-erc20.abi.json";
-import ERC721ABI from "./abis/approval-erc721.abi.json";
-import { currencyToNumber, timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { type EventDetails, type EventType } from "../../decoder.types";
+import { approvalERC20ABI } from "./abis/approval-erc20.abi";
+import { approvalERC721ABI } from "./abis/approval-erc721.abi";
 
 GoldRushDecoder.fallback(
     "Approval",
-    ERC20ABI as Abi,
+    approvalERC20ABI as Abi,
     async (
         log_event,
         tx,
@@ -47,33 +47,19 @@ GoldRushDecoder.fallback(
 
         try {
             const { args } = decodeEventLog({
-                abi: ERC20ABI,
+                abi: approvalERC20ABI,
                 topics: raw_log_topics as [],
                 data: raw_log_data as `0x${string}`,
                 eventName: "Approval",
-            }) as {
-                eventName: "Approval";
-                args: {
-                    owner: string;
-                    spender: string;
-                    value: bigint;
-                };
-            };
+            });
             decoded = args;
         } catch (error) {
             const { args } = decodeEventLog({
-                abi: ERC721ABI,
+                abi: approvalERC721ABI,
                 topics: raw_log_topics as [],
                 data: raw_log_data as `0x${string}`,
                 eventName: "Approval",
-            }) as {
-                eventName: "Approval";
-                args: {
-                    owner: string;
-                    spender: string;
-                    tokenId: bigint;
-                };
-            };
+            });
             decoded = args;
         }
 

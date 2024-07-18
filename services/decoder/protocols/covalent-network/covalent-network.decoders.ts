@@ -1,21 +1,21 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import { type EventTokens, type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import OldBlockSpecimenProofABI from "./abis/old-block-specimen-proof.abi.json";
-import NewBlockSpecimenProofABI from "./abis/new-block-specimen-proof.abi.json";
-import OldOperationalStakingABI from "./abis/old-operational-staking.abi.json";
-import NewOperationalStakingABI from "./abis/new-operational-staking.abi.json";
-import { timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { type EventTokens, type EventType } from "../../decoder.types";
+import { newBlockSpecimenProofABI } from "./abis/new-block-specimen-proof.abi";
+import { newOperationalStakingABI } from "./abis/new-operational-staking.abi";
+import { oldBlockSpecimenProofABI } from "./abis/old-block-specimen-proof.abi";
+import { oldOperationalStakingABI } from "./abis/old-operational-staking.abi";
 
 GoldRushDecoder.on(
     "covalent-network:BlockSpecimenProductionProofSubmitted",
     ["moonbeam-mainnet"],
-    OldBlockSpecimenProofABI as Abi,
+    oldBlockSpecimenProofABI as Abi,
     async (
         log_event,
         tx,
@@ -26,21 +26,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: OldBlockSpecimenProofABI,
+            abi: oldBlockSpecimenProofABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "BlockSpecimenProductionProofSubmitted",
-        }) as {
-            eventName: "BlockSpecimenProductionProofSubmitted";
-            args: {
-                chainId: bigint;
-                blockHeight: bigint;
-                blockHash: string;
-                specimenHash: string;
-                storageURL: string;
-                submittedStake: bigint;
-            };
-        };
+        });
 
         return {
             action: DECODED_ACTION.APPROVAL,
@@ -77,7 +67,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "covalent-network:Unstaked",
     ["moonbeam-mainnet"],
-    OldOperationalStakingABI as Abi,
+    oldOperationalStakingABI as Abi,
     async (
         log_event,
         tx,
@@ -88,19 +78,11 @@ GoldRushDecoder.on(
         const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: OldOperationalStakingABI,
+            abi: oldOperationalStakingABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Unstaked",
-        }) as {
-            eventName: "Unstaked";
-            args: {
-                validatorId: bigint;
-                delegator: string;
-                amount: bigint;
-                unstakeId: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(block_signed_at, "YYYY-MM-DD");
         const { data } = await covalent_client.PricingService.getTokenPrices(
@@ -165,7 +147,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "covalent-network:RewardRedeemed",
     ["moonbeam-mainnet"],
-    OldOperationalStakingABI as Abi,
+    oldOperationalStakingABI as Abi,
     async (
         log_event,
         tx,
@@ -176,18 +158,11 @@ GoldRushDecoder.on(
         const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: OldOperationalStakingABI,
+            abi: oldOperationalStakingABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "RewardRedeemed",
-        }) as {
-            eventName: "RewardRedeemed";
-            args: {
-                validatorId: bigint;
-                beneficiary: string;
-                amount: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(block_signed_at, "YYYY-MM-DD");
         const { data } = await covalent_client.PricingService.getTokenPrices(
@@ -247,7 +222,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "covalent-network:CommissionRewardRedeemed",
     ["moonbeam-mainnet"],
-    OldOperationalStakingABI as Abi,
+    oldOperationalStakingABI as Abi,
     async (
         log_event,
         tx,
@@ -258,18 +233,11 @@ GoldRushDecoder.on(
         const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: OldOperationalStakingABI,
+            abi: oldOperationalStakingABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "CommissionRewardRedeemed",
-        }) as {
-            eventName: "CommissionRewardRedeemed";
-            args: {
-                validatorId: bigint;
-                beneficiary: string;
-                amount: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(block_signed_at, "YYYY-MM-DD");
         const { data } = await covalent_client.PricingService.getTokenPrices(
@@ -329,7 +297,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "covalent-network:BlockSpecimenProductionProofSubmitted",
     ["moonbeam-mainnet"],
-    NewBlockSpecimenProofABI as Abi,
+    newBlockSpecimenProofABI as Abi,
     async (
         log_event,
         tx,
@@ -340,20 +308,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: NewBlockSpecimenProofABI,
+            abi: newBlockSpecimenProofABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "BlockSpecimenProductionProofSubmitted",
-        }) as {
-            eventName: "BlockSpecimenProductionProofSubmitted";
-            args: {
-                chainId: bigint;
-                blockHeight: bigint;
-                blockHash: string;
-                specimenHash: string;
-                storageURL: string;
-            };
-        };
+        });
 
         return {
             action: DECODED_ACTION.APPROVAL,
@@ -383,7 +342,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "covalent-network:Staked",
     ["eth-mainnet"],
-    NewOperationalStakingABI as Abi,
+    newOperationalStakingABI as Abi,
     async (
         log_event,
         tx,
@@ -394,18 +353,11 @@ GoldRushDecoder.on(
         const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: NewOperationalStakingABI,
+            abi: newOperationalStakingABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Staked",
-        }) as {
-            eventName: "Staked";
-            args: {
-                validatorId: bigint;
-                delegator: string;
-                amount: bigint;
-            };
-        };
+        });
 
         const date = timestampParser(block_signed_at, "YYYY-MM-DD");
         const { data } = await covalent_client.PricingService.getTokenPrices(
