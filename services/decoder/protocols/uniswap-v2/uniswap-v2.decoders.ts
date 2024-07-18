@@ -444,7 +444,7 @@ GoldRushDecoder.on(
                 decoded.pair
             );
 
-            details.concat([
+            details.push(
                 {
                     heading: "Token 0 Name",
                     value: data?.items?.[0]?.token_0?.contract_name || "",
@@ -495,8 +495,8 @@ GoldRushDecoder.on(
                     heading: "Pair Address",
                     value: decoded.pair,
                     type: "address",
-                },
-            ]);
+                }
+            );
         }
 
         return {
