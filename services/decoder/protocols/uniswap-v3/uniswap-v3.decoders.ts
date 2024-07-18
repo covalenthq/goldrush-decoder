@@ -1,20 +1,20 @@
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails, EventTokens } from "../../decoder.types";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import FactoryABI from "./abis/uniswap-v3.factory.abi.json";
-import PairABI from "./abis/uniswap-v3.pair.abi.json";
-import PositionManagerABI from "./abis/uniswap-v3.NonfungiblePositionManager.abi.json";
-import { timestampParser } from "../../../../utils/functions";
+import type { EventDetails, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
+import { factoryABI } from "./abis/factory.abi";
+import { nonFungiblePositionManagerABI } from "./abis/non-fungible-position-manager.abi";
+import { pairABI } from "./abis/pair.abi";
 
 GoldRushDecoder.on(
     "uniswap-v3:PoolCreated",
     ["eth-mainnet"],
-    FactoryABI as Abi,
+    factoryABI as Abi,
     async (
         log_event,
         tx,
@@ -25,20 +25,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: FactoryABI,
+            abi: factoryABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "PoolCreated",
-        }) as {
-            eventName: "PoolCreated";
-            args: {
-                token0: string;
-                token1: string;
-                fee: bigint;
-                tickSpacing: bigint;
-                pool: string;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -131,7 +122,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:Burn",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -142,21 +133,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Burn",
-        }) as {
-            eventName: "Burn";
-            args: {
-                owner: string;
-                tickLower: bigint;
-                tickUpper: bigint;
-                amount: bigint;
-                amount0: bigint;
-                amount1: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -208,7 +189,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:Mint",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -219,22 +200,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Mint",
-        }) as {
-            eventName: "Mint";
-            args: {
-                sender: string;
-                owner: string;
-                tickLower: bigint;
-                tickUpper: bigint;
-                amount: bigint;
-                amount0: bigint;
-                amount1: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -291,7 +261,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:Swap",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -302,22 +272,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Swap",
-        }) as {
-            eventName: "Swap";
-            args: {
-                sender: string;
-                recipient: string;
-                amount0: bigint;
-                amount1: bigint;
-                sqrtPriceX96: bigint;
-                liquidity: bigint;
-                tick: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -374,7 +333,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:Collect",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -385,21 +344,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Collect",
-        }) as {
-            eventName: "Collect";
-            args: {
-                owner: string;
-                recipient: string;
-                tickLower: bigint;
-                tickUpper: bigint;
-                amount0: bigint;
-                amount1: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -451,7 +400,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:Flash",
     ["eth-mainnet"],
-    PairABI as Abi,
+    pairABI as Abi,
     async (
         log_event,
         tx,
@@ -462,21 +411,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PairABI,
+            abi: pairABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Flash",
-        }) as {
-            eventName: "Flash";
-            args: {
-                sender: string;
-                recipient: string;
-                amount0: bigint;
-                amount1: bigint;
-                paid0: bigint;
-                paid1: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -528,7 +467,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:DecreaseLiquidity",
     ["eth-mainnet"],
-    PositionManagerABI as Abi,
+    nonFungiblePositionManagerABI as Abi,
     async (
         log_event,
         tx,
@@ -539,19 +478,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PositionManagerABI,
+            abi: nonFungiblePositionManagerABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "DecreaseLiquidity",
-        }) as {
-            eventName: "DecreaseLiquidity";
-            args: {
-                tokenId: bigint;
-                liquidity: bigint;
-                amount0: bigint;
-                amount1: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -593,7 +524,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:IncreaseLiquidity",
     ["eth-mainnet"],
-    PositionManagerABI as Abi,
+    nonFungiblePositionManagerABI as Abi,
     async (
         log_event,
         tx,
@@ -604,19 +535,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PositionManagerABI,
+            abi: nonFungiblePositionManagerABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "IncreaseLiquidity",
-        }) as {
-            eventName: "IncreaseLiquidity";
-            args: {
-                tokenId: bigint;
-                liquidity: bigint;
-                amount0: bigint;
-                amount1: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {
@@ -658,7 +581,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "uniswap-v3:Collect",
     ["eth-mainnet"],
-    PositionManagerABI as Abi,
+    nonFungiblePositionManagerABI as Abi,
     async (
         log_event,
         tx,
@@ -669,19 +592,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PositionManagerABI,
+            abi: nonFungiblePositionManagerABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "Collect",
-        }) as {
-            eventName: "Collect";
-            args: {
-                tokenId: bigint;
-                recipient: string;
-                amount0: bigint;
-                amount1: bigint;
-            };
-        };
+        });
 
         const details: EventDetails = [
             {

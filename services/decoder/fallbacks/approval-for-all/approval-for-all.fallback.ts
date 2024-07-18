@@ -1,15 +1,15 @@
+import { decodeEventLog, type Abi } from "viem";
 import { GoldRushDecoder } from "../../decoder";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ABI from "./abis/approval-for-all.abi.json";
+import { type EventType } from "../../decoder.types";
+import { approvalForAllABI } from "./abis/approval-for-all.abi";
 
 GoldRushDecoder.fallback(
     "ApprovalForAll",
-    ABI as Abi,
+    approvalForAllABI as Abi,
     async (
         log_event,
         tx,
@@ -21,18 +21,11 @@ GoldRushDecoder.fallback(
             log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: approvalForAllABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "ApprovalForAll",
-        }) as {
-            eventName: "ApprovalForAll";
-            args: {
-                owner: string;
-                operator: string;
-                approved: boolean;
-            };
-        };
+        });
 
         return {
             action: DECODED_ACTION.APPROVAL,

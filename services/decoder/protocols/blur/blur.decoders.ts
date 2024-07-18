@@ -1,23 +1,23 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
+import {
+    DECODED_ACTION,
+    DECODED_EVENT_CATEGORY,
+} from "../../decoder.constants";
 import {
     type EventDetails,
     type EventNFTs,
     type EventTokens,
     type EventType,
 } from "../../decoder.types";
-import {
-    DECODED_ACTION,
-    DECODED_EVENT_CATEGORY,
-} from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import ABI from "./abis/blur.BlurExchange.abi.json";
-import { timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { blurExchangeABI } from "./abis/blur-exchange.abi";
 
 GoldRushDecoder.on(
     "blur:OrdersMatched",
     ["eth-mainnet"],
-    ABI as Abi,
+    blurExchangeABI as Abi,
     async (
         log_event,
         tx,
@@ -27,61 +27,12 @@ GoldRushDecoder.on(
     ): Promise<EventType> => {
         const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
 
-        enum SIDE {
-            "BUY" = 0,
-            "SELL" = 1,
-        }
-
         const { args: decoded } = decodeEventLog({
-            abi: ABI,
+            abi: blurExchangeABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "OrdersMatched",
-        }) as {
-            eventName: "OrdersMatched";
-            args: {
-                maker: string;
-                taker: string;
-                sell: {
-                    trader: string;
-                    side: SIDE;
-                    matchingPolicy: string;
-                    collection: string;
-                    tokenId: bigint;
-                    amount: bigint;
-                    paymentToken: string;
-                    price: bigint;
-                    listingTime: bigint;
-                    expirationTime: bigint;
-                    fees: {
-                        rate: number;
-                        recipient: string;
-                    }[];
-                    salt: bigint;
-                    extraParams: string;
-                };
-                sellHash: string;
-                buy: {
-                    trader: string;
-                    side: SIDE;
-                    matchingPolicy: string;
-                    collection: string;
-                    tokenId: bigint;
-                    amount: bigint;
-                    paymentToken: string;
-                    price: bigint;
-                    listingTime: bigint;
-                    expirationTime: bigint;
-                    fees: {
-                        rate: number;
-                        recipient: string;
-                    }[];
-                    salt: bigint;
-                    extraParams: string;
-                };
-                buyHash: string;
-            };
-        };
+        });
 
         const tokens: EventTokens = [];
         const nfts: EventNFTs = [];

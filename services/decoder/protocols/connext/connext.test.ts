@@ -41,6 +41,7 @@ describe("connext", () => {
             throw Error("Event not found");
         }
         expect(event.details?.length).toEqual(3);
+        expect(event.tokens?.length).toEqual(1);
     });
 });
 

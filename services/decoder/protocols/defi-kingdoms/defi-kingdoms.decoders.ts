@@ -1,20 +1,20 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { isNullAddress, timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
-import type { EventDetails, EventNFTs, EventTokens } from "../../decoder.types";
-import { type EventType } from "../../decoder.types";
 import {
     DECODED_ACTION,
     DECODED_EVENT_CATEGORY,
 } from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import PetABI from "./abis/defi-kingdoms.pets.abi.json";
-import HERO_AUCTION_ABI from "./abis/defi-kingdoms.hero-auction.abi.json";
-import { timestampParser, isNullAddress } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import type { EventDetails, EventNFTs, EventTokens } from "../../decoder.types";
+import { type EventType } from "../../decoder.types";
+import { heroAuctionABI } from "./abis/hero-auction.abi";
+import { petsABI } from "./abis/pets.abi";
 
 GoldRushDecoder.on(
     "defi-kingdoms:PetFed",
     ["defi-kingdoms-mainnet"],
-    PetABI as Abi,
+    petsABI as Abi,
     async (
         log_event,
         tx,
@@ -25,19 +25,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: PetABI,
+            abi: petsABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "PetFed",
-        }) as {
-            eventName: "PetFed";
-            args: {
-                fedBy: string;
-                petId: bigint;
-                foodType: bigint;
-                hungryAt: bigint;
-            };
-        };
+        });
 
         const { data: PetNFT } =
             await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
@@ -116,7 +108,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "defi-kingdoms:AuctionCreated",
     ["defi-kingdoms-mainnet"],
-    HERO_AUCTION_ABI as Abi,
+    heroAuctionABI as Abi,
     async (
         log_event,
         tx,
@@ -127,22 +119,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: HERO_AUCTION_ABI,
+            abi: heroAuctionABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "AuctionCreated",
-        }) as {
-            eventName: "AuctionCreated";
-            args: {
-                auctionId: bigint;
-                owner: string;
-                tokenId: bigint;
-                startingPrice: bigint;
-                endingPrice: bigint;
-                duration: bigint;
-                winner: string;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
@@ -276,7 +257,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "defi-kingdoms:AuctionCancelled",
     ["defi-kingdoms-mainnet"],
-    HERO_AUCTION_ABI as Abi,
+    heroAuctionABI as Abi,
     async (
         log_event,
         tx,
@@ -287,17 +268,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: HERO_AUCTION_ABI,
+            abi: heroAuctionABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "AuctionCancelled",
-        }) as {
-            eventName: "AuctionCancelled";
-            args: {
-                auctionId: bigint;
-                tokenId: bigint;
-            };
-        };
+        });
 
         const { data: HeroNFT } =
             await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
@@ -364,7 +339,7 @@ GoldRushDecoder.on(
 GoldRushDecoder.on(
     "defi-kingdoms:AuctionSuccessful",
     ["defi-kingdoms-mainnet"],
-    HERO_AUCTION_ABI as Abi,
+    heroAuctionABI as Abi,
     async (
         log_event,
         tx,
@@ -375,19 +350,11 @@ GoldRushDecoder.on(
         const { raw_log_data, raw_log_topics } = log_event;
 
         const { args: decoded } = decodeEventLog({
-            abi: HERO_AUCTION_ABI,
+            abi: heroAuctionABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "AuctionSuccessful",
-        }) as {
-            eventName: "AuctionSuccessful";
-            args: {
-                auctionId: bigint;
-                tokenId: bigint;
-                totalPrice: bigint;
-                winner: string;
-            };
-        };
+        });
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 

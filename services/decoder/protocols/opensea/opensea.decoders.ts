@@ -1,23 +1,23 @@
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
+import {
+    DECODED_ACTION,
+    DECODED_EVENT_CATEGORY,
+} from "../../decoder.constants";
 import {
     type EventDetails,
     type EventNFTs,
     type EventTokens,
     type EventType,
 } from "../../decoder.types";
-import {
-    DECODED_ACTION,
-    DECODED_EVENT_CATEGORY,
-} from "../../decoder.constants";
-import { decodeEventLog, type Abi } from "viem";
-import Seaport from "./abis/seaport-1.1.abi.json";
-import { timestampParser } from "../../../../utils/functions";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { seaport11ABI } from "./abis/seaport-1.1.abi";
 
 GoldRushDecoder.on(
     "opensea:OrderFulfilled",
     ["eth-mainnet", "matic-mainnet"],
-    Seaport as Abi,
+    seaport11ABI as Abi,
     async (
         log_event,
         tx,
@@ -37,32 +37,11 @@ GoldRushDecoder.on(
         }
 
         const { args: decoded } = decodeEventLog({
-            abi: Seaport,
+            abi: seaport11ABI,
             topics: raw_log_topics as [],
             data: raw_log_data as `0x${string}`,
             eventName: "OrderFulfilled",
-        }) as {
-            eventName: "OrderFulfilled";
-            args: {
-                offerer: string;
-                zone: string;
-                orderHash: string;
-                recipient: string;
-                offer: {
-                    itemType: ITEM_TYPE;
-                    token: string;
-                    identifier: bigint;
-                    amount: bigint;
-                }[];
-                consideration: {
-                    itemType: ITEM_TYPE;
-                    token: string;
-                    identifier: bigint;
-                    amount: bigint;
-                    recipient: string;
-                }[];
-            };
-        };
+        });
 
         const tokens: EventTokens = [];
         const nfts: EventNFTs = [];
