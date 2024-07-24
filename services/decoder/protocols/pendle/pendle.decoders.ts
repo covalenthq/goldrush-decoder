@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -10,6 +8,9 @@ import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { pendleRouterV3ABI } from "./abis/pendle-router-v3.abi";
 import { vePendleABI } from "./abis/ve-pendle.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
+
 const PT_TOKEN_ADDRESS = "0xc69Ad9baB1dEE23F4605a82b3354F8E40d1E5966";
 const SY_TOKEN_ADDRESS = "0xAC0047886a985071476a1186bE89222659970d65";
 const YT_TOKEN_ADDRESS = "0xfb35Fd0095dD1096b1Ca49AD44d8C5812A201677";

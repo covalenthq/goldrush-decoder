@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { isNullAddress, timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -10,6 +8,8 @@ import type { EventDetails, EventNFTs, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { heroAuctionABI } from "./abis/hero-auction.abi";
 import { petsABI } from "./abis/pets.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "defi-kingdoms:PetFed",

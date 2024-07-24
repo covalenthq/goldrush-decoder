@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { currencyToNumber, timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -9,6 +7,8 @@ import {
 import { type EventDetails, type EventType } from "../../decoder.types";
 import { transferERC20ABI } from "./abis/transfer-erc20.abi";
 import { transferERC721ABI } from "./abis/transfer-erc721.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.fallback(
     "Transfer",

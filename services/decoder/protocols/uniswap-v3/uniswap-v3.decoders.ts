@@ -1,4 +1,3 @@
-import { decodeEventLog, type Abi } from "viem";
 import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -10,6 +9,7 @@ import { type EventType } from "../../decoder.types";
 import { factoryABI } from "./abis/factory.abi";
 import { nonFungiblePositionManagerABI } from "./abis/non-fungible-position-manager.abi";
 import { pairABI } from "./abis/pair.abi";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "uniswap-v3:PoolCreated",

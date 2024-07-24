@@ -17,5 +17,6 @@
     "vueIndentScriptAndStyle": false,
     "endOfLine": "lf",
     "embeddedLanguageFormatting": "auto",
-    "singleAttributePerLine": false
+    "singleAttributePerLine": false,
+    "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

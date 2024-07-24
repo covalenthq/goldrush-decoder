@@ -1,12 +1,12 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("uniswap-v3", () => {
     test("eth-mainnet:PoolCreated", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -24,7 +24,7 @@ describe("uniswap-v3", () => {
     test("eth-mainnet:Burn", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -41,7 +41,7 @@ describe("uniswap-v3", () => {
     test("eth-mainnet:Mint", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -58,7 +58,7 @@ describe("uniswap-v3", () => {
     test("eth-mainnet:Swap", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -75,7 +75,7 @@ describe("uniswap-v3", () => {
     test("eth-mainnet:Collect", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -92,7 +92,7 @@ describe("uniswap-v3", () => {
     test("eth-mainnet:Flash", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -109,7 +109,7 @@ describe("uniswap-v3", () => {
     test("eth-mainnet:DecreaseLiquidity", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -126,7 +126,7 @@ describe("uniswap-v3", () => {
     test("eth-mainnet:IncreaseLiquidity", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:

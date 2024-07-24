@@ -1,4 +1,3 @@
-import { decodeEventLog, type Abi } from "viem";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -6,6 +5,7 @@ import {
 } from "../../decoder.constants";
 import { type EventType } from "../../decoder.types";
 import { approvalForAllABI } from "./abis/approval-for-all.abi";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.fallback(
     "ApprovalForAll",

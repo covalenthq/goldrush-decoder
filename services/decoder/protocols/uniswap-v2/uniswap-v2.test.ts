@@ -1,13 +1,13 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("uniswap-v2", () => {
     test("eth-mainnet:Swap", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "eth-mainnet",
@@ -27,7 +27,7 @@ describe("uniswap-v2", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "defi-kingdoms-mainnet",
@@ -47,7 +47,7 @@ describe("uniswap-v2", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "eth-mainnet",
@@ -67,7 +67,7 @@ describe("uniswap-v2", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "eth-mainnet",
@@ -86,7 +86,7 @@ describe("uniswap-v2", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "eth-mainnet",
@@ -105,7 +105,7 @@ describe("uniswap-v2", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "eth-mainnet",

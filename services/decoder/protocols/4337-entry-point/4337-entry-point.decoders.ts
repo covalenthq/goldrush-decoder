@@ -1,4 +1,3 @@
-import { decodeEventLog, type Abi } from "viem";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -6,6 +5,7 @@ import {
 } from "../../decoder.constants";
 import { type EventType } from "../../decoder.types";
 import { entryPointABI } from "./abis/entry-point.abi";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "4337-entry-point:UserOperationEvent",

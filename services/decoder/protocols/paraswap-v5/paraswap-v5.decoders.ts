@@ -1,8 +1,3 @@
-import {
-    calculatePrettyBalance,
-    prettifyCurrency,
-} from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -14,6 +9,11 @@ import {
     type EventType,
 } from "../../decoder.types";
 import { simpleSwapABI } from "./abis/simple-swap.abi";
+import {
+    calculatePrettyBalance,
+    prettifyCurrency,
+} from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "paraswap-v5:SwappedV3",
