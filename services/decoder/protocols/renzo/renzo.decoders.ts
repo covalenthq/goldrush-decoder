@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -10,6 +8,8 @@ import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { eigenLayerStrategyManagerABI } from "./abis/eigen-layer-strategy-manager.abi";
 import { restakeManagerABI } from "./abis/restake-manager.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "renzo:ShareWithdrawalQueued",

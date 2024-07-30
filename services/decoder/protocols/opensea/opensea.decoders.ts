@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -13,6 +11,8 @@ import {
     type EventType,
 } from "../../decoder.types";
 import { seaport11ABI } from "./abis/seaport-1.1.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "opensea:OrderFulfilled",

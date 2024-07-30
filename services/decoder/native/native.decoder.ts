@@ -1,7 +1,7 @@
-import { GoldRushDecoder } from "../decoder";
-import { type EventType } from "../decoder.types";
 import { currencyToNumber } from "../../../utils/functions";
+import { GoldRushDecoder } from "../decoder";
 import { DECODED_ACTION, DECODED_EVENT_CATEGORY } from "../decoder.constants";
+import { type EventType } from "../decoder.types";
 
 GoldRushDecoder.native((tx, options): EventType | null => {
     if (

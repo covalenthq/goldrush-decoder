@@ -1,12 +1,12 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("lido", () => {
     test("eth-mainnet:Transfer Shares", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -23,7 +23,7 @@ describe("lido", () => {
     test("eth-mainnet:Submitted", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -41,7 +41,7 @@ describe("lido", () => {
     test("eth-mainnet:Token Rebased", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -59,7 +59,7 @@ describe("lido", () => {
     test("eth-mainnet:Shares Burnt", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -77,7 +77,7 @@ describe("lido", () => {
     test("eth-mainnet:ETH Distributed", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -95,7 +95,7 @@ describe("lido", () => {
     test("eth-mainnet:Withdrawals Received", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -114,7 +114,7 @@ describe("lido", () => {
     test("eth-mainnet:EL Rewards Received", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -131,7 +131,7 @@ describe("lido", () => {
     test("eth-mainnet:CL Validators Updated", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -150,7 +150,7 @@ describe("lido", () => {
     test("eth-mainnet:Withdrawal Requested", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -170,7 +170,7 @@ describe("lido", () => {
     test("eth-mainnet:Withdrawal Claimed", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -188,7 +188,7 @@ describe("lido", () => {
     test("eth-mainnet:Batch Metadata Update", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -207,7 +207,7 @@ describe("lido", () => {
     test("eth-mainnet:Withdrawals Finalized", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:

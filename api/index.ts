@@ -1,14 +1,14 @@
+import { txRouter } from "../microservices/tx/tx.routes";
+import { GoldRushDecoder } from "../services";
+import { timestampParser } from "../utils/functions";
+import cors from "cors";
+import { config as dotenvConfig } from "dotenv";
 import express, {
     type Express,
     type Request,
     type Response,
     type NextFunction,
 } from "express";
-import cors from "cors";
-import { config as dotenvConfig } from "dotenv";
-import { GoldRushDecoder } from "../services";
-import { txRouter } from "../microservices/tx/tx.routes";
-import { timestampParser } from "../utils/functions";
 
 dotenvConfig();
 

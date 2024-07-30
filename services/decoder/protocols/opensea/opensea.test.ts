@@ -1,13 +1,13 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("opensea", () => {
     test("eth-mainnet:OrderFulfilled", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "eth-mainnet",
@@ -34,7 +34,7 @@ describe("opensea", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "matic-mainnet",

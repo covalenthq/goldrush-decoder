@@ -1,10 +1,4 @@
-import { readdirSync } from "fs";
-import { join } from "path";
-import {
-    CovalentClient,
-    type Chain,
-    type Transaction,
-} from "@covalenthq/client-sdk";
+import { chunkify } from "../../utils/functions";
 import {
     type Configs,
     type DecodingFunction,
@@ -16,8 +10,14 @@ import {
     type NativeDecodingFunction,
     type QueryOptions,
 } from "./decoder.types";
+import {
+    CovalentClient,
+    type Chain,
+    type Transaction,
+} from "@covalenthq/client-sdk";
+import { readdirSync } from "fs";
+import { join } from "path";
 import { encodeEventTopics, type Abi } from "viem";
-import { chunkify } from "../../utils/functions";
 
 export class GoldRushDecoder {
     private static configs: DecoderConfig = {};

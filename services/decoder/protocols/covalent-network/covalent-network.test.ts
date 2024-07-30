@@ -1,13 +1,13 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("covalent-network", () => {
     test("moonbeam-mainnet:BlockSpecimenProductionProofSubmitted", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "moonbeam-mainnet",
@@ -30,7 +30,7 @@ describe("covalent-network", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "moonbeam-mainnet",
@@ -52,7 +52,7 @@ describe("covalent-network", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "moonbeam-mainnet",
@@ -74,7 +74,7 @@ describe("covalent-network", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "moonbeam-mainnet",
@@ -98,7 +98,7 @@ describe("covalent-network", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "moonbeam-mainnet",
@@ -121,7 +121,7 @@ describe("covalent-network", () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
             .set({
-                "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY,
+                "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
             })
             .send({
                 chain_name: "eth-mainnet",

@@ -1,28 +1,21 @@
+import prettierConfig from "../.prettierrc.json";
+import { type Configs } from "../services/decoder/decoder.types";
+import { slugify } from "../utils/functions";
 import { Chains, type Chain } from "@covalenthq/client-sdk";
 import { prompt } from "enquirer";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import { format, type Options } from "prettier";
-import prettierConfig from "../.prettierrc.json";
-import { slugify } from "../utils/functions";
-import { type Configs } from "../services/decoder/decoder.types";
 import * as yup from "yup";
 
-const writeInFile = async (
-    path: string,
-    name: string,
-    content: string,
-    pretty: boolean
-) => {
+const writeInFile = async (path: string, name: string, content: string) => {
     if (!existsSync(path)) {
         mkdirSync(path);
     }
-    const formattedContent = pretty
-        ? await format(content, {
-              parser: "typescript",
-              ...(prettierConfig as Options),
-          })
-        : content;
+    const formattedContent = await format(content, {
+        parser: "typescript",
+        ...(prettierConfig as Options),
+    });
     writeFileSync(join(path, name), formattedContent, "utf-8");
 };
 
@@ -146,33 +139,25 @@ const chainNameSchema = yup
 
     if (!exists) {
         const eventName: string = "<EVENT NAME>";
-        const abiContent: string = `[]`;
+        const abiContent: string = `export const ABI = [] as const`;
         const configsContent: string = `import{type Configs}from"../../decoder.types";\n\nconst configs:Configs=[{address:"${address}",is_factory:${is_factory},protocol_name:"${protocol_name}",chain_name:"${chain_name}"}];\n\nexport default configs;`;
-        const decodersContent: string = `import{GoldRushDecoder}from"../../decoder";import{type EventType}from"../../decoder.types";import{DECODED_ACTION,DECODED_EVENT_CATEGORY}from"../../decoder.constants";import{decodeEventLog,type Abi}from"viem";import ABI from "./abis/${protocol_name}.abi.json";\n\nGoldRushDecoder.on("${protocol_name}:${eventName}",["${chain_name}"],ABI as Abi,async(log_event,tx,chain_name,covalent_client,options):Promise<EventType> =>{const{raw_log_data,raw_log_topics}=log_event;\n\nconst{args:decoded}=decodeEventLog({abi:ABI,topics:raw_log_topics as[],data:raw_log_data as \`0x\${string}\`,eventName:"${eventName}"})as{eventName:"${eventName}";args:{}};\n\nreturn{action:DECODED_ACTION.SWAPPED,category:DECODED_EVENT_CATEGORY.DEX,name:"${eventName}",protocol:{logo:log_event.sender_logo_url as string,name:log_event.sender_name as string},...(options.raw_logs?{raw_log:log_event}:{})};});`;
-        const testContent: string = `import request from"supertest";import app from"../../../../api";import{type EventType}from"../../decoder.types";\n\ndescribe("${protocol_name}",()=>{test("${chain_name}:${eventName}",async()=>{const res=await request(app).post("/api/v1/tx/decode").set({"x-covalent-api-key":process.env.TEST_COVALENT_API_KEY}).send({chain_name:"${chain_name}",tx_hash:"<ENTER TX HASH FOR TESTING>"});const{events}=res.body as{events:EventType[]};const event=events.find(({name})=>name==="${eventName}");if(!event){throw Error("Event not found")}const testAdded:boolean=false;expect(testAdded).toEqual(true)})});`;
+        const decodersContent: string = `import{GoldRushDecoder}from"../../decoder";import{DECODED_ACTION,DECODED_EVENT_CATEGORY}from"../../decoder.constants";import{type EventType}from"../../decoder.types";import{ABI}from"./abis/${protocol_name}.abi";import{decodeEventLog,type Abi}from"viem";\n\nGoldRushDecoder.on(":${eventName}",["${chain_name}"],ABI as Abi,async(log_event,tx,chain_name,covalent_client,options):Promise<EventType> =>{const{raw_log_data,raw_log_topics}=log_event;\n\nconst{args:decoded}=decodeEventLog({abi:ABI,topics:raw_log_topics as[],data:raw_log_data as \`0x\${string}\`,eventName:"${eventName}"})as{eventName:"${eventName}";args:{}};\n\nreturn{action:DECODED_ACTION.SWAPPED,category:DECODED_EVENT_CATEGORY.DEX,name:"${eventName}",protocol:{logo:log_event.sender_logo_url as string,name:log_event.sender_name as string},...(options.raw_logs?{raw_log:log_event}:{})};});`;
+        const testContent: string = `import app from"../../../../api";import{type EventType}from"../../decoder.types";import request from"supertest";\n\ndescribe("${protocol_name}",()=>{test("${chain_name}:${eventName}",async()=>{const res=await request(app).post("/api/v1/tx/decode").set({"x-goldrush-api-key":process.env.TEST_GOLDRUSH_API_KEY}).send({chain_name:"${chain_name}",tx_hash:"<ENTER TX HASH FOR TESTING>"});const{events}=res.body as{events:EventType[]};const event=events.find(({name})=>name==="${eventName}");if(!event){throw Error("Event not found")}const testAdded:boolean=false;expect(testAdded).toEqual(true)})});`;
         await writeInFile(
             protocolDir,
             `${protocol_name}.decoders.ts`,
-            decodersContent,
-            true
+            decodersContent
         );
         await writeInFile(
             protocolDir,
             `${protocol_name}.configs.ts`,
-            configsContent,
-            true
+            configsContent
         );
-        await writeInFile(
-            protocolDir,
-            `${protocol_name}.test.ts`,
-            testContent,
-            true
-        );
+        await writeInFile(protocolDir, `${protocol_name}.test.ts`, testContent);
         await writeInFile(
             join(protocolDir, "abis"),
-            `${protocol_name}.abi.json`,
-            abiContent,
-            false
+            `${protocol_name}.abi.ts`,
+            abiContent
         );
         customLog(`Created '${protocol_name}' successfully!`, "success");
     } else {
@@ -190,8 +175,7 @@ const chainNameSchema = yup
         await writeInFile(
             protocolDir,
             `${protocol_name}.configs.ts`,
-            configsContent,
-            true
+            configsContent
         );
         customLog(
             `Added a config to '${protocol_name}' successfully!`,

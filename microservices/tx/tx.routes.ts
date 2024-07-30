@@ -1,20 +1,20 @@
-import {
-    Router,
-    type Request,
-    type Response,
-    type NextFunction,
-} from "express";
 import { validateQuery } from "../../middlewares";
 import {
-    type DecodeTXRequest,
     decodeTXBodySchema,
     decodeTXHeadersSchema,
-    type DecodeTXHeaders,
     decodeTXQuerySchema,
+    type DecodeTXHeaders,
     type DecodeTXQuery,
+    type DecodeTXRequest,
 } from "./tx.schema";
 import { decodeLogsFromTx, fetchTxFromHash } from "./tx.service";
 import { type Chain } from "@covalenthq/client-sdk";
+import {
+    Router,
+    type NextFunction,
+    type Request,
+    type Response,
+} from "express";
 
 export const txRouter = Router();
 
@@ -24,8 +24,8 @@ const handleDecode = async (
     next: NextFunction
 ) => {
     try {
-        const covalentApiKey = (req.headers as DecodeTXHeaders)[
-            "x-covalent-api-key"
+        const goldrushApiKey = (req.headers as DecodeTXHeaders)[
+            "x-goldrush-api-key"
         ];
         const raw_logs = (req.query as DecodeTXQuery)["raw_logs"] === "true";
         const min_usd = (req.query as DecodeTXQuery)["min_usd"] ?? 0;
@@ -33,7 +33,7 @@ const handleDecode = async (
         const tx = await fetchTxFromHash(
             chain_name as Chain,
             tx_hash,
-            covalentApiKey
+            goldrushApiKey
         );
         const {
             log_events,
@@ -46,7 +46,7 @@ const handleDecode = async (
         const events = await decodeLogsFromTx(
             chain_name as Chain,
             tx,
-            covalentApiKey,
+            goldrushApiKey,
             {
                 raw_logs,
                 min_usd,

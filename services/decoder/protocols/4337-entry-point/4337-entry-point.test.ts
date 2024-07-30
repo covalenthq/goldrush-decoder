@@ -1,12 +1,12 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("4337-entry-point", () => {
     test("matic-mainnet:UserOperationEvent", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "matic-mainnet",
                 tx_hash:
@@ -25,7 +25,7 @@ describe("4337-entry-point", () => {
     test("avalanche-mainnet:UserOperationEvent", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "avalanche-mainnet",
                 tx_hash:

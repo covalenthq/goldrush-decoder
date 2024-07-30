@@ -1,12 +1,12 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("aave-v3", () => {
     test("eth-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -24,7 +24,7 @@ describe("aave-v3", () => {
     test("avalanche-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "avalanche-mainnet",
                 tx_hash:
@@ -42,7 +42,7 @@ describe("aave-v3", () => {
     test("arbitrum-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "arbitrum-mainnet",
                 tx_hash:
@@ -60,7 +60,7 @@ describe("aave-v3", () => {
     test("optimism-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "optimism-mainnet",
                 tx_hash:
@@ -78,7 +78,7 @@ describe("aave-v3", () => {
     test("matic-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "matic-mainnet",
                 tx_hash:
@@ -96,7 +96,7 @@ describe("aave-v3", () => {
     test("metis-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "metis-mainnet",
                 tx_hash:
@@ -114,7 +114,7 @@ describe("aave-v3", () => {
     test("base-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "base-mainnet",
                 tx_hash:
@@ -132,7 +132,7 @@ describe("aave-v3", () => {
     test("bsc-mainnet:Borrow", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "bsc-mainnet",
                 tx_hash:
@@ -150,7 +150,7 @@ describe("aave-v3", () => {
     test("eth-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -168,7 +168,7 @@ describe("aave-v3", () => {
     test("avalanche-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "avalanche-mainnet",
                 tx_hash:
@@ -186,7 +186,7 @@ describe("aave-v3", () => {
     test("arbitrum-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "arbitrum-mainnet",
                 tx_hash:
@@ -204,7 +204,7 @@ describe("aave-v3", () => {
     test("optimism-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "optimism-mainnet",
                 tx_hash:
@@ -222,7 +222,7 @@ describe("aave-v3", () => {
     test("matic-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "matic-mainnet",
                 tx_hash:
@@ -240,7 +240,7 @@ describe("aave-v3", () => {
     test("metis-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "metis-mainnet",
                 tx_hash:
@@ -258,7 +258,7 @@ describe("aave-v3", () => {
     test("base-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "base-mainnet",
                 tx_hash:
@@ -276,7 +276,7 @@ describe("aave-v3", () => {
     test("bsc-mainnet:Supply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "bsc-mainnet",
                 tx_hash:
@@ -294,7 +294,7 @@ describe("aave-v3", () => {
     test("eth-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -312,7 +312,7 @@ describe("aave-v3", () => {
     test("avalanche-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "avalanche-mainnet",
                 tx_hash:
@@ -330,7 +330,7 @@ describe("aave-v3", () => {
     test("arbitrum-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "arbitrum-mainnet",
                 tx_hash:
@@ -348,7 +348,7 @@ describe("aave-v3", () => {
     test("optimism-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "optimism-mainnet",
                 tx_hash:
@@ -366,7 +366,7 @@ describe("aave-v3", () => {
     test("matic-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "matic-mainnet",
                 tx_hash:
@@ -384,7 +384,7 @@ describe("aave-v3", () => {
     test("metis-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "metis-mainnet",
                 tx_hash:
@@ -402,7 +402,7 @@ describe("aave-v3", () => {
     test("base-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "base-mainnet",
                 tx_hash:
@@ -420,7 +420,7 @@ describe("aave-v3", () => {
     test("bsc-mainnet:Repay", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "bsc-mainnet",
                 tx_hash:
@@ -438,7 +438,7 @@ describe("aave-v3", () => {
     test("eth-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -456,7 +456,7 @@ describe("aave-v3", () => {
     test("avalanche-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "avalanche-mainnet",
                 tx_hash:
@@ -474,7 +474,7 @@ describe("aave-v3", () => {
     test("arbitrum-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "arbitrum-mainnet",
                 tx_hash:
@@ -492,7 +492,7 @@ describe("aave-v3", () => {
     test("optimism-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "optimism-mainnet",
                 tx_hash:
@@ -510,7 +510,7 @@ describe("aave-v3", () => {
     test("matic-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "matic-mainnet",
                 tx_hash:
@@ -528,7 +528,7 @@ describe("aave-v3", () => {
     test("metis-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "metis-mainnet",
                 tx_hash:
@@ -546,7 +546,7 @@ describe("aave-v3", () => {
     test("base-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "base-mainnet",
                 tx_hash:
@@ -564,7 +564,7 @@ describe("aave-v3", () => {
     test("bsc-mainnet:Withdraw", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "bsc-mainnet",
                 tx_hash:
@@ -582,7 +582,7 @@ describe("aave-v3", () => {
     test("eth-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -600,7 +600,7 @@ describe("aave-v3", () => {
     test("avalanche-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "avalanche-mainnet",
                 tx_hash:
@@ -618,7 +618,7 @@ describe("aave-v3", () => {
     test("arbitrum-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "arbitrum-mainnet",
                 tx_hash:
@@ -636,7 +636,7 @@ describe("aave-v3", () => {
     test("optimism-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "optimism-mainnet",
                 tx_hash:
@@ -654,7 +654,7 @@ describe("aave-v3", () => {
     test("matic-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "matic-mainnet",
                 tx_hash:
@@ -672,7 +672,7 @@ describe("aave-v3", () => {
     test("metis-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "metis-mainnet",
                 tx_hash:
@@ -690,7 +690,7 @@ describe("aave-v3", () => {
     test("base-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "base-mainnet",
                 tx_hash:
@@ -708,7 +708,7 @@ describe("aave-v3", () => {
     test("bsc-mainnet:FlashLoan", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "bsc-mainnet",
                 tx_hash:
@@ -726,7 +726,7 @@ describe("aave-v3", () => {
     test("eth-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -744,7 +744,7 @@ describe("aave-v3", () => {
     test("avalanche-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "avalanche-mainnet",
                 tx_hash:
@@ -762,7 +762,7 @@ describe("aave-v3", () => {
     test("arbitrum-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "arbitrum-mainnet",
                 tx_hash:
@@ -780,7 +780,7 @@ describe("aave-v3", () => {
     test("optimism-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "optimism-mainnet",
                 tx_hash:
@@ -798,7 +798,7 @@ describe("aave-v3", () => {
     test("matic-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "matic-mainnet",
                 tx_hash:
@@ -816,7 +816,7 @@ describe("aave-v3", () => {
     test("metis-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "metis-mainnet",
                 tx_hash:
@@ -834,7 +834,7 @@ describe("aave-v3", () => {
     test("base-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "base-mainnet",
                 tx_hash:
@@ -852,7 +852,7 @@ describe("aave-v3", () => {
     test("bsc-mainnet:LiquidationCall", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "bsc-mainnet",
                 tx_hash:

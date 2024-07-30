@@ -12,10 +12,10 @@ export const decodeTXBodySchema = yup.object({
 export type DecodeTXRequest = yup.InferType<typeof decodeTXBodySchema>;
 
 export const decodeTXHeadersSchema = yup.object({
-    "x-covalent-api-key": yup
+    "x-goldrush-api-key": yup
         .string()
         .trim()
-        .required("x-covalent-api-key is required"),
+        .required("x-goldrush-api-key is required"),
 });
 
 export type DecodeTXHeaders = yup.InferType<typeof decodeTXHeadersSchema>;

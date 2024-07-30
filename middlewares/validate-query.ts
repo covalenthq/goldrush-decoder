@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { type ObjectSchema, type ValidationError } from "yup";
 import { type Request, type Response, type NextFunction } from "express";
+import { type ObjectSchema, type ValidationError } from "yup";
+
 type RequestLocations = "query" | "body" | "params" | "headers";
 
 /**

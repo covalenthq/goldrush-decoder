@@ -1,12 +1,12 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("connext", () => {
     test("eth-mainnet:RouterLiquidityAdded", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -27,7 +27,7 @@ describe("connext", () => {
     test("eth-mainnet:TransferRelayerFeesIncreased", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -49,7 +49,7 @@ describe("connext", () => {
     test("eth-mainnet:XCalled", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -71,7 +71,7 @@ describe("connext", () => {
     test("eth-mainnet:ExternalCalldataExecuted", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -92,7 +92,7 @@ describe("connext", () => {
     test("eth-mainnet:SlippageUpdated", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -111,7 +111,7 @@ describe("connext", () => {
     test("eth-mainnet:RouterLiquidityRemoved", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -132,7 +132,7 @@ describe("connext", () => {
     test("eth-mainnet:RouterRecipientSet", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -151,7 +151,7 @@ describe("connext", () => {
     test("eth-mainnet:RouterOwnerAccepted", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -170,7 +170,7 @@ describe("connext", () => {
     test("eth-mainnet:RouterInitialized", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:

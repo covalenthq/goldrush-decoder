@@ -1,12 +1,12 @@
-import request from "supertest";
 import app from "../../../../api";
 import { type EventType } from "../../decoder.types";
+import request from "supertest";
 
 describe("pendle", () => {
     test("eth-mainnet:SwapPtAndToken", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -28,7 +28,7 @@ describe("pendle", () => {
     test("eth-mainnet:SwapYtAndSy", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -50,7 +50,7 @@ describe("pendle", () => {
     test("eth-mainnet:SwapYtAndToken", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -72,7 +72,7 @@ describe("pendle", () => {
     test("eth-mainnet:NewLockPosition", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -94,7 +94,7 @@ describe("pendle", () => {
     test("eth-mainnet:BroadcastUserPosition", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:
@@ -115,7 +115,7 @@ describe("pendle", () => {
     test("eth-mainnet:BroadcastTotalSupply", async () => {
         const res = await request(app)
             .post("/api/v1/tx/decode")
-            .set({ "x-covalent-api-key": process.env.TEST_COVALENT_API_KEY })
+            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
             .send({
                 chain_name: "eth-mainnet",
                 tx_hash:

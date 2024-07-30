@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -8,6 +6,8 @@ import {
 } from "../../decoder.constants";
 import type { EventDetails, EventTokens, EventType } from "../../decoder.types";
 import { aaveV3ABI } from "./abis/aave-v3.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 enum INTEREST_RATE_MODE {
     "None" = 0,

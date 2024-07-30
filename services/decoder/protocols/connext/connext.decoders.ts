@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -10,6 +8,8 @@ import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { connextCallABI } from "./abis/connext-call.abi";
 import { connextRouterABI } from "./abis/connext-router.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 const DOMAIN_ID_TO_CHAIN_ID: { [domain_id: number]: string } = {
     6648936: "Ethereum Mainnet",

@@ -1,5 +1,5 @@
 <div align="center">
-    <img alt="GoldRush Kit Logo" src="assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
+    <img alt="GoldRush Kit Logo" src="./assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
 </div>
 
 <p align="center">
@@ -7,11 +7,11 @@
 </p>
 
 <h1 align="center">
-Decode unstructured, raw event logs into structured data with a simple API.
+    Decode unstructured, raw event logs into structured data with a simple API.
 </h1>
 
 <div align="center">
-Open-source. Public Good. 200+ Chains.
+    Open-source. Public Good. 200+ Chains.
 </div>
 
 <br>
@@ -39,9 +39,9 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
         ```ts
         GoldRushDecoder.on(
             "<protocol-name>:<EventName>",
-            ["<chain_name_1>", "<chain_name_2>"],
+            ["<chain_name_1>", "<chain_name_2>", ...],
             ABI as Abi,
-            async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+            async (log_event, tx, chain_name, covalent_client, options): Promise<EventType> => {
                 <!-- decoding logic -->
             }
         );
@@ -52,11 +52,14 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
         1. **Event Id**: A case-sensitive string concatenation of the `protocol name` with the `event name` by a `:`.
         2. **Chain Names**: An array of all the chains the defined decoding function will run for.
         3. **ABI**: The ABI of the contract on which the event exists.
-        4. **Decoding Function**: The actual decoding function, it has 3 arguments passed to it:
+        4. **Decoding Function**: The actual decoding function, it has 5 arguments passed to it:
             1. `log_event`: The raw log event that is being decoded.
             2. `tx`: The transaction object that generated this log.
             3. `chain_name`: Name of the chain to which the log belongs to.
             4. `covalent_client`: The covalent client created with your covalent API key.
+            5. `options`: Query parameters attached to the request for refining the response. These are of the following types
+                1. `raw_logs`: A `boolean` that attaches the raw log of the event along with the decoded response
+                2. `min_usd`: A minimum number value for a transaction to have to be decoded
 
     3.  `fallback`: Creates a fallback function for the specified event name. This function is not linked to any chain or contract. Its declaration is:
 
@@ -64,21 +67,13 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
         GoldRushDecoder.fallback(
             "EventName",
             ABI as Abi,
-            async (log_event, tx, chain_name, covalent_client): Promise<EventType> => {
+            async (log_event, tx, chain_name, covalent_client, options): Promise<EventType> => {
                 <!-- decoding logic -->
             }
         );
         ```
 
-        The method has 3 arguments:
-
-        1. **Event Name**: A case-sensitive name of the event to be decoded.
-        2. **ABI**: The ABI of the contract on which the event exists.
-        3. **Decoding Function**: The actual decoding function, it has 3 arguments passed to it:
-            1. `log_event`: The raw log event that is being decoded.
-            2. `tx`: The transaction object that generated this log.
-            3. `chain_name`: Name of the chain to which the log belongs to.
-            4. `covalent_client`: The covalent client created with your covalent API key.
+        The fallback method has all the same arguments as the [`on`](./README.md#knowledge-primer) arguments excluding the `Chain Names` array
 
     4.  `decode`: The function that chooses which decoding function needs to be called for which log event. It collects all the decoded events for a transaction and returns them in an array of structured data. It is run when the API server receives a request.
 
@@ -92,7 +87,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
     yarn install
     ```
 
-2. Setup the environmental variables. Refer to [.env.example](.env.example) for the list of environmental variables and store them in `.env` at the root level of the repository.
+2. Setup the environmental variables. Refer to [.env.example](./.env.example) for the list of environmental variables and store them in `.env` at the root level of the repository.
 
 3. Start the server
 
@@ -104,7 +99,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
 
 ### 2. API Endpoints
 
-1.  `/api/v1`: The default endpoint for the v1 of the server. A header of the key `x-covalent-api-key` with the value as the [Covalent API key](https://www.covalenthq.com/platform/apikey/) is **mandatory** for the Decoder to work.
+1.  `/api/v1`: The default endpoint for the v1 of the server. A header of the key `x-goldrush-api-key` with the value as the [GoldRush API key](https://goldrush.dev/platform/apikey/) is **mandatory** for the Decoder to work.
 
     1.  `/tx/decode`: Decodes a transaction of a chain.
 
@@ -115,7 +110,7 @@ Follow the following steps to start the development server of the **GoldRush Dec
 
         ```bash
         curl --location 'http://localhost:<PORT>/api/v1/tx/decode' \
-        --header 'x-covalent-api-key: <COVALENT_API_KEY>' \
+        --header 'x-goldrush-api-key: <GOLDRUSH_API_KEY>' \
         --header 'Content-Type: application/json' \
         --data '{
         "chain_name": "<CHAIN_NAME>",
@@ -140,44 +135,7 @@ Follow the following steps to add a Decoding logic for an event from a contract 
 
     This will modify the configs added to the [Protocols](services/protocols) folder. A config will be added to `${protocol_name}.configs.ts`. A sample decoder with a dummy event name (`<EVENT NAME>`) will be added to `${protocol_name}.decoders.ts`. Along with this, a test file `${protocol_name}.test.ts` will also be created which needs to be fixed so that the test passes.
 
-4.  In `${protocol_name}.decoders.ts`, a decoding logic declaration (`Decoder.on(...) {...}`) will be exposed wherein the decoding logic needs to be implemented. The return type of the decoding function expects:
-
-    ```ts
-    export interface EventType {
-        category: DECODED_EVENT_CATEGORY;
-        action: DECODED_ACTION;
-        name: string;
-        protocol?: {
-            name: string;
-            logo: string;
-        };
-        tokens?: {
-            heading: string;
-            value: string;
-            decimals: number;
-            ticker_symbol: string | null;
-            ticker_logo: string | null;
-            pretty: string;
-        }[];
-        nfts?: {
-            heading: string;
-            collection_name: string | null;
-            token_identifier: string | null;
-            collection_address: string;
-            images: {
-                default: string | null;
-                256: string | null;
-                512: string | null;
-                1024: string | null;
-            };
-        }[];
-        details?: {
-            heading: string;
-            value: string;
-            type: "address" | "text";
-        }[];
-    }
-    ```
+4.  In `${protocol_name}.decoders.ts`, a decoding logic declaration (`Decoder.on(...)`) will be exposed wherein the decoding logic needs to be implemented. The return type of the decoding function expects the return type [`EventType`](./services/decoder/decoder.types.ts):
 
 ## Contributing
 

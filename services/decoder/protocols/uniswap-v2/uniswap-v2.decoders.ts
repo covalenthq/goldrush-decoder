@@ -1,5 +1,3 @@
-import { prettifyCurrency, type Token } from "@covalenthq/client-sdk";
-import { type Abi, decodeEventLog } from "viem";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -8,6 +6,8 @@ import {
 import { type EventDetails, type EventType } from "../../decoder.types";
 import { factoryABI } from "./abis/factory.abi";
 import { pairABI } from "./abis/pair.abi";
+import { prettifyCurrency, type Token } from "@covalenthq/client-sdk";
+import { type Abi, decodeEventLog } from "viem";
 
 GoldRushDecoder.on(
     "uniswap-v2:Swap",

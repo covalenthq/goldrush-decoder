@@ -1,13 +1,13 @@
 import {
+    type DECODED_ACTION,
+    type DECODED_EVENT_CATEGORY,
+} from "./decoder.constants";
+import {
     type CovalentClient,
     type Chain,
     type LogEvent,
     type Transaction,
 } from "@covalenthq/client-sdk";
-import {
-    type DECODED_ACTION,
-    type DECODED_EVENT_CATEGORY,
-} from "./decoder.constants";
 
 export type Configs = {
     protocol_name: string;

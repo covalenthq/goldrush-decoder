@@ -1,4 +1,3 @@
-import { decodeEventLog, type Abi } from "viem";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -8,6 +7,7 @@ import type { EventDetails } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { bridgeImplementationABI } from "./abis/bridge-implementation.abi";
 import { wormholeImplementationABI } from "./abis/wormhole-implementation.abi";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "wormhole:TransferRedeemed",

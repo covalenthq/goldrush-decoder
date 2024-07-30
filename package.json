@@ -1,7 +1,7 @@
 {
     "name": "@covalent/goldrush-decoder",
     "version": "1.0.0",
-    "description": "",
+    "description": "Decode unstructured, raw event logs into structured data with a simple API. Open-source. Public Good. 200+ Chains.",
     "scripts": {
         "add-config": "ts-node ./scripts/add-config.ts",
         "build": "tsc",
@@ -24,6 +24,7 @@
         "yup": "^1.3.2"
     },
     "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@types/cors": "^2.8.14",
         "@types/express": "^4.17.19",
         "@types/jest": "^29.5.8",

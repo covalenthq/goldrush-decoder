@@ -1,5 +1,3 @@
-import { prettifyCurrency } from "@covalenthq/client-sdk";
-import { decodeEventLog, type Abi } from "viem";
 import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
@@ -11,6 +9,8 @@ import { newBlockSpecimenProofABI } from "./abis/new-block-specimen-proof.abi";
 import { newOperationalStakingABI } from "./abis/new-operational-staking.abi";
 import { oldBlockSpecimenProofABI } from "./abis/old-block-specimen-proof.abi";
 import { oldOperationalStakingABI } from "./abis/old-operational-staking.abi";
+import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
     "covalent-network:BlockSpecimenProductionProofSubmitted",
