@@ -12,7 +12,7 @@
         "test": "jest --coverage"
     },
     "author": "",
-    "license": "ISC",
+    "license": "Apache-2.0",
     "dependencies": {
         "@covalenthq/client-sdk": "^1.0.2",
         "cors": "^2.8.5",

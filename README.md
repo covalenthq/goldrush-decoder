@@ -3,7 +3,7 @@
 </div>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/covalenthq/goldrush-decoder" alt="MIT">
+  <img src="https://img.shields.io/github/license/covalenthq/goldrush-decoder" alt="Apache-2.0">
 </p>
 
 <h1 align="center">
@@ -148,4 +148,4 @@ Give a ⭐️ if this project helped you!
 
 ## License
 
-This project is [MIT](LICENSE) licensed.
+This project is [Apache-2.0](./LICENSE) licensed.
