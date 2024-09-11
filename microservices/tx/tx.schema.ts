@@ -11,12 +11,20 @@ export const decodeTXBodySchema = yup.object({
 
 export type DecodeTXRequest = yup.InferType<typeof decodeTXBodySchema>;
 
-export const decodeTXHeadersSchema = yup.object({
-    "x-goldrush-api-key": yup
-        .string()
-        .trim()
-        .required("x-goldrush-api-key is required"),
-});
+export const decodeTXHeadersSchema = yup
+    .object()
+    .shape({
+        "x-goldrush-api-key": yup.string().trim(),
+        "x-covalent-api-key": yup.string().trim(),
+    })
+    .test(
+        "x-goldrush-api-key or x-covalent-api-key",
+        "x-goldrush-api-key is required, or optionally the deprecated x-covalent-api-key",
+        (value) =>
+            value["x-goldrush-api-key"] || value["x-covalent-api-key"]
+                ? true
+                : false
+    );
 
 export type DecodeTXHeaders = yup.InferType<typeof decodeTXHeadersSchema>;
 

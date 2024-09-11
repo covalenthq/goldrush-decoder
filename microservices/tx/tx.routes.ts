@@ -24,9 +24,9 @@ const handleDecode = async (
     next: NextFunction
 ) => {
     try {
-        const goldrushApiKey = (req.headers as DecodeTXHeaders)[
+        const goldrushApiKey = ((req.headers as DecodeTXHeaders)[
             "x-goldrush-api-key"
-        ];
+        ] || (req.headers as DecodeTXHeaders)["x-covalent-api-key"])!;
         const raw_logs = (req.query as DecodeTXQuery)["raw_logs"] === "true";
         const min_usd = (req.query as DecodeTXQuery)["min_usd"] ?? 0;
         const { chain_name, tx_hash } = req.body as DecodeTXRequest;
