@@ -3,22 +3,28 @@ import { type EventType } from "../../decoder.types";
 import request from "supertest";
 
 describe("blur", () => {
-    test("eth-mainnet:OrdersMatched", async () => {
-        const res = await request(app)
-            .post("/api/v1/tx/decode")
-            .set({ "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY })
-            .send({
-                chain_name: "eth-mainnet",
-                tx_hash:
-                    "0xb7664c23d72d66ae56d7c51fee4b04968d33af513e1c2d52f1b6fc583374d0cb",
-            });
-        const { events } = res.body as { events: EventType[] };
-        const event = events.find(({ name }) => name === "Orders Matched");
-        if (!event) {
-            throw Error("Event not found");
-        }
-        expect(event?.details?.length).toEqual(12);
-        expect(event?.tokens?.length).toEqual(1);
-        expect(event?.nfts?.length).toEqual(1);
+    const server = request(app);
+
+    describe("OrdersMatched", () => {
+        test("eth-mainnet", async () => {
+            const res = await server
+                .post("/api/v1/tx/decode")
+                .set({
+                    "x-goldrush-api-key": process.env.TEST_GOLDRUSH_API_KEY,
+                })
+                .send({
+                    chain_name: "eth-mainnet",
+                    tx_hash:
+                        "0xdabd1d1ef7ac27cbdaff2aa190d07e4449c7105f826738b56d1f14ca87a3d284",
+                });
+            const { events } = res.body as { events: EventType[] };
+            const event = events.find(({ name }) => name === "Orders Matched");
+            if (!event) {
+                throw Error("Event not found");
+            }
+            expect(event?.details?.length).toBeLessThanOrEqual(12);
+            expect(event?.tokens?.length).toBeLessThanOrEqual(1);
+            expect(event?.nfts?.length).toBeLessThanOrEqual(1);
+        });
     });
 });

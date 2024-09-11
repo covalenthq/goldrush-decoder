@@ -475,7 +475,7 @@ GoldRushDecoder.on(
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: TokenData } =
+        const { data: tokenData } =
             await goldrush_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
@@ -487,41 +487,41 @@ GoldRushDecoder.on(
             );
 
         const tokens: EventTokens = [];
-        if (TokenData?.[0]?.items?.[0]?.price) {
+        if (tokenData?.[0]?.items?.[0]?.price) {
             tokens.push(
                 {
-                    decimals: TokenData?.[0]?.contract_decimals || null,
+                    decimals: tokenData?.[0]?.contract_decimals || null,
                     heading: "Bridged Amount",
                     value: String(decoded.params.bridgedAmt),
                     pretty_quote: prettifyCurrency(
-                        TokenData?.[0]?.items?.[0]?.price *
+                        tokenData?.[0]?.items?.[0]?.price *
                             (Number(decoded.params.bridgedAmt) /
                                 Math.pow(
                                     10,
-                                    TokenData?.[0]?.contract_decimals ?? 0
+                                    tokenData?.[0]?.contract_decimals ?? 0
                                 ))
                     ),
                     ticker_logo:
-                        TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
                     ticker_symbol:
-                        TokenData?.[0]?.contract_ticker_symbol || null,
+                        tokenData?.[0]?.contract_ticker_symbol || null,
                 },
                 {
-                    decimals: TokenData?.[0]?.contract_decimals || null,
+                    decimals: tokenData?.[0]?.contract_decimals || null,
                     heading: "Amount",
                     value: String(decoded.amount),
                     pretty_quote: prettifyCurrency(
-                        TokenData?.[0]?.items?.[0]?.price *
+                        tokenData?.[0]?.items?.[0]?.price *
                             (Number(decoded.amount) /
                                 Math.pow(
                                     10,
-                                    TokenData?.[0]?.contract_decimals ?? 0
+                                    tokenData?.[0]?.contract_decimals ?? 0
                                 ))
                     ),
                     ticker_logo:
-                        TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
                     ticker_symbol:
-                        TokenData?.[0]?.contract_ticker_symbol || null,
+                        tokenData?.[0]?.contract_ticker_symbol || null,
                 }
             );
         }
@@ -708,7 +708,7 @@ GoldRushDecoder.on(
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: TokenData } =
+        const { data: tokenData } =
             await goldrush_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
@@ -720,21 +720,21 @@ GoldRushDecoder.on(
             );
 
         const tokens: EventTokens = [];
-        if (TokenData?.[0]?.items?.[0]?.price) {
+        if (tokenData?.[0]?.items?.[0]?.price) {
             tokens.push({
-                decimals: TokenData?.[0]?.contract_decimals || null,
+                decimals: tokenData?.[0]?.contract_decimals || null,
                 heading: "Increase",
                 value: String(decoded.increase),
                 pretty_quote: prettifyCurrency(
-                    TokenData?.[0]?.items?.[0]?.price *
+                    tokenData?.[0]?.items?.[0]?.price *
                         (Number(decoded.increase) /
                             Math.pow(
                                 10,
-                                TokenData?.[0]?.contract_decimals ?? 0
+                                tokenData?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol || null,
+                ticker_logo: tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: tokenData?.[0]?.contract_ticker_symbol || null,
             });
         }
 

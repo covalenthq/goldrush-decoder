@@ -129,6 +129,299 @@ GoldRushDecoder.on(
 );
 
 GoldRushDecoder.on(
+    "aave-v3:Supply",
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
+    aaveV3ABI as Abi,
+    async (
+        log_event,
+        tx,
+        chain_name,
+        goldrush_client,
+        options
+    ): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: aaveV3ABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Supply",
+        });
+
+        const details: EventDetails = [
+            {
+                heading: "Reserve",
+                value: decoded.reserve,
+                type: "address",
+            },
+            {
+                heading: "User",
+                value: decoded.user,
+                type: "address",
+            },
+            {
+                heading: "On Behalf Of",
+                value: decoded.onBehalfOf,
+                type: "address",
+            },
+            {
+                heading: "Referral Code",
+                value: String(decoded.referralCode),
+                type: "text",
+            },
+        ];
+
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: SupplyToken } =
+            await goldrush_client.PricingService.getTokenPrices(
+                chain_name,
+                "USD",
+                decoded.reserve,
+                {
+                    from: date,
+                    to: date,
+                }
+            );
+
+        const tokens: EventTokens = [];
+        if (SupplyToken?.[0]?.items?.[0]?.price) {
+            tokens.push({
+                decimals: SupplyToken?.[0]?.contract_decimals || null,
+                heading: "Supply Amount",
+                pretty_quote: prettifyCurrency(
+                    SupplyToken?.[0]?.items?.[0]?.price *
+                        (Number(decoded.amount) /
+                            Math.pow(
+                                10,
+                                SupplyToken?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo:
+                    SupplyToken?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: SupplyToken?.[0]?.contract_ticker_symbol || null,
+                value: String(decoded.amount),
+            });
+        }
+
+        return {
+            action: DECODED_ACTION.DEPOSIT,
+            category: DECODED_EVENT_CATEGORY.LENDING,
+            name: "Supply",
+            protocol: {
+                logo: sender_logo_url,
+                name: "Aave V3",
+            },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
+            details,
+            tokens,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "aave-v3:Repay",
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
+    aaveV3ABI as Abi,
+    async (
+        log_event,
+        tx,
+        chain_name,
+        goldrush_client,
+        options
+    ): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: aaveV3ABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Repay",
+        });
+
+        const details: EventDetails = [
+            {
+                heading: "Reserve",
+                value: decoded.reserve,
+                type: "address",
+            },
+            {
+                heading: "User",
+                value: decoded.user,
+                type: "address",
+            },
+            {
+                heading: "Repayer",
+                value: decoded.repayer,
+                type: "address",
+            },
+            {
+                heading: "Use A Tokens",
+                value: decoded.useATokens ? "Yes" : "No",
+                type: "text",
+            },
+        ];
+
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: RepayToken } =
+            await goldrush_client.PricingService.getTokenPrices(
+                chain_name,
+                "USD",
+                decoded.reserve,
+                {
+                    from: date,
+                    to: date,
+                }
+            );
+
+        const tokens: EventTokens = [];
+        if (RepayToken?.[0]?.items?.[0]?.price) {
+            tokens.push({
+                decimals: RepayToken?.[0]?.contract_decimals || null,
+                heading: "Repay Amount",
+                pretty_quote: prettifyCurrency(
+                    RepayToken?.[0]?.items?.[0]?.price *
+                        (Number(decoded.amount) /
+                            Math.pow(
+                                10,
+                                RepayToken?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol || null,
+                value: String(decoded.amount),
+            });
+        }
+
+        return {
+            action: DECODED_ACTION.REPAY,
+            category: DECODED_EVENT_CATEGORY.LENDING,
+            name: "Repay",
+            protocol: {
+                logo: sender_logo_url,
+                name: "Aave V3",
+            },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
+            details,
+            tokens,
+        };
+    }
+);
+
+GoldRushDecoder.on(
+    "aave-v3:Withdraw",
+    [
+        "eth-mainnet",
+        "avalanche-mainnet",
+        "arbitrum-mainnet",
+        "optimism-mainnet",
+        "matic-mainnet",
+        "metis-mainnet",
+        "base-mainnet",
+        "bsc-mainnet",
+    ],
+    aaveV3ABI as Abi,
+    async (
+        log_event,
+        tx,
+        chain_name,
+        goldrush_client,
+        options
+    ): Promise<EventType> => {
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
+
+        const { args: decoded } = decodeEventLog({
+            abi: aaveV3ABI,
+            topics: raw_log_topics as [],
+            data: raw_log_data as `0x${string}`,
+            eventName: "Withdraw",
+        });
+
+        const details: EventDetails = [
+            {
+                heading: "Reserve",
+                value: decoded.reserve,
+                type: "address",
+            },
+            {
+                heading: "User",
+                value: decoded.user,
+                type: "address",
+            },
+            {
+                heading: "To",
+                value: decoded.to,
+                type: "address",
+            },
+        ];
+
+        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+        const { data: RepayToken } =
+            await goldrush_client.PricingService.getTokenPrices(
+                chain_name,
+                "USD",
+                decoded.reserve,
+                {
+                    from: date,
+                    to: date,
+                }
+            );
+
+        const tokens: EventTokens = [];
+        if (RepayToken?.[0]?.items?.[0]?.price) {
+            tokens.push({
+                decimals: RepayToken?.[0]?.contract_decimals || null,
+                heading: "Withdraw Amount",
+                pretty_quote: prettifyCurrency(
+                    RepayToken?.[0]?.items?.[0]?.price *
+                        (Number(decoded.amount) /
+                            Math.pow(
+                                10,
+                                RepayToken?.[0]?.contract_decimals ?? 0
+                            ))
+                ),
+                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol || null,
+                value: String(decoded.amount),
+            });
+        }
+
+        return {
+            action: DECODED_ACTION.WITHDRAW,
+            category: DECODED_EVENT_CATEGORY.LENDING,
+            name: "Withdraw",
+            protocol: {
+                logo: sender_logo_url,
+                name: "Aave V3",
+            },
+            ...(options.raw_logs ? { raw_log: log_event } : {}),
+            details,
+            tokens,
+        };
+    }
+);
+
+GoldRushDecoder.on(
     "aave-v3:FlashLoan",
     [
         "eth-mainnet",
@@ -313,13 +606,19 @@ GoldRushDecoder.on(
                     chain_name,
                     "USD",
                     decoded.collateralAsset,
-                    { from: date, to: date }
+                    {
+                        from: date,
+                        to: date,
+                    }
                 ),
                 goldrush_client.PricingService.getTokenPrices(
                     chain_name,
                     "USD",
                     decoded.debtAsset,
-                    { from: date, to: date }
+                    {
+                        from: date,
+                        to: date,
+                    }
                 ),
             ]);
 
@@ -365,296 +664,6 @@ GoldRushDecoder.on(
             action: DECODED_ACTION.LIQUIDATE,
             category: DECODED_EVENT_CATEGORY.LENDING,
             name: "Liquidation Call",
-            protocol: {
-                logo: sender_logo_url,
-                name: "Aave V3",
-            },
-            ...(options.raw_logs ? { raw_log: log_event } : {}),
-            details,
-            tokens,
-        };
-    }
-);
-
-GoldRushDecoder.on(
-    "aave-v3:Repay",
-    [
-        "eth-mainnet",
-        "avalanche-mainnet",
-        "arbitrum-mainnet",
-        "optimism-mainnet",
-        "matic-mainnet",
-        "metis-mainnet",
-        "base-mainnet",
-        "bsc-mainnet",
-    ],
-    aaveV3ABI as Abi,
-    async (
-        log_event,
-        tx,
-        chain_name,
-        goldrush_client,
-        options
-    ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
-
-        const { args: decoded } = decodeEventLog({
-            abi: aaveV3ABI,
-            topics: raw_log_topics as [],
-            data: raw_log_data as `0x${string}`,
-            eventName: "Repay",
-        });
-
-        const details: EventDetails = [
-            {
-                heading: "Reserve",
-                value: decoded.reserve,
-                type: "address",
-            },
-            {
-                heading: "User",
-                value: decoded.user,
-                type: "address",
-            },
-            {
-                heading: "Repayer",
-                value: decoded.repayer,
-                type: "address",
-            },
-            {
-                heading: "Use A Tokens",
-                value: decoded.useATokens ? "Yes" : "No",
-                type: "text",
-            },
-        ];
-
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: RepayToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.reserve,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const tokens: EventTokens = [];
-        if (RepayToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: RepayToken?.[0]?.contract_decimals || null,
-                heading: "Repay Amount",
-                pretty_quote: prettifyCurrency(
-                    RepayToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                RepayToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.amount),
-            });
-        }
-
-        return {
-            action: DECODED_ACTION.REPAY,
-            category: DECODED_EVENT_CATEGORY.LENDING,
-            name: "Repay",
-            protocol: {
-                logo: sender_logo_url,
-                name: "Aave V3",
-            },
-            ...(options.raw_logs ? { raw_log: log_event } : {}),
-            details,
-            tokens,
-        };
-    }
-);
-
-GoldRushDecoder.on(
-    "aave-v3:Supply",
-    [
-        "eth-mainnet",
-        "avalanche-mainnet",
-        "arbitrum-mainnet",
-        "optimism-mainnet",
-        "matic-mainnet",
-        "metis-mainnet",
-        "base-mainnet",
-        "bsc-mainnet",
-    ],
-    aaveV3ABI as Abi,
-    async (
-        log_event,
-        tx,
-        chain_name,
-        goldrush_client,
-        options
-    ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
-
-        const { args: decoded } = decodeEventLog({
-            abi: aaveV3ABI,
-            topics: raw_log_topics as [],
-            data: raw_log_data as `0x${string}`,
-            eventName: "Supply",
-        });
-
-        const details: EventDetails = [
-            {
-                heading: "Reserve",
-                value: decoded.reserve,
-                type: "address",
-            },
-            {
-                heading: "User",
-                value: decoded.user,
-                type: "address",
-            },
-            {
-                heading: "On Behalf Of",
-                value: decoded.onBehalfOf,
-                type: "address",
-            },
-            {
-                heading: "Referal Code",
-                value: String(decoded.referralCode),
-                type: "text",
-            },
-        ];
-
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: SupplyToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.reserve,
-                { from: date, to: date }
-            );
-
-        const tokens: EventTokens = [];
-        if (SupplyToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: SupplyToken?.[0]?.contract_decimals || null,
-                heading: "Supply Amount",
-                pretty_quote: prettifyCurrency(
-                    SupplyToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                SupplyToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    SupplyToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: SupplyToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.amount),
-            });
-        }
-
-        return {
-            action: DECODED_ACTION.DEPOSIT,
-            category: DECODED_EVENT_CATEGORY.LENDING,
-            name: "Supply",
-            protocol: {
-                logo: sender_logo_url,
-                name: "Aave V3",
-            },
-            ...(options.raw_logs ? { raw_log: log_event } : {}),
-            details,
-            tokens,
-        };
-    }
-);
-
-GoldRushDecoder.on(
-    "aave-v3:Withdraw",
-    [
-        "eth-mainnet",
-        "avalanche-mainnet",
-        "arbitrum-mainnet",
-        "optimism-mainnet",
-        "matic-mainnet",
-        "metis-mainnet",
-        "base-mainnet",
-        "bsc-mainnet",
-    ],
-    aaveV3ABI as Abi,
-    async (
-        log_event,
-        tx,
-        chain_name,
-        goldrush_client,
-        options
-    ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
-
-        const { args: decoded } = decodeEventLog({
-            abi: aaveV3ABI,
-            topics: raw_log_topics as [],
-            data: raw_log_data as `0x${string}`,
-            eventName: "Withdraw",
-        });
-
-        const details: EventDetails = [
-            {
-                heading: "Reserve",
-                value: decoded.reserve,
-                type: "address",
-            },
-            {
-                heading: "User",
-                value: decoded.user,
-                type: "address",
-            },
-            {
-                heading: "To",
-                value: decoded.to,
-                type: "address",
-            },
-        ];
-
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: RepayToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.reserve,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const tokens: EventTokens = [];
-        if (RepayToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: RepayToken?.[0]?.contract_decimals || null,
-                heading: "Withdraw Amount",
-                pretty_quote: prettifyCurrency(
-                    RepayToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                RepayToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.amount),
-            });
-        }
-
-        return {
-            action: DECODED_ACTION.WITHDRAW,
-            category: DECODED_EVENT_CATEGORY.LENDING,
-            name: "Withdraw",
             protocol: {
                 logo: sender_logo_url,
                 name: "Aave V3",
