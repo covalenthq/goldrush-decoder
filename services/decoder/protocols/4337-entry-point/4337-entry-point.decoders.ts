@@ -50,6 +50,7 @@ GoldRushDecoder.on(
                 type: "address",
             },
         ];
+
         if (sender_contract_decimals) {
             details.push(
                 {
