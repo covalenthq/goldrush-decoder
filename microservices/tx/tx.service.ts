@@ -19,8 +19,6 @@ export const fetchTxFromHash = async (
             {
                 noLogs: false,
                 quoteCurrency: "USD",
-                withDex: false,
-                withLending: false,
                 withNftSales: false,
                 withSafe: false,
             }
