@@ -17,7 +17,7 @@ GoldRushDecoder.fallback(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType | null> => {
         const {
@@ -81,8 +81,8 @@ GoldRushDecoder.fallback(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Approval",
             protocol: {
-                logo: sender_logo_url as string,
-                name: sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: details,
@@ -99,10 +99,10 @@ GoldRushDecoder.fallback(
                     value: "Unlimited",
                     type: "text",
                 });
-            } else {
+            } else if (sender_address) {
                 const date = timestampParser(block_signed_at, "YYYY-MM-DD");
                 const { data } =
-                    await covalent_client.PricingService.getTokenPrices(
+                    await goldrush_client.PricingService.getTokenPrices(
                         chain_name,
                         "USD",
                         sender_address,
@@ -112,34 +112,36 @@ GoldRushDecoder.fallback(
                         }
                     );
 
-                const pretty_quote = prettifyCurrency(
-                    data?.[0]?.items?.[0]?.price *
-                        (Number(decoded.value) /
-                            Math.pow(
-                                10,
-                                data?.[0]?.items?.[0]?.contract_metadata
-                                    ?.contract_decimals ?? 18
-                            ))
-                );
+                if (data?.[0]?.items?.[0]?.price) {
+                    const pretty_quote = prettifyCurrency(
+                        data?.[0]?.items?.[0]?.price *
+                            (Number(decoded.value) /
+                                Math.pow(
+                                    10,
+                                    data?.[0]?.items?.[0]?.contract_metadata
+                                        ?.contract_decimals ?? 18
+                                ))
+                    );
 
-                if (currencyToNumber(pretty_quote) < options.min_usd!) {
-                    return null;
+                    if (currencyToNumber(pretty_quote) < options.min_usd!) {
+                        return null;
+                    }
+
+                    parsedData.tokens = [
+                        {
+                            heading: "Value",
+                            value: decoded.value.toString(),
+                            ticker_symbol: sender_contract_ticker_symbol,
+                            ticker_logo: sender_logo_url,
+                            decimals: sender_contract_decimals ?? 18,
+                            pretty_quote: pretty_quote,
+                        },
+                    ];
                 }
-
-                parsedData.tokens = [
-                    {
-                        heading: "Value",
-                        value: decoded.value.toString(),
-                        ticker_symbol: sender_contract_ticker_symbol,
-                        ticker_logo: sender_logo_url,
-                        decimals: sender_contract_decimals ?? 18,
-                        pretty_quote: pretty_quote,
-                    },
-                ];
             }
-        } else if (decoded.tokenId) {
+        } else if (decoded.tokenId && sender_address) {
             const { data } =
-                await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+                await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
                     chain_name,
                     sender_address,
                     decoded.tokenId.toString(),
@@ -148,31 +150,34 @@ GoldRushDecoder.fallback(
                     }
                 );
 
-            parsedData.nfts = [
-                {
-                    heading: "NFT Transferred",
-                    collection_address: data?.items?.[0]?.contract_address,
-                    collection_name:
-                        data?.items?.[0]?.nft_data?.external_data?.name || null,
-                    token_identifier:
-                        data?.items?.[0]?.nft_data?.token_id?.toString() ||
-                        null,
-                    images: {
-                        "1024":
-                            data?.items?.[0]?.nft_data?.external_data
-                                ?.image_1024 || null,
-                        "512":
-                            data?.items?.[0]?.nft_data?.external_data
-                                ?.image_512 || null,
-                        "256":
-                            data?.items?.[0]?.nft_data?.external_data
-                                ?.image_256 || null,
-                        default:
-                            data?.items?.[0]?.nft_data?.external_data?.image ||
+            if (data?.items?.[0]?.contract_address) {
+                parsedData.nfts = [
+                    {
+                        heading: "NFT Transferred",
+                        collection_address: data?.items?.[0]?.contract_address,
+                        collection_name:
+                            data?.items?.[0]?.nft_data?.external_data?.name ||
                             null,
+                        token_identifier:
+                            data?.items?.[0]?.nft_data?.token_id?.toString() ||
+                            null,
+                        images: {
+                            "1024":
+                                data?.items?.[0]?.nft_data?.external_data
+                                    ?.image_1024 || null,
+                            "512":
+                                data?.items?.[0]?.nft_data?.external_data
+                                    ?.image_512 || null,
+                            "256":
+                                data?.items?.[0]?.nft_data?.external_data
+                                    ?.image_256 || null,
+                            default:
+                                data?.items?.[0]?.nft_data?.external_data
+                                    ?.image || null,
+                        },
                     },
-                },
-            ];
+                ];
+            }
         }
 
         return parsedData;

@@ -14,7 +14,7 @@ GoldRushDecoder.fallback(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
         const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
@@ -32,8 +32,8 @@ GoldRushDecoder.fallback(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Approval For All",
             protocol: {
-                logo: sender_logo_url as string,
-                name: sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: [
