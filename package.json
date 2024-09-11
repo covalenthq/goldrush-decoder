@@ -9,7 +9,7 @@
         "lint": "eslint .",
         "pretty": "prettier . --write",
         "start": "node ./dist/api/index.js",
-        "test": "jest --coverage"
+        "test": "jest"
     },
     "author": "",
     "license": "Apache-2.0",
