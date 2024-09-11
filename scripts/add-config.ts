@@ -1,7 +1,7 @@
 import prettierConfig from "../.prettierrc.json";
 import { type Configs } from "../services/decoder/decoder.types";
 import { slugify } from "../utils/functions";
-import { Chains, type Chain } from "@covalenthq/client-sdk";
+import { ChainName } from "@covalenthq/client-sdk";
 import { prompt } from "enquirer";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
@@ -34,7 +34,7 @@ const addressSchema = yup.string().trim().required("address is required");
 const isFactorySchema = yup.boolean().required("is_factory is required");
 const chainNameSchema = yup
     .mixed()
-    .oneOf(Object.values(Chains), "chain_name is incorrect")
+    .oneOf(Object.values(ChainName), "chain_name is incorrect")
     .required("chain_name is required");
 (async () => {
     const { protocol_name } = (await prompt({
@@ -134,14 +134,14 @@ const chainNameSchema = yup
     ])) as {
         address: string;
         is_factory: boolean;
-        chain_name: Chain;
+        chain_name: ChainName;
     };
 
     if (!exists) {
         const eventName: string = "<EVENT NAME>";
         const abiContent: string = `export const ABI = [] as const`;
         const configsContent: string = `import{type Configs}from"../../decoder.types";\n\nconst configs:Configs=[{address:"${address}",is_factory:${is_factory},protocol_name:"${protocol_name}",chain_name:"${chain_name}"}];\n\nexport default configs;`;
-        const decodersContent: string = `import{GoldRushDecoder}from"../../decoder";import{DECODED_ACTION,DECODED_EVENT_CATEGORY}from"../../decoder.constants";import{type EventType}from"../../decoder.types";import{ABI}from"./abis/${protocol_name}.abi";import{decodeEventLog,type Abi}from"viem";\n\nGoldRushDecoder.on(":${eventName}",["${chain_name}"],ABI as Abi,async(log_event,tx,chain_name,covalent_client,options):Promise<EventType> =>{const{raw_log_data,raw_log_topics}=log_event;\n\nconst{args:decoded}=decodeEventLog({abi:ABI,topics:raw_log_topics as[],data:raw_log_data as \`0x\${string}\`,eventName:"${eventName}"})as{eventName:"${eventName}";args:{}};\n\nreturn{action:DECODED_ACTION.SWAPPED,category:DECODED_EVENT_CATEGORY.DEX,name:"${eventName}",protocol:{logo:log_event.sender_logo_url as string,name:log_event.sender_name as string},...(options.raw_logs?{raw_log:log_event}:{})};});`;
+        const decodersContent: string = `import{GoldRushDecoder}from"../../decoder";import{DECODED_ACTION,DECODED_EVENT_CATEGORY}from"../../decoder.constants";import{type EventType}from"../../decoder.types";import{ABI}from"./abis/${protocol_name}.abi";import{decodeEventLog,type Abi}from"viem";\n\nGoldRushDecoder.on(":${eventName}",["${chain_name}"],ABI as Abi,async(log_event,tx,chain_name,goldrush_client,options):Promise<EventType> =>{const{raw_log_data,raw_log_topics,sender_logo_url,sender_name}=log_event;\n\nconst{args:decoded}=decodeEventLog({abi:ABI,topics:raw_log_topics as[],data:raw_log_data as \`0x\${string}\`,eventName:"${eventName}"})as{eventName:"${eventName}";args:{}};\n\nreturn{action:DECODED_ACTION.SWAPPED,category:DECODED_EVENT_CATEGORY.DEX,name:"${eventName}",protocol:{logo:sender_logo_url,name:sender_name},...(options.raw_logs?{raw_log:log_event}:{})};});`;
         const testContent: string = `import app from"../../../../api";import{type EventType}from"../../decoder.types";import request from"supertest";\n\ndescribe("${protocol_name}",()=>{test("${chain_name}:${eventName}",async()=>{const res=await request(app).post("/api/v1/tx/decode").set({"x-goldrush-api-key":process.env.TEST_GOLDRUSH_API_KEY}).send({chain_name:"${chain_name}",tx_hash:"<ENTER TX HASH FOR TESTING>"});const{events}=res.body as{events:EventType[]};const event=events.find(({name})=>name==="${eventName}");if(!event){throw Error("Event not found")}const testAdded:boolean=false;expect(testAdded).toEqual(true)})});`;
         await writeInFile(
             protocolDir,

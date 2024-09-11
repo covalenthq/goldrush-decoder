@@ -3,60 +3,62 @@ import {
     type DECODED_EVENT_CATEGORY,
 } from "./decoder.constants";
 import {
-    type CovalentClient,
     type Chain,
+    type ChainName,
+    type GoldRushClient,
     type LogEvent,
+    type Nullable,
     type Transaction,
 } from "@covalenthq/client-sdk";
 
 export type Configs = {
     protocol_name: string;
-    chain_name: Chain;
+    chain_name: ChainName | `${ChainName}`;
     address: string;
     is_factory: boolean;
 }[];
 
-export type EventDetails = {
+export type EventDetails = Nullable<{
     heading: string;
     value: string;
     type: "address" | "text";
-}[];
+}>[];
 
-export type EventNFTs = {
+export type EventNFTs = Nullable<{
     heading: string;
-    collection_name: string | null;
-    token_identifier: string | null;
+    collection_name: string;
+    token_identifier: string;
     collection_address: string;
-    images: {
-        default: string | null;
-        256: string | null;
-        512: string | null;
-        1024: string | null;
-    };
-}[];
+    images: Nullable<{
+        default: string;
+        256: string;
+        512: string;
+        1024: string;
+    }>;
+}>[];
 
-export type EventTokens = {
+export type EventTokens = Nullable<{
     heading: string;
     value: string;
     decimals: number;
-    ticker_symbol: string | null;
-    ticker_logo: string | null;
+    ticker_symbol: string;
+    ticker_logo: string;
     pretty_quote: string;
-}[];
+}>[];
 
-export interface EventType {
+export type EventType = Nullable<{
     category: DECODED_EVENT_CATEGORY;
     action: DECODED_ACTION;
     name: string;
-    protocol?: {
+    protocol?: Nullable<{
         name: string;
         logo: string;
-    };
+    }>;
     tokens?: EventTokens;
     nfts?: EventNFTs;
     details?: EventDetails;
     raw_log?: LogEvent;
-}
+}>;
 
 export interface QueryOptions {
     raw_logs?: boolean;
@@ -67,7 +69,7 @@ export type DecodingFunction = (
     log_event: LogEvent,
     tx: Transaction,
     chain_name: Chain,
-    covalent_client: CovalentClient,
+    goldrush_client: GoldRushClient,
     options: QueryOptions
 ) => Promise<EventType | null>;
 
@@ -78,7 +80,7 @@ export type NativeDecodingFunction = (
 
 export type DecoderConfig =
     | {
-          [chain_name in Chain]: {
+          [chain_name in ChainName]: {
               [protocol_name: string]: {
                   [address: string]: {
                       is_factory: boolean;
@@ -90,7 +92,7 @@ export type DecoderConfig =
 
 export type Decoders =
     | {
-          [chain_name in Chain]: {
+          [chain_name in ChainName]: {
               [address: string]: {
                   [topic0_hash: string]: number;
               };
@@ -103,5 +105,3 @@ export type Fallbacks =
           [topic0_hash: string]: number;
       }
     | Record<string, never>;
-
-export type DecodingFunctions = DecodingFunction[];

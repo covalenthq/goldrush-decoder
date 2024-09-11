@@ -8,7 +8,7 @@ import {
     type DecodeTXRequest,
 } from "./tx.schema";
 import { decodeLogsFromTx, fetchTxFromHash } from "./tx.service";
-import { type Chain } from "@covalenthq/client-sdk";
+import { type Chain, type ChainName } from "@covalenthq/client-sdk";
 import {
     Router,
     type NextFunction,
@@ -44,7 +44,7 @@ const handleDecode = async (
             ...tx_metadata
         } = tx;
         const events = await decodeLogsFromTx(
-            chain_name as Chain,
+            chain_name as ChainName,
             tx,
             goldrushApiKey,
             {

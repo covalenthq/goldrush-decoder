@@ -14,9 +14,13 @@ const months: string[] = [
 ];
 
 export const timestampParser = (
-    timestamp: Date,
+    timestamp: Date | null,
     type: "descriptive" | "YYYY-MM-DD" | "relative"
-): string => {
+): string | null => {
+    if (!timestamp) {
+        return null;
+    }
+
     const _unix: Date = new Date(timestamp);
 
     switch (type) {

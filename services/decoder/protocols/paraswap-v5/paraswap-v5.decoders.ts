@@ -23,10 +23,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: simpleSwapABI,
@@ -37,7 +37,7 @@ GoldRushDecoder.on(
 
         const [{ data: srcToken }, { data: destToken }] = await Promise.all(
             [decoded.srcToken, decoded.destToken].map((address) => {
-                return covalent_client.PricingService.getTokenPrices(
+                return goldrush_client.PricingService.getTokenPrices(
                     chain_name,
                     "USD",
                     address
@@ -71,24 +71,27 @@ GoldRushDecoder.on(
             },
         ];
 
-        const tokens: EventTokens = [
-            {
+        const tokens: EventTokens = [];
+        if (srcToken?.[0]?.items?.[0].price) {
+            tokens.push({
                 decimals: srcToken?.[0]?.contract_decimals ?? 0,
                 heading: "Input",
                 pretty_quote: prettifyCurrency(
-                    srcToken?.[0]?.prices?.[0].price *
+                    srcToken?.[0]?.items?.[0].price *
                         (Number(decoded.srcAmount) /
                             Math.pow(10, srcToken?.[0]?.contract_decimals ?? 0))
                 ),
                 ticker_logo: srcToken?.[0]?.logo_url ?? null,
                 ticker_symbol: srcToken?.[0]?.contract_ticker_symbol ?? null,
                 value: decoded.srcAmount.toString(),
-            },
-            {
+            });
+        }
+        if (destToken?.[0]?.items?.[0].price) {
+            tokens.push({
                 decimals: destToken?.[0]?.contract_decimals ?? 0,
                 heading: "Output",
                 pretty_quote: prettifyCurrency(
-                    destToken?.[0]?.prices?.[0].price *
+                    destToken?.[0]?.items?.[0].price *
                         (Number(decoded.receivedAmount) /
                             Math.pow(
                                 10,
@@ -98,15 +101,15 @@ GoldRushDecoder.on(
                 ticker_logo: destToken?.[0]?.logo_url ?? null,
                 ticker_symbol: destToken?.[0]?.contract_ticker_symbol ?? null,
                 value: decoded.receivedAmount.toString(),
-            },
-        ];
+            });
+        }
 
         return {
             action: DECODED_ACTION.SWAPPED,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Swap V3",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Paraswap V5",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),

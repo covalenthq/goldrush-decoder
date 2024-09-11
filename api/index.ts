@@ -5,9 +5,9 @@ import cors from "cors";
 import { config as dotenvConfig } from "dotenv";
 import express, {
     type Express,
+    type NextFunction,
     type Request,
     type Response,
-    type NextFunction,
 } from "express";
 
 dotenvConfig();

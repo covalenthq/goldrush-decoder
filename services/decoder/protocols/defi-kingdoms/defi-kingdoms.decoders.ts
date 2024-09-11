@@ -19,10 +19,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: petsABI,
@@ -32,7 +32,7 @@ GoldRushDecoder.on(
         });
 
         const { data: PetNFT } =
-            await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+            await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
                 // * INFO: Hero NFT Contract Address
                 "0x1990F87d6BC9D9385917E3EDa0A7674411C3Cd7F",
@@ -45,7 +45,8 @@ GoldRushDecoder.on(
         const nfts: EventNFTs = [
             {
                 heading: `Pet ID: ${decoded.petId.toString()}`,
-                collection_address: PetNFT?.items?.[0]?.contract_address,
+                collection_address:
+                    PetNFT?.items?.[0]?.contract_address || null,
                 collection_name:
                     PetNFT?.items?.[0]?.nft_data?.external_data?.name || null,
                 token_identifier: decoded.petId.toString(),
@@ -95,7 +96,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.GAMING,
             name: "Pet Fed",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "DeFi Kingdoms",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -113,10 +114,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: heroAuctionABI,
@@ -130,7 +131,7 @@ GoldRushDecoder.on(
         // * INFO: Fetching Jewel Token Price from Avalanche Mainnet as it is a native token on Defi Kingdoms
 
         const { data: JewelToken } =
-            await covalent_client.PricingService.getTokenPrices(
+            await goldrush_client.PricingService.getTokenPrices(
                 "avalanche-mainnet",
                 "USD",
                 "0x997ddaa07d716995de90577c123db411584e5e46",
@@ -141,7 +142,7 @@ GoldRushDecoder.on(
             );
 
         const { data: HeroNFT } =
-            await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+            await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
                 // * INFO: Hero NFT Contract Address
                 "0xEb9B61B145D6489Be575D3603F4a704810e143dF",
@@ -154,7 +155,8 @@ GoldRushDecoder.on(
         const nfts: EventNFTs = [
             {
                 heading: `Auction Created`,
-                collection_address: HeroNFT?.items?.[0]?.contract_address,
+                collection_address:
+                    HeroNFT?.items?.[0]?.contract_address || null,
                 collection_name:
                     HeroNFT?.items?.[0]?.nft_data?.external_data?.name || null,
                 token_identifier: decoded.tokenId.toString(),
@@ -175,38 +177,45 @@ GoldRushDecoder.on(
             },
         ];
 
-        const tokens: EventTokens = [
-            {
-                decimals: JewelToken?.[0]?.contract_decimals,
-                heading: "Starting Price",
-                value: String(decoded.startingPrice),
-                pretty_quote: prettifyCurrency(
-                    JewelToken?.[0]?.prices?.[0]?.price *
-                        (Number(decoded.startingPrice) /
-                            Math.pow(
-                                10,
-                                JewelToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: JewelToken?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: JewelToken?.[0]?.contract_ticker_symbol,
-            },
-            {
-                decimals: JewelToken?.[0]?.contract_decimals,
-                heading: "Ending Price",
-                value: String(decoded.endingPrice),
-                pretty_quote: prettifyCurrency(
-                    JewelToken?.[0]?.prices?.[0]?.price *
-                        (Number(decoded.endingPrice) /
-                            Math.pow(
-                                10,
-                                JewelToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: JewelToken?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: JewelToken?.[0]?.contract_ticker_symbol,
-            },
-        ];
+        const tokens: EventTokens = [];
+        if (JewelToken?.[0]?.items?.[0]?.price) {
+            tokens.push(
+                {
+                    decimals: JewelToken?.[0]?.contract_decimals || null,
+                    heading: "Starting Price",
+                    value: String(decoded.startingPrice),
+                    pretty_quote: prettifyCurrency(
+                        JewelToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.startingPrice) /
+                                Math.pow(
+                                    10,
+                                    JewelToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        JewelToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        JewelToken?.[0]?.contract_ticker_symbol || null,
+                },
+                {
+                    decimals: JewelToken?.[0]?.contract_decimals || null,
+                    heading: "Ending Price",
+                    value: String(decoded.endingPrice),
+                    pretty_quote: prettifyCurrency(
+                        JewelToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.endingPrice) /
+                                Math.pow(
+                                    10,
+                                    JewelToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        JewelToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        JewelToken?.[0]?.contract_ticker_symbol || null,
+                }
+            );
+        }
 
         const details: EventDetails = [
             {
@@ -243,7 +252,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.GAMING,
             name: "Auction Created",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "DeFi Kingdoms",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -262,10 +271,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: heroAuctionABI,
@@ -275,7 +284,7 @@ GoldRushDecoder.on(
         });
 
         const { data: HeroNFT } =
-            await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+            await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
                 "0xEb9B61B145D6489Be575D3603F4a704810e143dF", // Hero NFT Contract Address
                 decoded.tokenId.toString(),
@@ -287,7 +296,8 @@ GoldRushDecoder.on(
         const nfts: EventNFTs = [
             {
                 heading: `Auction Cancelled`,
-                collection_address: HeroNFT?.items?.[0]?.contract_address,
+                collection_address:
+                    HeroNFT?.items?.[0]?.contract_address || null,
                 collection_name:
                     HeroNFT?.items?.[0]?.nft_data?.external_data?.name || null,
                 token_identifier: decoded.tokenId.toString(),
@@ -326,7 +336,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.GAMING,
             name: "Auction Cancelled",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "DeFi Kingdoms",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -344,10 +354,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: heroAuctionABI,
@@ -359,7 +369,7 @@ GoldRushDecoder.on(
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: JewelToken } =
-            await covalent_client.PricingService.getTokenPrices(
+            await goldrush_client.PricingService.getTokenPrices(
                 "avalanche-mainnet",
                 "USD",
                 "0x997ddaa07d716995de90577c123db411584e5e46",
@@ -369,26 +379,27 @@ GoldRushDecoder.on(
                 }
             );
 
-        const tokens: EventTokens = [
-            {
-                decimals: JewelToken?.[0]?.contract_decimals,
+        const tokens: EventTokens = [];
+        if (JewelToken?.[0]?.items?.[0]?.price) {
+            tokens.push({
+                decimals: JewelToken?.[0]?.contract_decimals || null,
                 heading: "Total Price",
                 value: String(decoded.totalPrice),
                 pretty_quote: prettifyCurrency(
-                    JewelToken?.[0]?.prices?.[0]?.price *
+                    JewelToken?.[0]?.items?.[0]?.price *
                         (Number(decoded.totalPrice) /
                             Math.pow(
                                 10,
                                 JewelToken?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: JewelToken?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: JewelToken?.[0]?.contract_ticker_symbol,
-            },
-        ];
+                ticker_logo: JewelToken?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: JewelToken?.[0]?.contract_ticker_symbol || null,
+            });
+        }
 
         const { data: HeroNFT } =
-            await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+            await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
                 "0xEb9B61B145D6489Be575D3603F4a704810e143dF", // Hero NFT Contract Address
                 decoded.tokenId.toString(),
@@ -400,7 +411,8 @@ GoldRushDecoder.on(
         const nfts: EventNFTs = [
             {
                 heading: `Auction Successful`,
-                collection_address: HeroNFT?.items?.[0]?.contract_address,
+                collection_address:
+                    HeroNFT?.items?.[0]?.contract_address || null,
                 collection_name:
                     HeroNFT?.items?.[0]?.nft_data?.external_data?.name || null,
                 token_identifier: decoded.tokenId.toString(),
@@ -446,7 +458,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.GAMING,
             name: "Auction Successful",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "DeFi Kingdoms",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),

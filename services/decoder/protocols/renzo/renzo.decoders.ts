@@ -19,10 +19,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: eigenLayerStrategyManagerABI,
@@ -59,8 +60,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "ShareWithdrawalQueued",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -76,10 +77,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: eigenLayerStrategyManagerABI,
@@ -121,8 +123,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "WithdrawalQueued",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -138,10 +140,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: eigenLayerStrategyManagerABI,
@@ -178,8 +181,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "WithdrawalCompleted",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -195,10 +198,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: restakeManagerABI,
@@ -227,8 +231,8 @@ GoldRushDecoder.on(
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: TokenData } =
-            await covalent_client.PricingService.getTokenPrices(
+        const { data: tokenData } =
+            await goldrush_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
                 decoded.token,
@@ -239,7 +243,7 @@ GoldRushDecoder.on(
             );
 
         const { data: ezETHData } =
-            await covalent_client.PricingService.getTokenPrices(
+            await goldrush_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
                 "0xbf5495Efe5DB9ce00f80364C8B423567e58d2110",
@@ -249,46 +253,51 @@ GoldRushDecoder.on(
                 }
             );
 
-        const tokens: EventTokens = [
-            {
-                decimals: TokenData?.[0]?.contract_decimals,
+        const tokens: EventTokens = [];
+
+        if (tokenData?.[0]?.items?.[0]?.price) {
+            tokens.push({
+                decimals: tokenData?.[0]?.contract_decimals || null,
                 heading: "Deposit Amount",
                 value: String(decoded.amount),
                 pretty_quote: prettifyCurrency(
-                    TokenData?.[0]?.prices?.[0]?.price *
+                    tokenData?.[0]?.items?.[0]?.price *
                         (Number(decoded.amount) /
                             Math.pow(
                                 10,
-                                TokenData?.[0]?.contract_decimals ?? 0
+                                tokenData?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
-            },
-            {
-                decimals: ezETHData?.[0]?.contract_decimals,
+                ticker_logo: tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: tokenData?.[0]?.contract_ticker_symbol || null,
+            });
+        }
+
+        if (ezETHData?.[0]?.items?.[0]?.price) {
+            tokens.push({
+                decimals: ezETHData?.[0]?.contract_decimals || null,
                 heading: "ezETH Minted",
                 value: String(decoded.ezETHMinted),
                 pretty_quote: prettifyCurrency(
-                    ezETHData?.[0]?.prices?.[0]?.price *
+                    ezETHData?.[0]?.items?.[0]?.price *
                         (Number(decoded.ezETHMinted) /
                             Math.pow(
                                 10,
                                 ezETHData?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: ezETHData?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: ezETHData?.[0]?.contract_ticker_symbol,
-            },
-        ];
+                ticker_logo: ezETHData?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: ezETHData?.[0]?.contract_ticker_symbol || null,
+            });
+        }
 
         return {
             action: DECODED_ACTION.DEPOSIT,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Deposit",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
