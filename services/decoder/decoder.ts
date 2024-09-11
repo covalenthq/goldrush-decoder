@@ -114,7 +114,7 @@ export class GoldRushDecoder {
         this.decoding_functions.push(decoding_function);
         const decoding_function_index: number =
             this.decoding_functions.length - 1;
-        _chain_names.forEach((chain_name) => {
+        Array.from(_chain_names).forEach((chain_name) => {
             const configExists = this.configs[chain_name]?.[protocol]
                 ? true
                 : false;
