@@ -29,10 +29,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_name, sender_logo_url } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: bridgeImplementationABI,
@@ -64,8 +65,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.BRIDGE,
             name: "TransferRedeemed",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -94,10 +95,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: wormholeImplementationABI,
@@ -139,8 +141,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.BRIDGE,
             name: "LogMessagePublished",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,

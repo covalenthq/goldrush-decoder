@@ -31,10 +31,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -76,8 +77,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterLiquidityAdded",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -93,10 +94,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -123,8 +125,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterAdded",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -140,10 +142,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -170,8 +173,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterRemoved",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -187,10 +190,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -222,8 +226,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterRecipientSet",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -239,10 +243,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -264,8 +269,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterInitialized",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -281,10 +286,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -316,8 +322,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterOwnerAccepted",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -333,10 +339,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -368,8 +375,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterOwnerProposed",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -385,10 +392,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextRouterABI,
@@ -435,8 +443,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "RouterLiquidityRemoved",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -452,10 +460,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextCallABI,
@@ -467,7 +476,7 @@ GoldRushDecoder.on(
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: TokenData } =
-            await covalent_client.PricingService.getTokenPrices(
+            await goldrush_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
                 decoded.asset,
@@ -477,38 +486,45 @@ GoldRushDecoder.on(
                 }
             );
 
-        const tokens: EventTokens = [
-            {
-                decimals: TokenData?.[0]?.contract_decimals,
-                heading: "Bridged Amount",
-                value: String(decoded.params.bridgedAmt),
-                pretty_quote: prettifyCurrency(
-                    TokenData?.[0]?.prices?.[0]?.price *
-                        (Number(decoded.params.bridgedAmt) /
-                            Math.pow(
-                                10,
-                                TokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
-            },
-            {
-                decimals: TokenData?.[0]?.contract_decimals,
-                heading: "Amount",
-                value: String(decoded.amount),
-                pretty_quote: prettifyCurrency(
-                    TokenData?.[0]?.prices?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                TokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
-            },
-        ];
+        const tokens: EventTokens = [];
+        if (TokenData?.[0]?.items?.[0]?.price) {
+            tokens.push(
+                {
+                    decimals: TokenData?.[0]?.contract_decimals || null,
+                    heading: "Bridged Amount",
+                    value: String(decoded.params.bridgedAmt),
+                    pretty_quote: prettifyCurrency(
+                        TokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.params.bridgedAmt) /
+                                Math.pow(
+                                    10,
+                                    TokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        TokenData?.[0]?.contract_ticker_symbol || null,
+                },
+                {
+                    decimals: TokenData?.[0]?.contract_decimals || null,
+                    heading: "Amount",
+                    value: String(decoded.amount),
+                    pretty_quote: prettifyCurrency(
+                        TokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    TokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        TokenData?.[0]?.contract_ticker_symbol || null,
+                }
+            );
+        }
 
         const details: EventDetails = [
             {
@@ -607,8 +623,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "XCalled",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -625,10 +641,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextCallABI,
@@ -659,8 +676,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "ExternalCalldataExecuted",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -676,10 +693,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextCallABI,
@@ -691,7 +709,7 @@ GoldRushDecoder.on(
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: TokenData } =
-            await covalent_client.PricingService.getTokenPrices(
+            await goldrush_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
                 decoded.asset,
@@ -701,23 +719,24 @@ GoldRushDecoder.on(
                 }
             );
 
-        const tokens: EventTokens = [
-            {
-                decimals: TokenData?.[0]?.contract_decimals,
+        const tokens: EventTokens = [];
+        if (TokenData?.[0]?.items?.[0]?.price) {
+            tokens.push({
+                decimals: TokenData?.[0]?.contract_decimals || null,
                 heading: "Increase",
                 value: String(decoded.increase),
                 pretty_quote: prettifyCurrency(
-                    TokenData?.[0]?.prices?.[0]?.price *
+                    TokenData?.[0]?.items?.[0]?.price *
                         (Number(decoded.increase) /
                             Math.pow(
                                 10,
                                 TokenData?.[0]?.contract_decimals ?? 0
                             ))
                 ),
-                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url,
-                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol,
-            },
-        ];
+                ticker_logo: TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                ticker_symbol: TokenData?.[0]?.contract_ticker_symbol || null,
+            });
+        }
 
         const details: EventDetails = [
             {
@@ -742,8 +761,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "TransferRelayerFeesIncreased",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,
@@ -760,10 +779,11 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url, sender_name } =
+            log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: connextCallABI,
@@ -790,8 +810,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "SlippageUpdated",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details,

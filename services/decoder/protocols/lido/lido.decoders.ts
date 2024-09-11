@@ -19,10 +19,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -54,7 +54,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Transfer Shares",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -71,10 +71,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -96,13 +96,14 @@ GoldRushDecoder.on(
             },
         ];
 
-        const tokens: EventTokens = [
-            {
+        const tokens: EventTokens = [];
+        if (tx?.gas_quote_rate) {
+            tokens.push({
                 heading: "Tokens Staked",
                 value: decoded.amount.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     tx?.gas_quote_rate *
                         (Number(decoded.amount) /
@@ -111,15 +112,15 @@ GoldRushDecoder.on(
                                 tx?.gas_metadata?.contract_decimals ?? 18
                             ))
                 ),
-            },
-        ];
+            });
+        }
 
         return {
             action: DECODED_ACTION.TRANSFERRED,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Submitted",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -137,10 +138,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -184,9 +185,9 @@ GoldRushDecoder.on(
             {
                 heading: "Pre-Total Ether",
                 value: decoded.preTotalEther.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.preTotalEther) /
@@ -199,9 +200,9 @@ GoldRushDecoder.on(
             {
                 heading: "Post-Total Ether",
                 value: decoded.postTotalEther.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.postTotalEther) /
@@ -218,7 +219,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Token Rebased",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -236,10 +237,15 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const {
+            raw_log_data,
+            raw_log_topics,
+            sender_address,
+            sender_logo_url,
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -263,56 +269,70 @@ GoldRushDecoder.on(
 
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: StakingToken } =
-            await covalent_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                log_event.sender_address,
+        const tokens: EventTokens = [];
+
+        if (sender_address) {
+            const { data: StakingToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    sender_address,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            tokens.push(
                 {
-                    from: date,
-                    to: date,
+                    heading: "Pre-Rebase Token Amount",
+                    value: decoded.preRebaseTokenAmount.toString(),
+                    decimals: StakingToken?.[0]?.contract_decimals || null,
+                    ticker_symbol:
+                        StakingToken?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo:
+                        StakingToken?.[0]?.logo_urls?.token_logo_url || null,
+                    pretty_quote: prettifyCurrency(
+                        (StakingToken?.[0]?.items?.[0]?.price ?? 0) *
+                            (Number(decoded.preRebaseTokenAmount) /
+                                Math.pow(
+                                    10,
+                                    +(
+                                        StakingToken?.[0]?.contract_decimals ??
+                                        18
+                                    )
+                                ))
+                    ),
+                },
+                {
+                    heading: "Post-Rebase Token Amount",
+                    value: decoded.postRebaseTokenAmount.toString(),
+                    decimals: StakingToken?.[0]?.contract_decimals || null,
+                    ticker_symbol:
+                        StakingToken?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo:
+                        StakingToken?.[0]?.logo_urls?.token_logo_url || null,
+                    pretty_quote: prettifyCurrency(
+                        (StakingToken?.[0]?.items?.[0]?.price ?? 0) *
+                            (Number(decoded.postRebaseTokenAmount) /
+                                Math.pow(
+                                    10,
+                                    +(
+                                        StakingToken?.[0]?.contract_decimals ??
+                                        18
+                                    )
+                                ))
+                    ),
                 }
             );
-
-        const tokens: EventTokens = [
-            {
-                heading: "Pre-Rebase Token Amount",
-                value: decoded.preRebaseTokenAmount.toString(),
-                decimals: StakingToken?.[0]?.contract_decimals,
-                ticker_symbol: StakingToken?.[0]?.contract_ticker_symbol,
-                ticker_logo: StakingToken?.[0]?.logo_urls?.token_logo_url,
-                pretty_quote: prettifyCurrency(
-                    (StakingToken?.[0]?.prices?.[0]?.price ?? 0) *
-                        (Number(decoded.preRebaseTokenAmount) /
-                            Math.pow(
-                                10,
-                                +(StakingToken?.[0]?.contract_decimals ?? 18)
-                            ))
-                ),
-            },
-            {
-                heading: "Post-Rebase Token Amount",
-                value: decoded.postRebaseTokenAmount.toString(),
-                decimals: StakingToken?.[0]?.contract_decimals,
-                ticker_symbol: StakingToken?.[0]?.contract_ticker_symbol,
-                ticker_logo: StakingToken?.[0]?.logo_urls?.token_logo_url,
-                pretty_quote: prettifyCurrency(
-                    (StakingToken?.[0]?.prices?.[0]?.price ?? 0) *
-                        (Number(decoded.postRebaseTokenAmount) /
-                            Math.pow(
-                                10,
-                                +(StakingToken?.[0]?.contract_decimals ?? 18)
-                            ))
-                ),
-            },
-        ];
+        }
 
         return {
             action: DECODED_ACTION.TRANSFERRED,
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Shares Burnt",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -330,10 +350,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -357,9 +377,9 @@ GoldRushDecoder.on(
             {
                 heading: "Pre-CL Balance",
                 value: decoded.preCLBalance.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.preCLBalance) /
@@ -372,9 +392,9 @@ GoldRushDecoder.on(
             {
                 heading: "Post-CL Balance",
                 value: decoded.postCLBalance.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.postCLBalance) /
@@ -387,9 +407,9 @@ GoldRushDecoder.on(
             {
                 heading: "Withdrawals Withdrawn",
                 value: decoded.withdrawalsWithdrawn.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.withdrawalsWithdrawn) /
@@ -402,9 +422,9 @@ GoldRushDecoder.on(
             {
                 heading: "Execution Layer Rewards",
                 value: decoded.executionLayerRewardsWithdrawn.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.executionLayerRewardsWithdrawn) /
@@ -417,9 +437,9 @@ GoldRushDecoder.on(
             {
                 heading: "Post-Buffered Ether",
                 value: decoded.postBufferedEther.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.postBufferedEther) /
@@ -436,7 +456,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "ETH Distributed",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -454,10 +474,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -470,9 +490,9 @@ GoldRushDecoder.on(
             {
                 heading: "Withdrawals Withdrawn",
                 value: decoded.amount.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.amount) /
@@ -489,7 +509,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawals Received",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -506,10 +526,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -522,9 +542,9 @@ GoldRushDecoder.on(
             {
                 heading: "Rewards Received",
                 value: decoded.amount.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.amount) /
@@ -541,7 +561,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "EL Rewards Received",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -558,10 +578,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: stethABI,
@@ -588,7 +608,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "CL Validators Updated",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -605,10 +625,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: withdrawalQueueABI,
@@ -643,7 +663,7 @@ GoldRushDecoder.on(
         const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
         const { data: StakingToken } =
-            await covalent_client.PricingService.getTokenPrices(
+            await goldrush_client.PricingService.getTokenPrices(
                 chain_name,
                 "USD",
                 "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
@@ -657,11 +677,13 @@ GoldRushDecoder.on(
             {
                 heading: "Amount Of stETH",
                 value: decoded.amountOfStETH.toString(),
-                decimals: StakingToken?.[0]?.contract_decimals,
-                ticker_symbol: StakingToken?.[0]?.contract_ticker_symbol,
-                ticker_logo: StakingToken?.[0]?.logo_urls?.token_logo_url,
+                decimals: StakingToken?.[0]?.contract_decimals || null,
+                ticker_symbol:
+                    StakingToken?.[0]?.contract_ticker_symbol || null,
+                ticker_logo:
+                    StakingToken?.[0]?.logo_urls?.token_logo_url || null,
                 pretty_quote: prettifyCurrency(
-                    (StakingToken?.[0]?.prices?.[0]?.price ?? 0) *
+                    (StakingToken?.[0]?.items?.[0]?.price ?? 0) *
                         (Number(decoded.amountOfStETH) /
                             Math.pow(
                                 10,
@@ -676,7 +698,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawal Requested",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -694,10 +716,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: withdrawalQueueABI,
@@ -728,9 +750,9 @@ GoldRushDecoder.on(
             {
                 heading: "Amount Of ETH",
                 value: decoded.amountOfETH.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.amountOfETH) /
@@ -747,7 +769,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawal Claimed",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -765,10 +787,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: withdrawalQueueABI,
@@ -795,7 +817,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Batch Metadata Update",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -812,10 +834,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: withdrawalQueueABI,
@@ -854,9 +876,9 @@ GoldRushDecoder.on(
             {
                 heading: "Amount Of ETH Locked",
                 value: decoded.amountOfETHLocked.toString(),
-                decimals: tx?.gas_metadata?.contract_decimals,
-                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol,
-                ticker_logo: tx?.gas_metadata?.logo_url,
+                decimals: tx?.gas_metadata?.contract_decimals || null,
+                ticker_symbol: tx?.gas_metadata?.contract_ticker_symbol || null,
+                ticker_logo: tx?.gas_metadata?.logo_url || null,
                 pretty_quote: prettifyCurrency(
                     (tx?.gas_quote_rate ?? 0) *
                         (Number(decoded.amountOfETHLocked) /
@@ -873,7 +895,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.STAKING,
             name: "Withdrawals Finalized",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Lido" as string,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),

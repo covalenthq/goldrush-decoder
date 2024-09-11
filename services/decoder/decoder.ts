@@ -1,18 +1,17 @@
 import { chunkify } from "../../utils/functions";
 import {
     type Configs,
-    type DecodingFunction,
-    type Decoders,
-    type DecodingFunctions,
-    type EventType,
     type DecoderConfig,
+    type Decoders,
+    type DecodingFunction,
+    type EventType,
     type Fallbacks,
     type NativeDecodingFunction,
     type QueryOptions,
 } from "./decoder.types";
 import {
-    CovalentClient,
-    type Chain,
+    GoldRushClient,
+    type ChainName,
     type Transaction,
 } from "@covalenthq/client-sdk";
 import { readdirSync } from "fs";
@@ -24,8 +23,8 @@ export class GoldRushDecoder {
     private static decoders: Decoders = {};
     private static fallbacks: Fallbacks = {};
     private static native_decoder: NativeDecodingFunction;
-    private static decoding_functions: DecodingFunctions = [];
-    private static fallback_functions: DecodingFunctions = [];
+    private static decoding_functions: DecodingFunction[] = [];
+    private static fallback_functions: DecodingFunction[] = [];
     private static fileExtension: "js" | "ts" =
         process.env.NODE_ENV !== "test" ? "js" : "ts";
 
@@ -102,10 +101,11 @@ export class GoldRushDecoder {
 
     public static on = (
         event_id: string,
-        chain_names: Chain[],
+        chain_names: (ChainName | `${ChainName}`)[],
         abi: Abi,
         decoding_function: DecodingFunction
     ): void => {
+        const _chain_names = new Set<ChainName | `${ChainName}`>(chain_names);
         const [protocol, event_name] = event_id.split(":");
         const [topic0_hash] = encodeEventTopics({
             abi: abi,
@@ -114,7 +114,7 @@ export class GoldRushDecoder {
         this.decoding_functions.push(decoding_function);
         const decoding_function_index: number =
             this.decoding_functions.length - 1;
-        chain_names.forEach((chain_name) => {
+        _chain_names.forEach((chain_name) => {
             const configExists = this.configs[chain_name]?.[protocol]
                 ? true
                 : false;
@@ -125,14 +125,12 @@ export class GoldRushDecoder {
             }
             Object.keys(this.configs[chain_name][protocol]).forEach(
                 (address) => {
-                    const lowercaseChainName =
-                        chain_name.toLowerCase() as Chain;
                     const lowercaseAddress = address.toLowerCase();
                     const lowercaseTopic0Hash = topic0_hash.toLowerCase();
 
-                    this.decoders[lowercaseChainName] ??= {};
-                    this.decoders[lowercaseChainName][lowercaseAddress] ??= {};
-                    this.decoders[lowercaseChainName][lowercaseAddress][
+                    this.decoders[chain_name] ??= {};
+                    this.decoders[chain_name][lowercaseAddress] ??= {};
+                    this.decoders[chain_name][lowercaseAddress][
                         lowercaseTopic0Hash
                     ] = decoding_function_index;
                 }
@@ -161,12 +159,14 @@ export class GoldRushDecoder {
     };
 
     public static decode = async (
-        chain_name: Chain,
+        chain_name: ChainName,
         tx: Transaction,
         covalent_api_key: string,
         options: QueryOptions
     ): Promise<EventType[]> => {
-        const covalent_client = new CovalentClient(covalent_api_key);
+        const goldrush_client = new GoldRushClient(covalent_api_key, {
+            source: "GoldRush Decoder",
+        });
         let events: (EventType | null)[] = [];
         if (tx.value) {
             const nativeEvent = this.native_decoder(tx, options);
@@ -177,40 +177,56 @@ export class GoldRushDecoder {
             const decodedChunk = await Promise.all(
                 logChunk.map((log_event) => {
                     const {
-                        raw_log_topics: [topic0_hash],
+                        raw_log_topics,
                         sender_address,
                         sender_factory_address,
                     } = log_event;
-                    const lowercaseChainName =
-                        chain_name.toLowerCase() as Chain;
+
+                    if (!raw_log_topics || !raw_log_topics[0]) {
+                        return null;
+                    }
+
+                    const [topic0_hash] = raw_log_topics;
+
                     const lowercaseSenderAddress =
                         sender_address?.toLowerCase();
                     const lowercaseSenderFactoryAddress =
                         sender_factory_address?.toLowerCase();
-                    const lowercaseTopic0Hash = topic0_hash?.toLowerCase();
-                    const decoding_index =
-                        this.decoders[lowercaseChainName]?.[
-                            lowercaseSenderAddress
-                        ]?.[lowercaseTopic0Hash] ??
-                        this.decoders[lowercaseChainName]?.[
-                            lowercaseSenderFactoryAddress
-                        ]?.[lowercaseTopic0Hash];
-                    const fallback_index = this.fallbacks[lowercaseTopic0Hash];
+                    const lowercaseTopic0Hash = topic0_hash.toLowerCase();
+
+                    const decoding_index: number | null = lowercaseSenderAddress
+                        ? this.decoders[chain_name]?.[lowercaseSenderAddress]?.[
+                              lowercaseTopic0Hash
+                          ]
+                        : lowercaseSenderFactoryAddress
+                          ? this.decoders[chain_name]?.[
+                                lowercaseSenderFactoryAddress
+                            ]?.[lowercaseTopic0Hash]
+                          : null;
+
+                    const fallback_index: number | null =
+                        this.fallbacks[lowercaseTopic0Hash] ?? null;
+
+                    if (decoding_index === null && fallback_index === null) {
+                        return null;
+                    }
+
                     const logFunction =
-                        (decoding_index !== undefined &&
-                            this.decoding_functions[decoding_index]) ||
-                        (fallback_index !== undefined &&
-                            this.fallback_functions[fallback_index]) ||
+                        this.decoding_functions[decoding_index as number] ||
+                        this.fallback_functions[fallback_index as number] ||
                         null;
-                    return logFunction
-                        ? logFunction(
-                              log_event,
-                              tx,
-                              chain_name,
-                              covalent_client,
-                              options
-                          )
-                        : null;
+
+                    if (!logFunction) {
+                        return null;
+                    }
+
+                    return logFunction(
+                        log_event,
+                        tx,
+                        chain_name,
+                        goldrush_client,
+                        options
+                    );
                 })
             );
             events = [...events, ...decodedChunk];
