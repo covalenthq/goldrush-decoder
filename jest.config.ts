@@ -3,7 +3,7 @@ import type { Config } from "jest";
 const config: Config = {
     preset: "ts-jest",
     testEnvironment: "node",
-    maxConcurrency: 5,
+    maxConcurrency: 10,
     extensionsToTreatAsEsm: [".ts"],
     coveragePathIgnorePatterns: ["./dist/*"],
     verbose: true,
