@@ -161,12 +161,9 @@ export class GoldRushDecoder {
     public static decode = async (
         chain_name: ChainName,
         tx: Transaction,
-        covalent_api_key: string,
+        goldrush_client: GoldRushClient,
         options: QueryOptions
     ): Promise<EventType[]> => {
-        const goldrush_client = new GoldRushClient(covalent_api_key, {
-            source: "GoldRush Decoder",
-        });
         let events: (EventType | null)[] = [];
         if (tx.value) {
             const nativeEvent = this.native_decoder(tx, options);
