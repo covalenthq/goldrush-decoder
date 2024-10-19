@@ -1,5 +1,5 @@
 <div align="center">
-    <img alt="GoldRush Kit Logo" src="./assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
+    <img alt="GoldRush Decoder Logo" src="./assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
 </div>
 
 <p align="center">
@@ -136,6 +136,17 @@ Follow the following steps to add a Decoding logic for an event from a contract 
     This will modify the configs added to the [Protocols](services/protocols) folder. A config will be added to `${protocol_name}.configs.ts`. A sample decoder with a dummy event name (`<EVENT NAME>`) will be added to `${protocol_name}.decoders.ts`. Along with this, a test file `${protocol_name}.test.ts` will also be created which needs to be fixed so that the test passes.
 
 4.  In `${protocol_name}.decoders.ts`, a decoding logic declaration (`Decoder.on(...)`) will be exposed wherein the decoding logic needs to be implemented. The return type of the decoding function expects the return type [`EventType`](./services/decoder/decoder.types.ts):
+
+## GoldRush Repositories
+
+| Name                                                                             | Description                                                                     |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [TypeScript SDK](https://github.com/covalenthq/covalent-api-sdk-ts)              | The fastest way to integrate the GoldRush API for working with blockchain data. |
+| [GoldRush Kit](https://github.com/covalenthq/goldrush-kit)                       | Beautifully designed React components for your dApp frontend.                   |
+| [GoldRush Block Explorer](https://github.com/covalenthq/goldrush-block-explorer) | A cross chain block explorer kit that can be customized.                        |
+| [GoldRush Decoder](https://github.com/covalenthq/goldrush-decoder)               | Decode unstructured, raw event logs into structured data with a simple API.     |
+| [GoldRush RevokeHub](https://github.com/covalenthq/goldrush-revokehub)           | One-stop platform for managing your digital assets securely and efficiently.    |
+| [GoldRush Airdrop Assist](https://github.com/covalenthq/goldrush-airdrop-assist) | Effortlessly filter and find all valid addresses for your next airdrop.         |
 
 ## Contributing
 
