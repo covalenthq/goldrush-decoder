@@ -1,4 +1,4 @@
-import { currencyToNumber, timestampParser } from "../../../../utils/functions";
+import { currencyToNumber } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -7,7 +7,7 @@ import {
 import { type EventDetails, type EventType } from "../../decoder.types";
 import { approvalERC20ABI } from "./abis/approval-erc20.abi";
 import { approvalERC721ABI } from "./abis/approval-erc721.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.fallback(
@@ -99,7 +99,7 @@ GoldRushDecoder.fallback(
                     value: "Unlimited",
                     type: "text",
                 });
-            } else if (sender_address) {
+            } else if (sender_address && block_signed_at) {
                 const date = timestampParser(block_signed_at, "YYYY-MM-DD");
                 const { data } =
                     await goldrush_client.PricingService.getTokenPrices(

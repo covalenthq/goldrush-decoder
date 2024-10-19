@@ -1,6 +1,6 @@
 import { txRouter } from "../microservices/tx/tx.routes";
 import { GoldRushDecoder } from "../services";
-import { timestampParser } from "../utils/functions";
+import { timestampParser } from "@covalenthq/client-sdk";
 import cors from "cors";
 import { config as dotenvConfig } from "dotenv";
 import express, {
@@ -34,11 +34,11 @@ app.use("*", (_req: Request, res: Response) => {
 app.use(
     (err: Error | any, _req: Request, res: Response, _next: NextFunction) => {
         const now = new Date();
-        console.error("Server Error");
         console.error(
-            `${now.toISOString()}: ${timestampParser(now, "descriptive")}`
+            "Server Error",
+            `${now.toISOString()}: ${timestampParser(now, "descriptive")}`,
+            err
         );
-        console.error(err);
         if (err.errorCode) {
             res.status(err.errorCode).json({
                 success: false,
