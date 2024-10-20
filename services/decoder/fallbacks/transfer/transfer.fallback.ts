@@ -102,7 +102,7 @@ GoldRushDecoder.fallback(
                             10,
                             data?.[0]?.items?.[0]?.contract_metadata
                                 ?.contract_decimals ?? 18
-                        )) ?? 0
+                        ))
             );
 
             if (currencyToNumber(pretty_quote) < options.min_usd!) {
