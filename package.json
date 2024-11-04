@@ -5,16 +5,27 @@
     "scripts": {
         "add-config": "ts-node ./scripts/add-config.ts",
         "build": "tsc",
-        "dev": "tsc-watch --onSuccess \"yarn start\"",
+        "dev": "tsc-watch --onSuccess \"npm run start\"",
         "lint": "eslint .",
         "pretty": "prettier . --write",
         "start": "node ./dist/api/index.js",
-        "test": "jest --coverage"
+        "test": "jest"
     },
-    "author": "",
-    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/covalenthq/goldrush-decoder.git"
+    },
+    "author": {
+        "name": "covalenthq",
+        "url": "https://covalenthq.com"
+    },
+    "bugs": {
+        "url": "https://github.com/covalenthq/goldrush-decoder/issues"
+    },
+    "homepage": "https://github.com/covalenthq/goldrush-decoder#readme",
+    "license": "MIT",
     "dependencies": {
-        "@covalenthq/client-sdk": "^1.0.2",
+        "@covalenthq/client-sdk": "^2.2.1",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "enquirer": "^2.4.1",

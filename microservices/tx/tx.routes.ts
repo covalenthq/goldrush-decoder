@@ -8,7 +8,11 @@ import {
     type DecodeTXRequest,
 } from "./tx.schema";
 import { decodeLogsFromTx, fetchTxFromHash } from "./tx.service";
-import { type Chain } from "@covalenthq/client-sdk";
+import {
+    GoldRushClient,
+    type Chain,
+    type ChainName,
+} from "@covalenthq/client-sdk";
 import {
     Router,
     type NextFunction,
@@ -30,10 +34,16 @@ const handleDecode = async (
         const raw_logs = (req.query as DecodeTXQuery)["raw_logs"] === "true";
         const min_usd = (req.query as DecodeTXQuery)["min_usd"] ?? 0;
         const { chain_name, tx_hash } = req.body as DecodeTXRequest;
+
+        const goldrushClient = new GoldRushClient(goldrushApiKey, {
+            source: "GoldRush Decoder",
+            threadCount: 5,
+        });
+
         const tx = await fetchTxFromHash(
             chain_name as Chain,
             tx_hash,
-            goldrushApiKey
+            goldrushClient
         );
         const {
             log_events,
@@ -44,9 +54,9 @@ const handleDecode = async (
             ...tx_metadata
         } = tx;
         const events = await decodeLogsFromTx(
-            chain_name as Chain,
+            chain_name as ChainName,
             tx,
-            goldrushApiKey,
+            goldrushClient,
             {
                 raw_logs,
                 min_usd,

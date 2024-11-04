@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -11,7 +10,7 @@ import {
     type EventType,
 } from "../../decoder.types";
 import { blurExchangeABI } from "./abis/blur-exchange.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -22,10 +21,16 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
+        const {
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics,
+            sender_logo_url,
+            sender_name,
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: blurExchangeABI,
@@ -105,36 +110,43 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-        const { data: tokenPriceData } =
-            await covalent_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.sell.collection,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-        tokens.push({
-            heading: `Match Amount`,
-            value: decoded.sell.amount.toString(),
-            decimals: tokenPriceData?.[0]?.contract_decimals ?? 18,
-            pretty_quote: prettifyCurrency(
-                tokenPriceData?.[0]?.items?.[0]?.price *
-                    (Number(decoded.sell.amount) /
-                        Math.pow(
-                            10,
-                            tokenPriceData?.[0]?.items?.[0]?.contract_metadata
-                                ?.contract_decimals ?? 18
-                        ))
-            ),
-            ticker_symbol: tokenPriceData?.[0]?.contract_ticker_symbol,
-            ticker_logo: tokenPriceData?.[0]?.logo_urls?.token_logo_url,
-        });
+        if (block_signed_at) {
+            const date = timestampParser(block_signed_at, "YYYY-MM-DD");
+            const { data: tokenPriceData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.sell.collection,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+            if (tokenPriceData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    heading: `Match Amount`,
+                    value: decoded.sell.amount.toString(),
+                    decimals: tokenPriceData?.[0]?.contract_decimals ?? 18,
+                    pretty_quote: prettifyCurrency(
+                        tokenPriceData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.sell.amount) /
+                                Math.pow(
+                                    10,
+                                    tokenPriceData?.[0]?.items?.[0]
+                                        ?.contract_metadata
+                                        ?.contract_decimals ?? 18
+                                ))
+                    ),
+                    ticker_symbol:
+                        tokenPriceData?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo:
+                        tokenPriceData?.[0]?.logo_urls?.token_logo_url || null,
+                });
+            }
+        }
 
         const { data } =
-            await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+            await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
                 chain_name,
                 decoded.sell.collection,
                 decoded.sell.tokenId.toString(),
@@ -144,7 +156,7 @@ GoldRushDecoder.on(
             );
         nfts.push({
             heading: `Matched to ${decoded.buy.trader}`,
-            collection_address: data?.items?.[0]?.contract_address,
+            collection_address: data?.items?.[0]?.contract_address || null,
             collection_name:
                 data?.items?.[0]?.nft_data?.external_data?.name || null,
             token_identifier:
@@ -169,8 +181,8 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Orders Matched",
             protocol: {
-                logo: log_event.sender_logo_url as string,
-                name: log_event.sender_name as string,
+                logo: sender_logo_url,
+                name: sender_name,
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
             details: details,

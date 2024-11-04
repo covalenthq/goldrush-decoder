@@ -1,11 +1,12 @@
-import { Chains } from "@covalenthq/client-sdk";
+import { ChainName } from "@covalenthq/client-sdk";
 import * as yup from "yup";
 
 export const decodeTXBodySchema = yup.object({
     chain_name: yup
-        .mixed()
-        .oneOf(Object.values(Chains), "chain_name is incorrect")
-        .required("chain_name is required"),
+        .string()
+        .trim()
+        .oneOf(Object.values(ChainName), "chain_name is incorrect")
+        .required(),
     tx_hash: yup.string().trim().required("tx_hash is required"),
 });
 

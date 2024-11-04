@@ -1,25 +1,24 @@
 import { GoldRushDecoder } from "../../services";
 import { type QueryOptions } from "../../services/decoder/decoder.types";
 import {
-    CovalentClient,
     type Chain,
+    type ChainName,
+    type GoldRushClient,
     type Transaction,
 } from "@covalenthq/client-sdk";
 
 export const fetchTxFromHash = async (
     chain_name: Chain,
     tx_hash: string,
-    covalentApiKey: string
+    goldrush_client: GoldRushClient
 ): Promise<Transaction> => {
-    const covalentClient = new CovalentClient(covalentApiKey);
     const { data, error_code, error_message } =
-        await covalentClient.TransactionService.getTransaction(
+        await goldrush_client.TransactionService.getTransaction(
             chain_name,
             tx_hash,
             {
                 noLogs: false,
                 quoteCurrency: "USD",
-                withNftSales: false,
                 withSafe: false,
             }
         );
@@ -35,15 +34,15 @@ export const fetchTxFromHash = async (
 };
 
 export const decodeLogsFromTx = async (
-    chain_name: Chain,
+    chain_name: ChainName,
     tx: Transaction,
-    apiKey: string,
+    goldrush_client: GoldRushClient,
     options: QueryOptions
 ) => {
     const events = await GoldRushDecoder.decode(
         chain_name,
         tx,
-        apiKey,
+        goldrush_client,
         options
     );
     return events;

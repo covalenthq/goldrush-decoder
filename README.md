@@ -1,5 +1,5 @@
 <div align="center">
-    <img alt="GoldRush Kit Logo" src="./assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
+    <img alt="GoldRush Decoder Logo" src="./assets/goldrush-decoder-banner.png" style="max-width: 100%;"/>
 </div>
 
 <p align="center">
@@ -41,7 +41,7 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
             "<protocol-name>:<EventName>",
             ["<chain_name_1>", "<chain_name_2>", ...],
             ABI as Abi,
-            async (log_event, tx, chain_name, covalent_client, options): Promise<EventType> => {
+            async (log_event, tx, chain_name, goldrush_client, options): Promise<EventType> => {
                 <!-- decoding logic -->
             }
         );
@@ -56,7 +56,7 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
             1. `log_event`: The raw log event that is being decoded.
             2. `tx`: The transaction object that generated this log.
             3. `chain_name`: Name of the chain to which the log belongs to.
-            4. `covalent_client`: The covalent client created with your covalent API key.
+            4. `goldrush_client`: The covalent client created with your covalent API key.
             5. `options`: Query parameters attached to the request for refining the response. These are of the following types
                 1. `raw_logs`: A `boolean` that attaches the raw log of the event along with the decoded response
                 2. `min_usd`: A minimum number value for a transaction to have to be decoded
@@ -67,7 +67,7 @@ This repository contains the logic for decoding a `raw_log_event` of a transacti
         GoldRushDecoder.fallback(
             "EventName",
             ABI as Abi,
-            async (log_event, tx, chain_name, covalent_client, options): Promise<EventType> => {
+            async (log_event, tx, chain_name, goldrush_client, options): Promise<EventType> => {
                 <!-- decoding logic -->
             }
         );
@@ -148,4 +148,4 @@ Give a ⭐️ if this project helped you!
 
 ## License
 
-This project is [MIT](LICENSE) licensed.
+This project is [MIT](./LICENSE) licensed.

@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -9,7 +8,7 @@ import { newBlockSpecimenProofABI } from "./abis/new-block-specimen-proof.abi";
 import { newOperationalStakingABI } from "./abis/new-operational-staking.abi";
 import { oldBlockSpecimenProofABI } from "./abis/old-block-specimen-proof.abi";
 import { oldOperationalStakingABI } from "./abis/old-operational-staking.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -20,10 +19,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: oldBlockSpecimenProofABI,
@@ -37,7 +36,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.OTHERS,
             name: "Block Specimen Production Proof Submitted",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Covalent Network",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -72,10 +71,15 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
+        const {
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics,
+            sender_logo_url,
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: oldOperationalStakingABI,
@@ -84,41 +88,46 @@ GoldRushDecoder.on(
             eventName: "Unstaked",
         });
 
-        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-        const { data } = await covalent_client.PricingService.getTokenPrices(
-            chain_name,
-            "USD",
-            "0xbe4c130aaff02ee7c723351b7d8c2b6da1d22ebd",
-            {
-                from: date,
-                to: date,
+        const tokens: EventTokens = [];
+
+        if (block_signed_at) {
+            const date = timestampParser(block_signed_at, "YYYY-MM-DD");
+            const { data } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    "0xbe4c130aaff02ee7c723351b7d8c2b6da1d22ebd",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+            if (data?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    heading: "Amount",
+                    value: decoded.amount.toString(),
+                    decimals: data?.[0]?.contract_decimals ?? 18,
+                    pretty_quote: prettifyCurrency(
+                        data?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    data?.[0]?.items?.[0]?.contract_metadata
+                                        ?.contract_decimals ?? 18
+                                ))
+                    ),
+                    ticker_symbol: data?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo: data?.[0]?.logo_urls?.token_logo_url || null,
+                });
             }
-        );
-        const tokens: EventTokens = [
-            {
-                heading: "Amount",
-                value: decoded.amount.toString(),
-                decimals: data?.[0]?.contract_decimals ?? 18,
-                pretty_quote: prettifyCurrency(
-                    data?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                data?.[0]?.items?.[0]?.contract_metadata
-                                    ?.contract_decimals ?? 18
-                            ))
-                ),
-                ticker_symbol: data?.[0]?.contract_ticker_symbol,
-                ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
-            },
-        ];
+        }
 
         return {
             action: DECODED_ACTION.APPROVAL,
             category: DECODED_EVENT_CATEGORY.OTHERS,
             name: "Unstaked",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Covalent Network",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -152,10 +161,15 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
+        const {
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics,
+            sender_logo_url,
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: oldOperationalStakingABI,
@@ -164,41 +178,46 @@ GoldRushDecoder.on(
             eventName: "RewardRedeemed",
         });
 
-        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-        const { data } = await covalent_client.PricingService.getTokenPrices(
-            chain_name,
-            "USD",
-            "0xbe4c130aaff02ee7c723351b7d8c2b6da1d22ebd",
-            {
-                from: date,
-                to: date,
+        const tokens: EventTokens = [];
+
+        if (block_signed_at) {
+            const date = timestampParser(block_signed_at, "YYYY-MM-DD");
+            const { data } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    "0xbe4c130aaff02ee7c723351b7d8c2b6da1d22ebd",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+            if (data?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    heading: "Amount",
+                    value: decoded.amount.toString(),
+                    decimals: data?.[0]?.contract_decimals ?? 18,
+                    pretty_quote: prettifyCurrency(
+                        data?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    data?.[0]?.items?.[0]?.contract_metadata
+                                        ?.contract_decimals ?? 18
+                                ))
+                    ),
+                    ticker_symbol: data?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo: data?.[0]?.logo_urls?.token_logo_url || null,
+                });
             }
-        );
-        const tokens: EventTokens = [
-            {
-                heading: "Amount",
-                value: decoded.amount.toString(),
-                decimals: data?.[0]?.contract_decimals ?? 18,
-                pretty_quote: prettifyCurrency(
-                    data?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                data?.[0]?.items?.[0]?.contract_metadata
-                                    ?.contract_decimals ?? 18
-                            ))
-                ),
-                ticker_symbol: data?.[0]?.contract_ticker_symbol,
-                ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
-            },
-        ];
+        }
 
         return {
             action: DECODED_ACTION.APPROVAL,
             category: DECODED_EVENT_CATEGORY.OTHERS,
             name: "Reward Redeemed",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Covalent Network",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -227,10 +246,15 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
+        const {
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics,
+            sender_logo_url,
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: oldOperationalStakingABI,
@@ -239,41 +263,46 @@ GoldRushDecoder.on(
             eventName: "CommissionRewardRedeemed",
         });
 
-        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-        const { data } = await covalent_client.PricingService.getTokenPrices(
-            chain_name,
-            "USD",
-            "0xbe4c130aaff02ee7c723351b7d8c2b6da1d22ebd",
-            {
-                from: date,
-                to: date,
+        const tokens: EventTokens = [];
+
+        if (block_signed_at) {
+            const date = timestampParser(block_signed_at, "YYYY-MM-DD");
+            const { data } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    "0xbe4c130aaff02ee7c723351b7d8c2b6da1d22ebd",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+            if (data?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    heading: "Amount",
+                    value: decoded.amount.toString(),
+                    decimals: data?.[0]?.contract_decimals ?? 18,
+                    pretty_quote: prettifyCurrency(
+                        data?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    data?.[0]?.items?.[0]?.contract_metadata
+                                        ?.contract_decimals ?? 18
+                                ))
+                    ),
+                    ticker_symbol: data?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo: data?.[0]?.logo_urls?.token_logo_url || null,
+                });
             }
-        );
-        const tokens: EventTokens = [
-            {
-                heading: "Amount",
-                value: decoded.amount.toString(),
-                decimals: data?.[0]?.contract_decimals ?? 18,
-                pretty_quote: prettifyCurrency(
-                    data?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                data?.[0]?.items?.[0]?.contract_metadata
-                                    ?.contract_decimals ?? 18
-                            ))
-                ),
-                ticker_symbol: data?.[0]?.contract_ticker_symbol,
-                ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
-            },
-        ];
+        }
 
         return {
             action: DECODED_ACTION.APPROVAL,
             category: DECODED_EVENT_CATEGORY.OTHERS,
             name: "Commission Reward Redeemed",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Covalent Network",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -302,10 +331,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: newBlockSpecimenProofABI,
@@ -319,7 +348,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.OTHERS,
             name: "Block Specimen Production Proof Submitted",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Covalent Network",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -347,10 +376,15 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
+        const {
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics,
+            sender_logo_url,
+        } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: newOperationalStakingABI,
@@ -359,41 +393,46 @@ GoldRushDecoder.on(
             eventName: "Staked",
         });
 
-        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-        const { data } = await covalent_client.PricingService.getTokenPrices(
-            chain_name,
-            "USD",
-            "0xd417144312dbf50465b1c641d016962017ef6240",
-            {
-                from: date,
-                to: date,
+        const tokens: EventTokens = [];
+
+        if (block_signed_at) {
+            const date = timestampParser(block_signed_at, "YYYY-MM-DD");
+            const { data } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    "0xd417144312dbf50465b1c641d016962017ef6240",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+            if (data?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    heading: "Amount",
+                    value: decoded.amount.toString(),
+                    decimals: data?.[0]?.contract_decimals ?? 18,
+                    pretty_quote: prettifyCurrency(
+                        data?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    data?.[0]?.items?.[0]?.contract_metadata
+                                        ?.contract_decimals ?? 18
+                                ))
+                    ),
+                    ticker_symbol: data?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo: data?.[0]?.logo_urls?.token_logo_url || null,
+                });
             }
-        );
-        const tokens: EventTokens = [
-            {
-                heading: "Amount",
-                value: decoded.amount.toString(),
-                decimals: data?.[0]?.contract_decimals ?? 18,
-                pretty_quote: prettifyCurrency(
-                    data?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                data?.[0]?.items?.[0]?.contract_metadata
-                                    ?.contract_decimals ?? 18
-                            ))
-                ),
-                ticker_symbol: data?.[0]?.contract_ticker_symbol,
-                ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
-            },
-        ];
+        }
 
         return {
             action: DECODED_ACTION.APPROVAL,
             category: DECODED_EVENT_CATEGORY.OTHERS,
             name: "Staked",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Covalent Network",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),

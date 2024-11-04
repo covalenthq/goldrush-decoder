@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -9,6 +8,7 @@ import { type EventType } from "../../decoder.types";
 import { factoryABI } from "./abis/factory.abi";
 import { nonFungiblePositionManagerABI } from "./abis/non-fungible-position-manager.abi";
 import { pairABI } from "./abis/pair.abi";
+import { timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -19,10 +19,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: factoryABI,
@@ -61,55 +61,58 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const tokens: EventTokens = [];
 
-        const { data: Token0 } =
-            await covalent_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.token0,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: Token1 } =
-            await covalent_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.token1,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
+            const { data: Token0 } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.token0,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
 
-        const tokens: EventTokens = [
-            {
+            tokens.push({
                 heading: "Token 0 Information",
                 value: "0",
-                decimals: Token0?.[0]?.contract_decimals,
-                ticker_symbol: Token0?.[0]?.contract_ticker_symbol,
-                ticker_logo: Token0?.[0]?.logo_urls?.token_logo_url,
-                pretty_quote: Token0?.[0]?.prices?.[0]?.pretty_price,
-            },
-            {
+                decimals: Token0?.[0]?.contract_decimals || null,
+                ticker_symbol: Token0?.[0]?.contract_ticker_symbol || null,
+                ticker_logo: Token0?.[0]?.logo_urls?.token_logo_url || null,
+                pretty_quote: Token0?.[0]?.items?.[0]?.pretty_price || null,
+            });
+
+            const { data: Token1 } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.token1,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            tokens.push({
                 heading: "Token 1 Information",
                 value: "0",
-                decimals: Token1?.[0]?.contract_decimals,
-                ticker_symbol: Token1?.[0]?.contract_ticker_symbol,
-                ticker_logo: Token1?.[0]?.logo_urls?.token_logo_url,
-                pretty_quote: Token1?.[0]?.prices?.[0]?.pretty_price,
-            },
-        ];
+                decimals: Token1?.[0]?.contract_decimals || null,
+                ticker_symbol: Token1?.[0]?.contract_ticker_symbol || null,
+                ticker_logo: Token1?.[0]?.logo_urls?.token_logo_url || null,
+                pretty_quote: Token1?.[0]?.items?.[0]?.pretty_price || null,
+            });
+        }
 
         return {
             action: DECODED_ACTION.CREATE,
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Pool Created",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -127,10 +130,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: pairABI,
@@ -177,7 +180,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Burn",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -194,10 +197,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: pairABI,
@@ -249,7 +252,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Mint",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -266,10 +269,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: pairABI,
@@ -321,7 +324,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Swap",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -338,10 +341,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: pairABI,
@@ -388,7 +391,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Collect Fees",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -405,10 +408,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: pairABI,
@@ -455,7 +458,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Flash Loan",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -472,10 +475,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: nonFungiblePositionManagerABI,
@@ -512,7 +515,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Decrease Liquidity",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -529,10 +532,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: nonFungiblePositionManagerABI,
@@ -569,7 +572,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Increase Liquidity",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
@@ -586,10 +589,10 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { raw_log_data, raw_log_topics } = log_event;
+        const { raw_log_data, raw_log_topics, sender_logo_url } = log_event;
 
         const { args: decoded } = decodeEventLog({
             abi: nonFungiblePositionManagerABI,
@@ -626,7 +629,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.DEX,
             name: "Collect",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Uniswap V3",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),

@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -11,7 +10,7 @@ import {
     type EventType,
 } from "../../decoder.types";
 import { seaport11ABI } from "./abis/seaport-1.1.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -22,10 +21,15 @@ GoldRushDecoder.on(
         log_event,
         tx,
         chain_name,
-        covalent_client,
+        goldrush_client,
         options
     ): Promise<EventType> => {
-        const { block_signed_at, raw_log_data, raw_log_topics } = log_event;
+        const {
+            block_signed_at,
+            raw_log_data,
+            raw_log_topics,
+            sender_logo_url,
+        } = log_event;
 
         enum ITEM_TYPE {
             "NATIVE" = 0,
@@ -73,40 +77,51 @@ GoldRushDecoder.on(
             switch (itemType) {
                 case ITEM_TYPE.NATIVE:
                 case ITEM_TYPE.ERC20: {
-                    const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-                    const { data } =
-                        await covalent_client.PricingService.getTokenPrices(
-                            chain_name,
-                            "USD",
-                            token,
-                            {
-                                from: date,
-                                to: date,
-                            }
+                    if (block_signed_at) {
+                        const date = timestampParser(
+                            block_signed_at,
+                            "YYYY-MM-DD"
                         );
-                    tokens.push({
-                        heading: recipient
-                            ? `Sent to ${recipient}`
-                            : `Offered to ${decoded.recipient}`,
-                        value: amount.toString(),
-                        decimals: data?.[0]?.contract_decimals ?? 18,
-                        pretty_quote: prettifyCurrency(
-                            data?.[0]?.items?.[0]?.price *
-                                (Number(amount) /
-                                    Math.pow(
-                                        10,
-                                        data?.[0]?.items?.[0]?.contract_metadata
-                                            ?.contract_decimals ?? 18
-                                    ))
-                        ),
-                        ticker_symbol: data?.[0]?.contract_ticker_symbol,
-                        ticker_logo: data?.[0]?.logo_urls?.token_logo_url,
-                    });
+                        const { data } =
+                            await goldrush_client.PricingService.getTokenPrices(
+                                chain_name,
+                                "USD",
+                                token,
+                                {
+                                    from: date,
+                                    to: date,
+                                }
+                            );
+                        if (data?.[0]?.items?.[0]?.price) {
+                            tokens.push({
+                                heading: recipient
+                                    ? `Sent to ${recipient}`
+                                    : `Offered to ${decoded.recipient}`,
+                                value: amount.toString(),
+                                decimals: data?.[0]?.contract_decimals ?? 18,
+                                pretty_quote: prettifyCurrency(
+                                    data?.[0]?.items?.[0]?.price *
+                                        (Number(amount) /
+                                            Math.pow(
+                                                10,
+                                                data?.[0]?.items?.[0]
+                                                    ?.contract_metadata
+                                                    ?.contract_decimals ?? 18
+                                            ))
+                                ),
+                                ticker_symbol:
+                                    data?.[0]?.contract_ticker_symbol || null,
+                                ticker_logo:
+                                    data?.[0]?.logo_urls?.token_logo_url ||
+                                    null,
+                            });
+                        }
+                    }
                     break;
                 }
                 case ITEM_TYPE.ERC721: {
                     const { data } =
-                        await covalent_client.NftService.getNftMetadataForGivenTokenIdForContract(
+                        await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
                             chain_name,
                             token,
                             identifier.toString(),
@@ -118,7 +133,8 @@ GoldRushDecoder.on(
                         heading: recipient
                             ? `Sent to ${recipient}`
                             : `Offered to ${decoded.recipient}`,
-                        collection_address: data?.items?.[0]?.contract_address,
+                        collection_address:
+                            data?.items?.[0]?.contract_address || null,
                         collection_name:
                             data?.items?.[0]?.nft_data?.external_data?.name ||
                             null,
@@ -163,7 +179,7 @@ GoldRushDecoder.on(
             category: DECODED_EVENT_CATEGORY.NFT,
             name: "Basic Order Fulfilled",
             protocol: {
-                logo: log_event.sender_logo_url as string,
+                logo: sender_logo_url,
                 name: "Opensea",
             },
             ...(options.raw_logs ? { raw_log: log_event } : {}),
