@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -11,7 +10,7 @@ import {
     type EventType,
 } from "../../decoder.types";
 import { seaport11ABI } from "./abis/seaport-1.1.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -78,39 +77,45 @@ GoldRushDecoder.on(
             switch (itemType) {
                 case ITEM_TYPE.NATIVE:
                 case ITEM_TYPE.ERC20: {
-                    const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-                    const { data } =
-                        await goldrush_client.PricingService.getTokenPrices(
-                            chain_name,
-                            "USD",
-                            token,
-                            {
-                                from: date,
-                                to: date,
-                            }
+                    if (block_signed_at) {
+                        const date = timestampParser(
+                            block_signed_at,
+                            "YYYY-MM-DD"
                         );
-                    if (data?.[0]?.items?.[0]?.price) {
-                        tokens.push({
-                            heading: recipient
-                                ? `Sent to ${recipient}`
-                                : `Offered to ${decoded.recipient}`,
-                            value: amount.toString(),
-                            decimals: data?.[0]?.contract_decimals ?? 18,
-                            pretty_quote: prettifyCurrency(
-                                data?.[0]?.items?.[0]?.price *
-                                    (Number(amount) /
-                                        Math.pow(
-                                            10,
-                                            data?.[0]?.items?.[0]
-                                                ?.contract_metadata
-                                                ?.contract_decimals ?? 18
-                                        ))
-                            ),
-                            ticker_symbol:
-                                data?.[0]?.contract_ticker_symbol || null,
-                            ticker_logo:
-                                data?.[0]?.logo_urls?.token_logo_url || null,
-                        });
+                        const { data } =
+                            await goldrush_client.PricingService.getTokenPrices(
+                                chain_name,
+                                "USD",
+                                token,
+                                {
+                                    from: date,
+                                    to: date,
+                                }
+                            );
+                        if (data?.[0]?.items?.[0]?.price) {
+                            tokens.push({
+                                heading: recipient
+                                    ? `Sent to ${recipient}`
+                                    : `Offered to ${decoded.recipient}`,
+                                value: amount.toString(),
+                                decimals: data?.[0]?.contract_decimals ?? 18,
+                                pretty_quote: prettifyCurrency(
+                                    data?.[0]?.items?.[0]?.price *
+                                        (Number(amount) /
+                                            Math.pow(
+                                                10,
+                                                data?.[0]?.items?.[0]
+                                                    ?.contract_metadata
+                                                    ?.contract_decimals ?? 18
+                                            ))
+                                ),
+                                ticker_symbol:
+                                    data?.[0]?.contract_ticker_symbol || null,
+                                ticker_logo:
+                                    data?.[0]?.logo_urls?.token_logo_url ||
+                                    null,
+                            });
+                        }
                     }
                     break;
                 }

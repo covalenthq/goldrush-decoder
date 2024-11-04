@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -8,7 +7,7 @@ import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { pendleRouterV3ABI } from "./abis/pendle-router-v3.abi";
 import { vePendleABI } from "./abis/ve-pendle.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 const PT_TOKEN_ADDRESS = "0xc69Ad9baB1dEE23F4605a82b3354F8E40d1E5966";
@@ -37,110 +36,115 @@ GoldRushDecoder.on(
             eventName: "SwapPtAndToken",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: tokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.token,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const { data: PtTokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                PT_TOKEN_ADDRESS,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const { data: SyTokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                SY_TOKEN_ADDRESS,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (tokenData?.[0]?.items?.[0]?.price) {
-            tokens.push(
-                {
-                    decimals: tokenData?.[0]?.contract_decimals || null,
-                    heading: "Token",
-                    value: String(tokenData?.[0].items?.[0]?.price),
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: tokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.token,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            const { data: PtTokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    PT_TOKEN_ADDRESS,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            const { data: SyTokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    SY_TOKEN_ADDRESS,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (tokenData?.[0]?.items?.[0]?.price) {
+                tokens.push(
+                    {
+                        decimals: tokenData?.[0]?.contract_decimals || null,
+                        heading: "Token",
+                        value: String(tokenData?.[0].items?.[0]?.price),
+                        pretty_quote: prettifyCurrency(
+                            tokenData?.[0]?.items?.[0]?.price
+                        ),
+                        ticker_logo:
+                            tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            tokenData?.[0]?.contract_ticker_symbol || null,
+                    },
+                    {
+                        decimals: tokenData?.[0]?.contract_decimals || null,
+                        heading: "Net Token to Account",
+                        value: String(decoded.netTokenToAccount),
+                        pretty_quote: prettifyCurrency(
+                            tokenData?.[0]?.items?.[0]?.price *
+                                (Number(decoded.netTokenToAccount) /
+                                    Math.pow(
+                                        10,
+                                        tokenData?.[0]?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            tokenData?.[0]?.contract_ticker_symbol || null,
+                    }
+                );
+            }
+            if (PtTokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: PtTokenData?.[0]?.contract_decimals || null,
+                    heading: "Net Pt to Account",
+                    value: String(decoded.netPtToAccount),
                     pretty_quote: prettifyCurrency(
-                        tokenData?.[0]?.items?.[0]?.price
-                    ),
-                    ticker_logo:
-                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        tokenData?.[0]?.contract_ticker_symbol || null,
-                },
-                {
-                    decimals: tokenData?.[0]?.contract_decimals || null,
-                    heading: "Net Token to Account",
-                    value: String(decoded.netTokenToAccount),
-                    pretty_quote: prettifyCurrency(
-                        tokenData?.[0]?.items?.[0]?.price *
-                            (Number(decoded.netTokenToAccount) /
+                        PtTokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.netPtToAccount) /
                                 Math.pow(
                                     10,
-                                    tokenData?.[0]?.contract_decimals ?? 0
+                                    PtTokenData?.[0]?.contract_decimals ?? 0
                                 ))
                     ),
                     ticker_logo:
-                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        PtTokenData?.[0]?.logo_urls?.token_logo_url || null,
                     ticker_symbol:
-                        tokenData?.[0]?.contract_ticker_symbol || null,
-                }
-            );
-        }
-        if (PtTokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: PtTokenData?.[0]?.contract_decimals || null,
-                heading: "Net Pt to Account",
-                value: String(decoded.netPtToAccount),
-                pretty_quote: prettifyCurrency(
-                    PtTokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.netPtToAccount) /
-                            Math.pow(
-                                10,
-                                PtTokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    PtTokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: PtTokenData?.[0]?.contract_ticker_symbol || null,
-            });
-        }
-        if (SyTokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: SyTokenData?.[0]?.contract_decimals || null,
-                heading: "Net Sy Intermediary",
-                value: String(decoded.netSyInterm),
-                pretty_quote: prettifyCurrency(
-                    SyTokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.netSyInterm) /
-                            Math.pow(
-                                10,
-                                SyTokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    SyTokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: SyTokenData?.[0]?.contract_ticker_symbol || null,
-            });
+                        PtTokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
+            if (SyTokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: SyTokenData?.[0]?.contract_decimals || null,
+                    heading: "Net Sy Intermediary",
+                    value: String(decoded.netSyInterm),
+                    pretty_quote: prettifyCurrency(
+                        SyTokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.netSyInterm) /
+                                Math.pow(
+                                    10,
+                                    SyTokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        SyTokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        SyTokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
         }
 
         const details: EventDetails = [
@@ -197,66 +201,71 @@ GoldRushDecoder.on(
             eventName: "SwapYtAndSy",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: YtTokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                YT_TOKEN_ADDRESS,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const { data: SyTokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                SY_TOKEN_ADDRESS,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (YtTokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: YtTokenData?.[0]?.contract_decimals || null,
-                heading: "Net Yt to Account",
-                value: String(decoded.netYtToAccount),
-                pretty_quote: prettifyCurrency(
-                    YtTokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.netYtToAccount) /
-                            Math.pow(
-                                10,
-                                YtTokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    YtTokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: YtTokenData?.[0]?.contract_ticker_symbol || null,
-            });
-        }
-        if (SyTokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: SyTokenData?.[0]?.contract_decimals || null,
-                heading: "Net Sy to Account",
-                value: String(decoded.netSyToAccount),
-                pretty_quote: prettifyCurrency(
-                    SyTokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.netSyToAccount) /
-                            Math.pow(
-                                10,
-                                SyTokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    SyTokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: SyTokenData?.[0]?.contract_ticker_symbol || null,
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: YtTokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    YT_TOKEN_ADDRESS,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            const { data: SyTokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    SY_TOKEN_ADDRESS,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (YtTokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: YtTokenData?.[0]?.contract_decimals || null,
+                    heading: "Net Yt to Account",
+                    value: String(decoded.netYtToAccount),
+                    pretty_quote: prettifyCurrency(
+                        YtTokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.netYtToAccount) /
+                                Math.pow(
+                                    10,
+                                    YtTokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        YtTokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        YtTokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
+            if (SyTokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: SyTokenData?.[0]?.contract_decimals || null,
+                    heading: "Net Sy to Account",
+                    value: String(decoded.netSyToAccount),
+                    pretty_quote: prettifyCurrency(
+                        SyTokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.netSyToAccount) /
+                                Math.pow(
+                                    10,
+                                    SyTokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        SyTokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        SyTokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
         }
 
         const details: EventDetails = [
@@ -313,110 +322,115 @@ GoldRushDecoder.on(
             eventName: "SwapYtAndToken",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: TokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.token,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const { data: YtTokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                YT_TOKEN_ADDRESS,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const { data: SyTokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                SY_TOKEN_ADDRESS,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (TokenData?.[0]?.items?.[0]?.price) {
-            tokens.push(
-                {
-                    decimals: TokenData?.[0]?.contract_decimals || null,
-                    heading: "Token",
-                    value: String(TokenData?.[0].items?.[0]?.price),
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: TokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.token,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            const { data: YtTokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    YT_TOKEN_ADDRESS,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            const { data: SyTokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    SY_TOKEN_ADDRESS,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (TokenData?.[0]?.items?.[0]?.price) {
+                tokens.push(
+                    {
+                        decimals: TokenData?.[0]?.contract_decimals || null,
+                        heading: "Token",
+                        value: String(TokenData?.[0].items?.[0]?.price),
+                        pretty_quote: prettifyCurrency(
+                            TokenData?.[0]?.items?.[0]?.price
+                        ),
+                        ticker_logo:
+                            TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            TokenData?.[0]?.contract_ticker_symbol || null,
+                    },
+                    {
+                        decimals: TokenData?.[0]?.contract_decimals || null,
+                        heading: "Net Token to Account",
+                        value: String(decoded.netTokenToAccount),
+                        pretty_quote: prettifyCurrency(
+                            TokenData?.[0]?.items?.[0]?.price *
+                                (Number(decoded.netTokenToAccount) /
+                                    Math.pow(
+                                        10,
+                                        TokenData?.[0]?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            TokenData?.[0]?.contract_ticker_symbol || null,
+                    }
+                );
+            }
+            if (YtTokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: YtTokenData?.[0]?.contract_decimals || null,
+                    heading: "Net Yt to Account",
+                    value: String(decoded.netYtToAccount),
                     pretty_quote: prettifyCurrency(
-                        TokenData?.[0]?.items?.[0]?.price
-                    ),
-                    ticker_logo:
-                        TokenData?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        TokenData?.[0]?.contract_ticker_symbol || null,
-                },
-                {
-                    decimals: TokenData?.[0]?.contract_decimals || null,
-                    heading: "Net Token to Account",
-                    value: String(decoded.netTokenToAccount),
-                    pretty_quote: prettifyCurrency(
-                        TokenData?.[0]?.items?.[0]?.price *
-                            (Number(decoded.netTokenToAccount) /
+                        YtTokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.netYtToAccount) /
                                 Math.pow(
                                     10,
-                                    TokenData?.[0]?.contract_decimals ?? 0
+                                    YtTokenData?.[0]?.contract_decimals ?? 0
                                 ))
                     ),
                     ticker_logo:
-                        TokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        YtTokenData?.[0]?.logo_urls?.token_logo_url || null,
                     ticker_symbol:
-                        TokenData?.[0]?.contract_ticker_symbol || null,
-                }
-            );
-        }
-        if (YtTokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: YtTokenData?.[0]?.contract_decimals || null,
-                heading: "Net Yt to Account",
-                value: String(decoded.netYtToAccount),
-                pretty_quote: prettifyCurrency(
-                    YtTokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.netYtToAccount) /
-                            Math.pow(
-                                10,
-                                YtTokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    YtTokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: YtTokenData?.[0]?.contract_ticker_symbol || null,
-            });
-        }
-        if (SyTokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: SyTokenData?.[0]?.contract_decimals || null,
-                heading: "Net Sy Intermediary",
-                value: String(decoded.netSyInterm),
-                pretty_quote: prettifyCurrency(
-                    SyTokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.netSyInterm) /
-                            Math.pow(
-                                10,
-                                SyTokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    SyTokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: SyTokenData?.[0]?.contract_ticker_symbol || null,
-            });
+                        YtTokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
+            if (SyTokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: SyTokenData?.[0]?.contract_decimals || null,
+                    heading: "Net Sy Intermediary",
+                    value: String(decoded.netSyInterm),
+                    pretty_quote: prettifyCurrency(
+                        SyTokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.netSyInterm) /
+                                Math.pow(
+                                    10,
+                                    SyTokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        SyTokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        SyTokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
         }
 
         const details: EventDetails = [
@@ -473,38 +487,41 @@ GoldRushDecoder.on(
             eventName: "NewLockPosition",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: pendleTokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                PENDLE_TOKEN_ADDRESS,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (pendleTokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: pendleTokenData?.[0]?.contract_decimals || null,
-                heading: "Amount",
-                value: String(decoded.amount),
-                pretty_quote: prettifyCurrency(
-                    pendleTokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                pendleTokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    pendleTokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol:
-                    pendleTokenData?.[0]?.contract_ticker_symbol || null,
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: pendleTokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    PENDLE_TOKEN_ADDRESS,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (pendleTokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: pendleTokenData?.[0]?.contract_decimals || null,
+                    heading: "Amount",
+                    value: String(decoded.amount),
+                    pretty_quote: prettifyCurrency(
+                        pendleTokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    pendleTokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        pendleTokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        pendleTokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
         }
 
         const details: EventDetails = [

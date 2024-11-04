@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -11,7 +10,7 @@ import {
     type EventType,
 } from "../../decoder.types";
 import { blurExchangeABI } from "./abis/blur-exchange.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -111,36 +110,39 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(block_signed_at, "YYYY-MM-DD");
-        const { data: tokenPriceData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.sell.collection,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-        if (tokenPriceData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                heading: `Match Amount`,
-                value: decoded.sell.amount.toString(),
-                decimals: tokenPriceData?.[0]?.contract_decimals ?? 18,
-                pretty_quote: prettifyCurrency(
-                    tokenPriceData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.sell.amount) /
-                            Math.pow(
-                                10,
-                                tokenPriceData?.[0]?.items?.[0]
-                                    ?.contract_metadata?.contract_decimals ?? 18
-                            ))
-                ),
-                ticker_symbol:
-                    tokenPriceData?.[0]?.contract_ticker_symbol || null,
-                ticker_logo:
-                    tokenPriceData?.[0]?.logo_urls?.token_logo_url || null,
-            });
+        if (block_signed_at) {
+            const date = timestampParser(block_signed_at, "YYYY-MM-DD");
+            const { data: tokenPriceData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.sell.collection,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+            if (tokenPriceData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    heading: `Match Amount`,
+                    value: decoded.sell.amount.toString(),
+                    decimals: tokenPriceData?.[0]?.contract_decimals ?? 18,
+                    pretty_quote: prettifyCurrency(
+                        tokenPriceData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.sell.amount) /
+                                Math.pow(
+                                    10,
+                                    tokenPriceData?.[0]?.items?.[0]
+                                        ?.contract_metadata
+                                        ?.contract_decimals ?? 18
+                                ))
+                    ),
+                    ticker_symbol:
+                        tokenPriceData?.[0]?.contract_ticker_symbol || null,
+                    ticker_logo:
+                        tokenPriceData?.[0]?.logo_urls?.token_logo_url || null,
+                });
+            }
         }
 
         const { data } =

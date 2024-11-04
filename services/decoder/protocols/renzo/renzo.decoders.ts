@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -8,7 +7,7 @@ import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { eigenLayerStrategyManagerABI } from "./abis/eigen-layer-strategy-manager.abi";
 import { restakeManagerABI } from "./abis/restake-manager.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -229,66 +228,72 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: tokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.token,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
-        const { data: ezETHData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                "0xbf5495Efe5DB9ce00f80364C8B423567e58d2110",
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
 
-        if (tokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: tokenData?.[0]?.contract_decimals || null,
-                heading: "Deposit Amount",
-                value: String(decoded.amount),
-                pretty_quote: prettifyCurrency(
-                    tokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                tokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: tokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: tokenData?.[0]?.contract_ticker_symbol || null,
-            });
-        }
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        if (ezETHData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: ezETHData?.[0]?.contract_decimals || null,
-                heading: "ezETH Minted",
-                value: String(decoded.ezETHMinted),
-                pretty_quote: prettifyCurrency(
-                    ezETHData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.ezETHMinted) /
-                            Math.pow(
-                                10,
-                                ezETHData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: ezETHData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: ezETHData?.[0]?.contract_ticker_symbol || null,
-            });
+            const { data: tokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.token,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            const { data: ezETHData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    "0xbf5495Efe5DB9ce00f80364C8B423567e58d2110",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (tokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: tokenData?.[0]?.contract_decimals || null,
+                    heading: "Deposit Amount",
+                    value: String(decoded.amount),
+                    pretty_quote: prettifyCurrency(
+                        tokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    tokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        tokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
+
+            if (ezETHData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: ezETHData?.[0]?.contract_decimals || null,
+                    heading: "ezETH Minted",
+                    value: String(decoded.ezETHMinted),
+                    pretty_quote: prettifyCurrency(
+                        ezETHData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.ezETHMinted) /
+                                Math.pow(
+                                    10,
+                                    ezETHData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        ezETHData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        ezETHData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
         }
 
         return {

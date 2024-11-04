@@ -1,4 +1,4 @@
-import { isNullAddress, timestampParser } from "../../../../utils/functions";
+import { isNullAddress } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -8,7 +8,7 @@ import type { EventDetails, EventNFTs, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { heroAuctionABI } from "./abis/hero-auction.abi";
 import { petsABI } from "./abis/pets.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -126,20 +126,63 @@ GoldRushDecoder.on(
             eventName: "AuctionCreated",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const tokens: EventTokens = [];
 
-        // * INFO: Fetching Jewel Token Price from Avalanche Mainnet as it is a native token on Defi Kingdoms
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: JewelToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                "avalanche-mainnet",
-                "USD",
-                "0x997ddaa07d716995de90577c123db411584e5e46",
-                {
-                    from: date,
-                    to: date,
-                }
-            );
+            // * INFO: Fetching Jewel Token Price from Avalanche Mainnet as it is a native token on Defi Kingdoms
+
+            const { data: JewelToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    "avalanche-mainnet",
+                    "USD",
+                    "0x997ddaa07d716995de90577c123db411584e5e46",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (JewelToken?.[0]?.items?.[0]?.price) {
+                tokens.push(
+                    {
+                        decimals: JewelToken?.[0]?.contract_decimals || null,
+                        heading: "Starting Price",
+                        value: String(decoded.startingPrice),
+                        pretty_quote: prettifyCurrency(
+                            JewelToken?.[0]?.items?.[0]?.price *
+                                (Number(decoded.startingPrice) /
+                                    Math.pow(
+                                        10,
+                                        JewelToken?.[0]?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            JewelToken?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            JewelToken?.[0]?.contract_ticker_symbol || null,
+                    },
+                    {
+                        decimals: JewelToken?.[0]?.contract_decimals || null,
+                        heading: "Ending Price",
+                        value: String(decoded.endingPrice),
+                        pretty_quote: prettifyCurrency(
+                            JewelToken?.[0]?.items?.[0]?.price *
+                                (Number(decoded.endingPrice) /
+                                    Math.pow(
+                                        10,
+                                        JewelToken?.[0]?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            JewelToken?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            JewelToken?.[0]?.contract_ticker_symbol || null,
+                    }
+                );
+            }
+        }
 
         const { data: HeroNFT } =
             await goldrush_client.NftService.getNftMetadataForGivenTokenIdForContract(
@@ -176,46 +219,6 @@ GoldRushDecoder.on(
                 },
             },
         ];
-
-        const tokens: EventTokens = [];
-        if (JewelToken?.[0]?.items?.[0]?.price) {
-            tokens.push(
-                {
-                    decimals: JewelToken?.[0]?.contract_decimals || null,
-                    heading: "Starting Price",
-                    value: String(decoded.startingPrice),
-                    pretty_quote: prettifyCurrency(
-                        JewelToken?.[0]?.items?.[0]?.price *
-                            (Number(decoded.startingPrice) /
-                                Math.pow(
-                                    10,
-                                    JewelToken?.[0]?.contract_decimals ?? 0
-                                ))
-                    ),
-                    ticker_logo:
-                        JewelToken?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        JewelToken?.[0]?.contract_ticker_symbol || null,
-                },
-                {
-                    decimals: JewelToken?.[0]?.contract_decimals || null,
-                    heading: "Ending Price",
-                    value: String(decoded.endingPrice),
-                    pretty_quote: prettifyCurrency(
-                        JewelToken?.[0]?.items?.[0]?.price *
-                            (Number(decoded.endingPrice) /
-                                Math.pow(
-                                    10,
-                                    JewelToken?.[0]?.contract_decimals ?? 0
-                                ))
-                    ),
-                    ticker_logo:
-                        JewelToken?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        JewelToken?.[0]?.contract_ticker_symbol || null,
-                }
-            );
-        }
 
         const details: EventDetails = [
             {
@@ -366,36 +369,41 @@ GoldRushDecoder.on(
             eventName: "AuctionSuccessful",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: JewelToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                "avalanche-mainnet",
-                "USD",
-                "0x997ddaa07d716995de90577c123db411584e5e46",
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (JewelToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: JewelToken?.[0]?.contract_decimals || null,
-                heading: "Total Price",
-                value: String(decoded.totalPrice),
-                pretty_quote: prettifyCurrency(
-                    JewelToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.totalPrice) /
-                            Math.pow(
-                                10,
-                                JewelToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: JewelToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: JewelToken?.[0]?.contract_ticker_symbol || null,
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: JewelToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    "avalanche-mainnet",
+                    "USD",
+                    "0x997ddaa07d716995de90577c123db411584e5e46",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (JewelToken?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: JewelToken?.[0]?.contract_decimals || null,
+                    heading: "Total Price",
+                    value: String(decoded.totalPrice),
+                    pretty_quote: prettifyCurrency(
+                        JewelToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.totalPrice) /
+                                Math.pow(
+                                    10,
+                                    JewelToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        JewelToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        JewelToken?.[0]?.contract_ticker_symbol || null,
+                });
+            }
         }
 
         const { data: HeroNFT } =

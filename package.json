@@ -25,7 +25,7 @@
     "homepage": "https://github.com/covalenthq/goldrush-decoder#readme",
     "license": "Apache-2.0",
     "dependencies": {
-        "@covalenthq/client-sdk": "^2.1.2",
+        "@covalenthq/client-sdk": "^2.2.1",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "enquirer": "^2.4.1",

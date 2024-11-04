@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -6,7 +5,7 @@ import {
 } from "../../decoder.constants";
 import type { EventDetails, EventTokens, EventType } from "../../decoder.types";
 import { aaveV3ABI } from "./abis/aave-v3.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 enum INTEREST_RATE_MODE {
@@ -80,37 +79,40 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: BorrowToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.reserve,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (BorrowToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: BorrowToken?.[0]?.contract_decimals || null,
-                heading: "Borrow Amount",
-                pretty_quote: prettifyCurrency(
-                    BorrowToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                BorrowToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    BorrowToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: BorrowToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.amount),
-            });
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: BorrowToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.reserve,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (BorrowToken?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: BorrowToken?.[0]?.contract_decimals || null,
+                    heading: "Borrow Amount",
+                    pretty_quote: prettifyCurrency(
+                        BorrowToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    BorrowToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        BorrowToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        BorrowToken?.[0]?.contract_ticker_symbol || null,
+                    value: String(decoded.amount),
+                });
+            }
         }
 
         return {
@@ -180,37 +182,41 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: SupplyToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.reserve,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (SupplyToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: SupplyToken?.[0]?.contract_decimals || null,
-                heading: "Supply Amount",
-                pretty_quote: prettifyCurrency(
-                    SupplyToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                SupplyToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    SupplyToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: SupplyToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.amount),
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: SupplyToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.reserve,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (SupplyToken?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: SupplyToken?.[0]?.contract_decimals || null,
+                    heading: "Supply Amount",
+                    pretty_quote: prettifyCurrency(
+                        SupplyToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    SupplyToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        SupplyToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        SupplyToken?.[0]?.contract_ticker_symbol || null,
+                    value: String(decoded.amount),
+                });
+            }
         }
 
         return {
@@ -280,36 +286,41 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: RepayToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.reserve,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (RepayToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: RepayToken?.[0]?.contract_decimals || null,
-                heading: "Repay Amount",
-                pretty_quote: prettifyCurrency(
-                    RepayToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                RepayToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.amount),
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: RepayToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.reserve,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (RepayToken?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: RepayToken?.[0]?.contract_decimals || null,
+                    heading: "Repay Amount",
+                    pretty_quote: prettifyCurrency(
+                        RepayToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    RepayToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        RepayToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        RepayToken?.[0]?.contract_ticker_symbol || null,
+                    value: String(decoded.amount),
+                });
+            }
         }
 
         return {
@@ -374,36 +385,41 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: RepayToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.reserve,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (RepayToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: RepayToken?.[0]?.contract_decimals || null,
-                heading: "Withdraw Amount",
-                pretty_quote: prettifyCurrency(
-                    RepayToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.amount) /
-                            Math.pow(
-                                10,
-                                RepayToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: RepayToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: RepayToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.amount),
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: RepayToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.reserve,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (RepayToken?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: RepayToken?.[0]?.contract_decimals || null,
+                    heading: "Withdraw Amount",
+                    pretty_quote: prettifyCurrency(
+                        RepayToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.amount) /
+                                Math.pow(
+                                    10,
+                                    RepayToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        RepayToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        RepayToken?.[0]?.contract_ticker_symbol || null,
+                    value: String(decoded.amount),
+                });
+            }
         }
 
         return {
@@ -450,19 +466,6 @@ GoldRushDecoder.on(
             eventName: "FlashLoan",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: FlashLoanToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.asset,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const details: EventDetails = [
             {
                 heading: "Target",
@@ -487,43 +490,65 @@ GoldRushDecoder.on(
         ];
 
         const tokens: EventTokens = [];
-        if (FlashLoanToken?.[0]?.items?.[0]?.price) {
-            tokens.push(
-                {
-                    decimals: FlashLoanToken?.[0]?.contract_decimals || null,
-                    heading: "Flash Loan Amount",
-                    pretty_quote: prettifyCurrency(
-                        FlashLoanToken?.[0]?.items?.[0]?.price *
-                            (Number(decoded.amount) /
-                                Math.pow(
-                                    10,
-                                    FlashLoanToken?.[0]?.contract_decimals ?? 0
-                                ))
-                    ),
-                    ticker_logo:
-                        FlashLoanToken?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        FlashLoanToken?.[0]?.contract_ticker_symbol || null,
-                    value: String(decoded.amount),
-                },
-                {
-                    decimals: FlashLoanToken?.[0]?.contract_decimals || null,
-                    heading: "Flash Loan Premium",
-                    pretty_quote: prettifyCurrency(
-                        FlashLoanToken?.[0]?.items?.[0]?.price *
-                            (Number(decoded.premium) /
-                                Math.pow(
-                                    10,
-                                    FlashLoanToken?.[0]?.contract_decimals ?? 0
-                                ))
-                    ),
-                    ticker_logo:
-                        FlashLoanToken?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        FlashLoanToken?.[0]?.contract_ticker_symbol || null,
-                    value: String(decoded.premium),
-                }
-            );
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: FlashLoanToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.asset,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (FlashLoanToken?.[0]?.items?.[0]?.price) {
+                tokens.push(
+                    {
+                        decimals:
+                            FlashLoanToken?.[0]?.contract_decimals || null,
+                        heading: "Flash Loan Amount",
+                        pretty_quote: prettifyCurrency(
+                            FlashLoanToken?.[0]?.items?.[0]?.price *
+                                (Number(decoded.amount) /
+                                    Math.pow(
+                                        10,
+                                        FlashLoanToken?.[0]
+                                            ?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            FlashLoanToken?.[0]?.logo_urls?.token_logo_url ||
+                            null,
+                        ticker_symbol:
+                            FlashLoanToken?.[0]?.contract_ticker_symbol || null,
+                        value: String(decoded.amount),
+                    },
+                    {
+                        decimals:
+                            FlashLoanToken?.[0]?.contract_decimals || null,
+                        heading: "Flash Loan Premium",
+                        pretty_quote: prettifyCurrency(
+                            FlashLoanToken?.[0]?.items?.[0]?.price *
+                                (Number(decoded.premium) /
+                                    Math.pow(
+                                        10,
+                                        FlashLoanToken?.[0]
+                                            ?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            FlashLoanToken?.[0]?.logo_urls?.token_logo_url ||
+                            null,
+                        ticker_symbol:
+                            FlashLoanToken?.[0]?.contract_ticker_symbol || null,
+                        value: String(decoded.premium),
+                    }
+                );
+            }
         }
 
         return {
@@ -598,66 +623,71 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const [{ data: collateralToken }, { data: debtToken }] =
-            await Promise.all([
-                goldrush_client.PricingService.getTokenPrices(
-                    chain_name,
-                    "USD",
-                    decoded.collateralAsset,
-                    {
-                        from: date,
-                        to: date,
-                    }
-                ),
-                goldrush_client.PricingService.getTokenPrices(
-                    chain_name,
-                    "USD",
-                    decoded.debtAsset,
-                    {
-                        from: date,
-                        to: date,
-                    }
-                ),
-            ]);
-
         const tokens: EventTokens = [];
-        if (collateralToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: collateralToken?.[0]?.contract_decimals || null,
-                heading: "Collateral Amount",
-                pretty_quote: prettifyCurrency(
-                    collateralToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.liquidatedCollateralAmount) /
-                            Math.pow(
-                                10,
-                                collateralToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo:
-                    collateralToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol:
-                    collateralToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.liquidatedCollateralAmount),
-            });
-        }
-        if (debtToken?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: debtToken?.[0]?.contract_decimals || null,
-                heading: "Debt Amount",
-                pretty_quote: prettifyCurrency(
-                    debtToken?.[0]?.items?.[0]?.price *
-                        (Number(decoded.debtToCover) /
-                            Math.pow(
-                                10,
-                                debtToken?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: debtToken?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: debtToken?.[0]?.contract_ticker_symbol || null,
-                value: String(decoded.debtToCover),
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const [{ data: collateralToken }, { data: debtToken }] =
+                await Promise.all([
+                    goldrush_client.PricingService.getTokenPrices(
+                        chain_name,
+                        "USD",
+                        decoded.collateralAsset,
+                        {
+                            from: date,
+                            to: date,
+                        }
+                    ),
+                    goldrush_client.PricingService.getTokenPrices(
+                        chain_name,
+                        "USD",
+                        decoded.debtAsset,
+                        {
+                            from: date,
+                            to: date,
+                        }
+                    ),
+                ]);
+
+            if (collateralToken?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: collateralToken?.[0]?.contract_decimals || null,
+                    heading: "Collateral Amount",
+                    pretty_quote: prettifyCurrency(
+                        collateralToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.liquidatedCollateralAmount) /
+                                Math.pow(
+                                    10,
+                                    collateralToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        collateralToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        collateralToken?.[0]?.contract_ticker_symbol || null,
+                    value: String(decoded.liquidatedCollateralAmount),
+                });
+            }
+            if (debtToken?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: debtToken?.[0]?.contract_decimals || null,
+                    heading: "Debt Amount",
+                    pretty_quote: prettifyCurrency(
+                        debtToken?.[0]?.items?.[0]?.price *
+                            (Number(decoded.debtToCover) /
+                                Math.pow(
+                                    10,
+                                    debtToken?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        debtToken?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        debtToken?.[0]?.contract_ticker_symbol || null,
+                    value: String(decoded.debtToCover),
+                });
+            }
         }
 
         return {

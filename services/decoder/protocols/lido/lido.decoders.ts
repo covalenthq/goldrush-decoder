@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -8,7 +7,7 @@ import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { stethABI } from "./abis/steth.abi";
 import { withdrawalQueueABI } from "./abis/withdrawal-queue.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -267,64 +266,68 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
         const tokens: EventTokens = [];
 
-        if (sender_address) {
-            const { data: StakingToken } =
-                await goldrush_client.PricingService.getTokenPrices(
-                    chain_name,
-                    "USD",
-                    sender_address,
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            if (sender_address) {
+                const { data: StakingToken } =
+                    await goldrush_client.PricingService.getTokenPrices(
+                        chain_name,
+                        "USD",
+                        sender_address,
+                        {
+                            from: date,
+                            to: date,
+                        }
+                    );
+
+                tokens.push(
                     {
-                        from: date,
-                        to: date,
+                        heading: "Pre-Rebase Token Amount",
+                        value: decoded.preRebaseTokenAmount.toString(),
+                        decimals: StakingToken?.[0]?.contract_decimals || null,
+                        ticker_symbol:
+                            StakingToken?.[0]?.contract_ticker_symbol || null,
+                        ticker_logo:
+                            StakingToken?.[0]?.logo_urls?.token_logo_url ||
+                            null,
+                        pretty_quote: prettifyCurrency(
+                            (StakingToken?.[0]?.items?.[0]?.price ?? 0) *
+                                (Number(decoded.preRebaseTokenAmount) /
+                                    Math.pow(
+                                        10,
+                                        +(
+                                            StakingToken?.[0]
+                                                ?.contract_decimals ?? 18
+                                        )
+                                    ))
+                        ),
+                    },
+                    {
+                        heading: "Post-Rebase Token Amount",
+                        value: decoded.postRebaseTokenAmount.toString(),
+                        decimals: StakingToken?.[0]?.contract_decimals || null,
+                        ticker_symbol:
+                            StakingToken?.[0]?.contract_ticker_symbol || null,
+                        ticker_logo:
+                            StakingToken?.[0]?.logo_urls?.token_logo_url ||
+                            null,
+                        pretty_quote: prettifyCurrency(
+                            (StakingToken?.[0]?.items?.[0]?.price ?? 0) *
+                                (Number(decoded.postRebaseTokenAmount) /
+                                    Math.pow(
+                                        10,
+                                        +(
+                                            StakingToken?.[0]
+                                                ?.contract_decimals ?? 18
+                                        )
+                                    ))
+                        ),
                     }
                 );
-
-            tokens.push(
-                {
-                    heading: "Pre-Rebase Token Amount",
-                    value: decoded.preRebaseTokenAmount.toString(),
-                    decimals: StakingToken?.[0]?.contract_decimals || null,
-                    ticker_symbol:
-                        StakingToken?.[0]?.contract_ticker_symbol || null,
-                    ticker_logo:
-                        StakingToken?.[0]?.logo_urls?.token_logo_url || null,
-                    pretty_quote: prettifyCurrency(
-                        (StakingToken?.[0]?.items?.[0]?.price ?? 0) *
-                            (Number(decoded.preRebaseTokenAmount) /
-                                Math.pow(
-                                    10,
-                                    +(
-                                        StakingToken?.[0]?.contract_decimals ??
-                                        18
-                                    )
-                                ))
-                    ),
-                },
-                {
-                    heading: "Post-Rebase Token Amount",
-                    value: decoded.postRebaseTokenAmount.toString(),
-                    decimals: StakingToken?.[0]?.contract_decimals || null,
-                    ticker_symbol:
-                        StakingToken?.[0]?.contract_ticker_symbol || null,
-                    ticker_logo:
-                        StakingToken?.[0]?.logo_urls?.token_logo_url || null,
-                    pretty_quote: prettifyCurrency(
-                        (StakingToken?.[0]?.items?.[0]?.price ?? 0) *
-                            (Number(decoded.postRebaseTokenAmount) /
-                                Math.pow(
-                                    10,
-                                    +(
-                                        StakingToken?.[0]?.contract_decimals ??
-                                        18
-                                    )
-                                ))
-                    ),
-                }
-            );
+            }
         }
 
         return {
@@ -660,21 +663,23 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const tokens: EventTokens = [];
 
-        const { data: StakingToken } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
-                {
-                    from: date,
-                    to: date,
-                }
-            );
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const tokens: EventTokens = [
-            {
+            const { data: StakingToken } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84",
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            tokens.push({
                 heading: "Amount Of stETH",
                 value: decoded.amountOfStETH.toString(),
                 decimals: StakingToken?.[0]?.contract_decimals || null,
@@ -690,8 +695,8 @@ GoldRushDecoder.on(
                                 +(StakingToken?.[0]?.contract_decimals ?? 18)
                             ))
                 ),
-            },
-        ];
+            });
+        }
 
         return {
             action: DECODED_ACTION.WITHDRAW,

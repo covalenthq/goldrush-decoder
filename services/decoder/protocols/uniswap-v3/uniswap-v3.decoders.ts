@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -9,6 +8,7 @@ import { type EventType } from "../../decoder.types";
 import { factoryABI } from "./abis/factory.abi";
 import { nonFungiblePositionManagerABI } from "./abis/non-fungible-position-manager.abi";
 import { pairABI } from "./abis/pair.abi";
+import { timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 GoldRushDecoder.on(
@@ -61,48 +61,51 @@ GoldRushDecoder.on(
             },
         ];
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+        const tokens: EventTokens = [];
 
-        const { data: Token0 } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.token0,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
 
-        const { data: Token1 } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.token1,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
+            const { data: Token0 } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.token0,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
 
-        const tokens: EventTokens = [
-            {
+            tokens.push({
                 heading: "Token 0 Information",
                 value: "0",
                 decimals: Token0?.[0]?.contract_decimals || null,
                 ticker_symbol: Token0?.[0]?.contract_ticker_symbol || null,
                 ticker_logo: Token0?.[0]?.logo_urls?.token_logo_url || null,
                 pretty_quote: Token0?.[0]?.items?.[0]?.pretty_price || null,
-            },
-            {
+            });
+
+            const { data: Token1 } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.token1,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            tokens.push({
                 heading: "Token 1 Information",
                 value: "0",
                 decimals: Token1?.[0]?.contract_decimals || null,
                 ticker_symbol: Token1?.[0]?.contract_ticker_symbol || null,
                 ticker_logo: Token1?.[0]?.logo_urls?.token_logo_url || null,
                 pretty_quote: Token1?.[0]?.items?.[0]?.pretty_price || null,
-            },
-        ];
+            });
+        }
 
         return {
             action: DECODED_ACTION.CREATE,

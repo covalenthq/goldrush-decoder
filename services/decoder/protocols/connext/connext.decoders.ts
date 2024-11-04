@@ -1,4 +1,3 @@
-import { timestampParser } from "../../../../utils/functions";
 import { GoldRushDecoder } from "../../decoder";
 import {
     DECODED_ACTION,
@@ -8,7 +7,7 @@ import type { EventDetails, EventTokens } from "../../decoder.types";
 import { type EventType } from "../../decoder.types";
 import { connextCallABI } from "./abis/connext-call.abi";
 import { connextRouterABI } from "./abis/connext-router.abi";
-import { prettifyCurrency } from "@covalenthq/client-sdk";
+import { prettifyCurrency, timestampParser } from "@covalenthq/client-sdk";
 import { decodeEventLog, type Abi } from "viem";
 
 const DOMAIN_ID_TO_CHAIN_ID: { [domain_id: number]: string } = {
@@ -473,57 +472,60 @@ GoldRushDecoder.on(
             eventName: "XCalled",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: tokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.asset,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (tokenData?.[0]?.items?.[0]?.price) {
-            tokens.push(
-                {
-                    decimals: tokenData?.[0]?.contract_decimals || null,
-                    heading: "Bridged Amount",
-                    value: String(decoded.params.bridgedAmt),
-                    pretty_quote: prettifyCurrency(
-                        tokenData?.[0]?.items?.[0]?.price *
-                            (Number(decoded.params.bridgedAmt) /
-                                Math.pow(
-                                    10,
-                                    tokenData?.[0]?.contract_decimals ?? 0
-                                ))
-                    ),
-                    ticker_logo:
-                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        tokenData?.[0]?.contract_ticker_symbol || null,
-                },
-                {
-                    decimals: tokenData?.[0]?.contract_decimals || null,
-                    heading: "Amount",
-                    value: String(decoded.amount),
-                    pretty_quote: prettifyCurrency(
-                        tokenData?.[0]?.items?.[0]?.price *
-                            (Number(decoded.amount) /
-                                Math.pow(
-                                    10,
-                                    tokenData?.[0]?.contract_decimals ?? 0
-                                ))
-                    ),
-                    ticker_logo:
-                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
-                    ticker_symbol:
-                        tokenData?.[0]?.contract_ticker_symbol || null,
-                }
-            );
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: tokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.asset,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (tokenData?.[0]?.items?.[0]?.price) {
+                tokens.push(
+                    {
+                        decimals: tokenData?.[0]?.contract_decimals || null,
+                        heading: "Bridged Amount",
+                        value: String(decoded.params.bridgedAmt),
+                        pretty_quote: prettifyCurrency(
+                            tokenData?.[0]?.items?.[0]?.price *
+                                (Number(decoded.params.bridgedAmt) /
+                                    Math.pow(
+                                        10,
+                                        tokenData?.[0]?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            tokenData?.[0]?.contract_ticker_symbol || null,
+                    },
+                    {
+                        decimals: tokenData?.[0]?.contract_decimals || null,
+                        heading: "Amount",
+                        value: String(decoded.amount),
+                        pretty_quote: prettifyCurrency(
+                            tokenData?.[0]?.items?.[0]?.price *
+                                (Number(decoded.amount) /
+                                    Math.pow(
+                                        10,
+                                        tokenData?.[0]?.contract_decimals ?? 0
+                                    ))
+                        ),
+                        ticker_logo:
+                            tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                        ticker_symbol:
+                            tokenData?.[0]?.contract_ticker_symbol || null,
+                    }
+                );
+            }
         }
 
         const details: EventDetails = [
@@ -706,36 +708,41 @@ GoldRushDecoder.on(
             eventName: "TransferRelayerFeesIncreased",
         });
 
-        const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
-
-        const { data: tokenData } =
-            await goldrush_client.PricingService.getTokenPrices(
-                chain_name,
-                "USD",
-                decoded.asset,
-                {
-                    from: date,
-                    to: date,
-                }
-            );
-
         const tokens: EventTokens = [];
-        if (tokenData?.[0]?.items?.[0]?.price) {
-            tokens.push({
-                decimals: tokenData?.[0]?.contract_decimals || null,
-                heading: "Increase",
-                value: String(decoded.increase),
-                pretty_quote: prettifyCurrency(
-                    tokenData?.[0]?.items?.[0]?.price *
-                        (Number(decoded.increase) /
-                            Math.pow(
-                                10,
-                                tokenData?.[0]?.contract_decimals ?? 0
-                            ))
-                ),
-                ticker_logo: tokenData?.[0]?.logo_urls?.token_logo_url || null,
-                ticker_symbol: tokenData?.[0]?.contract_ticker_symbol || null,
-            });
+
+        if (tx.block_signed_at) {
+            const date = timestampParser(tx.block_signed_at, "YYYY-MM-DD");
+
+            const { data: tokenData } =
+                await goldrush_client.PricingService.getTokenPrices(
+                    chain_name,
+                    "USD",
+                    decoded.asset,
+                    {
+                        from: date,
+                        to: date,
+                    }
+                );
+
+            if (tokenData?.[0]?.items?.[0]?.price) {
+                tokens.push({
+                    decimals: tokenData?.[0]?.contract_decimals || null,
+                    heading: "Increase",
+                    value: String(decoded.increase),
+                    pretty_quote: prettifyCurrency(
+                        tokenData?.[0]?.items?.[0]?.price *
+                            (Number(decoded.increase) /
+                                Math.pow(
+                                    10,
+                                    tokenData?.[0]?.contract_decimals ?? 0
+                                ))
+                    ),
+                    ticker_logo:
+                        tokenData?.[0]?.logo_urls?.token_logo_url || null,
+                    ticker_symbol:
+                        tokenData?.[0]?.contract_ticker_symbol || null,
+                });
+            }
         }
 
         const details: EventDetails = [
