@@ -23,7 +23,7 @@
         "url": "https://github.com/covalenthq/goldrush-decoder/issues"
     },
     "homepage": "https://github.com/covalenthq/goldrush-decoder#readme",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "dependencies": {
         "@covalenthq/client-sdk": "^2.2.1",
         "cors": "^2.8.5",
