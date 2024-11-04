@@ -137,17 +137,6 @@ Follow the following steps to add a Decoding logic for an event from a contract 
 
 4.  In `${protocol_name}.decoders.ts`, a decoding logic declaration (`Decoder.on(...)`) will be exposed wherein the decoding logic needs to be implemented. The return type of the decoding function expects the return type [`EventType`](./services/decoder/decoder.types.ts):
 
-## GoldRush Repositories
-
-| Name                                                                             | Description                                                                     |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [TypeScript SDK](https://github.com/covalenthq/covalent-api-sdk-ts)              | The fastest way to integrate the GoldRush API for working with blockchain data. |
-| [GoldRush Kit](https://github.com/covalenthq/goldrush-kit)                       | Beautifully designed React components for your dApp frontend.                   |
-| [GoldRush Block Explorer](https://github.com/covalenthq/goldrush-block-explorer) | A cross chain block explorer kit that can be customized.                        |
-| [GoldRush Decoder](https://github.com/covalenthq/goldrush-decoder)               | Decode unstructured, raw event logs into structured data with a simple API.     |
-| [GoldRush RevokeHub](https://github.com/covalenthq/goldrush-revokehub)           | One-stop platform for managing your digital assets securely and efficiently.    |
-| [GoldRush Airdrop Assist](https://github.com/covalenthq/goldrush-airdrop-assist) | Effortlessly filter and find all valid addresses for your next airdrop.         |
-
 ## Contributing
 
 Contributions, issues and feature requests are welcome!
