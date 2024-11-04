@@ -9,11 +9,8 @@ import {
     type NativeDecodingFunction,
     type QueryOptions,
 } from "./decoder.types";
-import {
-    GoldRushClient,
-    type ChainName,
-    type Transaction,
-} from "@covalenthq/client-sdk";
+import type { GoldRushClient } from "@covalenthq/client-sdk";
+import { type ChainName, type Transaction } from "@covalenthq/client-sdk";
 import { readdirSync } from "fs";
 import { join } from "path";
 import { encodeEventTopics, type Abi } from "viem";
